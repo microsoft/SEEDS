@@ -1,0 +1,12 @@
+[submodule "FSMExecutor"]
+	path = FSMExecutor
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/FSM-Executor
+[submodule "PLACEServer"]
+	path = PLACEServer
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/PLACE
+[submodule "TeacherAppBackendServer"]
+	path = TeacherAppBackendServer
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/Teacher%20App%20Backend%20Server
+[submodule "IVRServerContainerGroup"]
+	path = IVRServerContainerGroup
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/IVR%20Server%20Container%20Group
