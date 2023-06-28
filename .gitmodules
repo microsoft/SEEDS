@@ -13,3 +13,9 @@
 [submodule "ContentProcessingAzureFunctionContainer"]
 	path = ContentProcessingAzureFunctionContainer
 	url = https://msri@dev.azure.com/msri/SEEDS/_git/ContentProcessingAzureFunctionContainer
+[submodule "TeacherAndroidApp"]
+	path = TeacherAndroidApp
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/Teacher-App
+[submodule "contentWebApp"]
+	path = contentWebApp
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/ContentWebApp
