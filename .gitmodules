@@ -10,3 +10,6 @@
 [submodule "IVRServerContainerGroup"]
 	path = IVRServerContainerGroup
 	url = https://msri@dev.azure.com/msri/SEEDS/_git/IVR%20Server%20Container%20Group
+[submodule "ContentProcessingAzureFunctionContainer"]
+	path = ContentProcessingAzureFunctionContainer
+	url = https://msri@dev.azure.com/msri/SEEDS/_git/ContentProcessingAzureFunctionContainer
