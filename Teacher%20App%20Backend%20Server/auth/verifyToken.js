@@ -2,7 +2,21 @@
 const admin = require("firebase-admin");
 const path = require("path");
 
-var a = 2
+// create a separate serviceAccountKey.json file for your own Firebase Account. we are gitignoring it for security purpose
+/*
+{
+  "type": "service_account",
+  "project_id": "",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "",
+  "client_id": "",
+  "auth_uri": "",
+  "token_uri": "",
+  "auth_provider_x509_cert_url": "",
+  "client_x509_cert_url": ""
+}
+*/
 
 const serviceAccount = path.join(__dirname, "serviceAccountKey.json")
 
