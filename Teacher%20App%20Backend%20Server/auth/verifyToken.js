@@ -2,20 +2,15 @@
 const admin = require("firebase-admin");
 const path = require("path");
 
-// create a separate serviceAccountKey.json file for your own Firebase Account. we are gitignoring it for security purpose
-/*
-{
-  "type": "service_account",
-  "project_id": "",
-  "private_key_id": "",
-  "private_key": "",
-  "client_email": "",
-  "client_id": "",
-  "auth_uri": "",
-  "token_uri": "",
-  "auth_provider_x509_cert_url": "",
-  "client_x509_cert_url": ""
-}
+/* 
+create a separate serviceAccountKey.json file for your own Firebase Account
+To generate private key follow below steps,
+    1. go to https://console.firebase.google.com/
+    2. create a new project if not yet
+    3. go to settings/project settings
+    4. go to Service accounts
+    5. Under Firebase admin SDK section, you should be able to see 'Generate new private key' option
+    6. when you click on this option, it will prompt you to download a json file that you can place exactly in the place of this serviceAccountKey.json file
 */
 
 const serviceAccount = path.join(__dirname, "serviceAccountKey.json")
