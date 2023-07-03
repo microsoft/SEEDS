@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/baloo_da</item>
+        <item>@font/inter_light</item>
+        <item>@font/lato</item>
+        <item>@font/lato_bold</item>
+        <item>@font/poppins_extrabold</item>
+    </array>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/classroomFragment"
+        android:icon="@drawable/ic_baseline_group_24"
+        android:title="Groups" />
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_baseline_format_list_bulleted_24"
+        android:title="Content"/>
+    
+</menu>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.example.seeds.ui.createclassroom.CreateClassroomViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_horizontal_margin">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.createclassroom.CreateClassroomFragment" >
+
+        <ImageView
+            android:id="@+id/create_cap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_group_cap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/classroom_name_edit"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@{viewModel.classroom.name}"
+            android:hint="Group name"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/create_cap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/students_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@+id/classroom_name_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_students"
+            />
+
+        <TextView
+            android:id="@+id/students_text"
+            style="@style/RecyclerViewItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="Students"
+            android:textColor="@color/seeds_black"
+            app:layout_constraintBottom_toBottomOf="@+id/students_icon"
+            app:layout_constraintStart_toEndOf="@+id/students_icon"
+            app:layout_constraintTop_toTopOf="@+id/students_icon" />
+
+        <Button
+            android:id="@+id/add_students_btn"
+            style="@style/PrimaryButton"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Add Students"
+            app:layout_constraintBaseline_toBaselineOf="@+id/students_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/classroom_name_edit" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/add_students_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:backgroundTint="#EFF5F5"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_students_btn">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/choose_students_text"
+                    style="@style/AllTitles"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="10dp"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:text="No students added"
+                    android:textColor="#A6A6A6"
+                    android:visibility="@{viewModel.classroomStudents.size == 0? View.VISIBLE: View.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/classroom_my_students_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintHeight_max="250dp"
+                    android:layout_marginTop="10dp"
+                    android:scrollbars="vertical"
+                    android:scrollbarThumbVertical="@drawable/custom_scroll_style"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="@{viewModel.classroomStudents.size == 0? View.GONE: View.VISIBLE}"
+                    app:studentData="@{viewModel.classroomStudents}"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/remove_student_item_row" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/crown_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@+id/add_students_cardview"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_crown"
+            />
+
+        <TextView
+            android:id="@+id/create_classroom_leaders_text"
+            style="@style/RecyclerViewItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/inter"
+            android:text="Leaders"
+            android:textColor="@color/seeds_black"
+            app:layout_constraintBottom_toBottomOf="@+id/crown_icon"
+            app:layout_constraintStart_toEndOf="@+id/crown_icon"
+            app:layout_constraintTop_toTopOf="@+id/crown_icon" />
+
+        <Button
+            android:id="@+id/add_leaders_btn"
+            style="@style/PrimaryButton"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Assign Leaders"
+            android:enabled="@{viewModel.classroomStudents.size > 0 ? true: false}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/create_classroom_leaders_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_students_cardview" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/leaders_list_cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:backgroundTint="#EFF5F5"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_leaders_btn">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/leaders_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/choose_leaders_text"
+            style="@style/AllTitles"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Assign 2 leaders"
+            android:textColor="#A6A6A6"
+            android:visibility="@{viewModel.classroomLeaders.size == 0? View.VISIBLE: View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/leaders_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{viewModel.classroomLeaders.size != 0? View.VISIBLE: View.GONE}"
+            app:studentData="@{viewModel.classroomLeaders}"
+            tools:itemCount="2"
+            tools:listitem="@layout/remove_student_item_row" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/save_classroom_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/PrimaryButton"
+            android:text="@{viewModel.classroom._id == null? `Create`: `Save`}"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:enabled="@{viewModel.classroomStudents.size > 0 ? true: false}"
+            app:layout_constraintTop_toBottomOf="@+id/leaders_list_cardview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/edit_group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/classroom_name_edit"
+            app:layout_constraintStart_toEndOf="@+id/classroom_name_edit"
+            app:layout_constraintTop_toTopOf="@+id/classroom_name_edit"
+            app:srcCompat="@drawable/ic_edit_group_name_icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+</layout>
