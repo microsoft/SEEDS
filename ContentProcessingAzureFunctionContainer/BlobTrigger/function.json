@@ -1,0 +1,18 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "input-container/{blobName}.{blobExtension}",
+      "connection": "AzureWebJobsStorage"
+    },
+    {
+      "name": "outputblob",
+      "type": "blob",
+      "path": "output-container/{blobName}.json",
+      "direction": "out",
+      "connection": "AzureWebJobsStorage"
+    }
+  ]
+}
