@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vonageNumber": {
+            "value": "19898484094"
+        },
+        "vonageApiKey": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "VONAGE-API-KEY"
+            }
+        },
+        "vonageApiSecret": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "VONAGE-API-SECRET"
+            }
+        },
+        "vonageApplicationId": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "VONAGE-APPLICATION-ID"
+            }
+        },
+        "pubsubConnectionString": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "PUBSUB-CONNECTION-STRING"
+            }
+        },
+        "blobStorageConnectionString": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "BLOB-STORAGE-CONNECTION-STRING"
+            }
+        },
+        "mongoDBStorageConnectionString": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "MONGODB-CONNECTION-STRING"
+            }
+        },
+        "privateKeyName": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "PRIVATE-KEY-NAME"
+            }
+        },
+        "seedsServerBaseUrl": {
+            "value": "https://seeds-teacherapp.azurewebsites.net/"
+        },
+        "seedsIvrServerBaseUrl": {
+            "value": "https://seeds-ivr.centralindia.azurecontainer.io/"
+        },
+        "seedsIvrServerWebSocketBaseUrl": {
+            "value": "wss://seeds-ivr.centralindia.azurecontainer.io/"
+        },
+        "ivrServerHostName": {
+            "value": "seeds-ivr.centralindia.azurecontainer.io"
+        },
+        "azureServiceBusConnectionString": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "AZURE-SERVICE-BUS-CONNECTION-STRING"
+            }
+        },
+        "placeUrl": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "PLACE-URL"
+            }
+        },
+        "seedsRegistryUserName": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "SEEDS-REGISTRY-USERNAME"
+            }
+        },
+        "seedsRegistryPassword": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.KeyVault/vaults/seeds-ivr"
+                },
+                "secretName": "SEEDS-REGISTRY-PASSWORD-SECRET"
+            }
+        }
+    }
+}

@@ -1,0 +1,3 @@
+To give HTTPS support for Container Group or container instance in Azure container instances, follow below resources
+https://itnext.io/automatic-https-with-azure-container-instances-aci-4c4c8b03e8c9
+https://www.antstack.com/blog/how-to-enable-tls-for-hasura-graphql-engine-in-azure-caddy/

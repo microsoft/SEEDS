@@ -1,0 +1,1 @@
+sudo az deployment group create --resource-group seeds --template-file azuredeploy.json --parameters parameters.json

@@ -1,0 +1,352 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "seeds-ivr",
+      "metadata": {
+        "description": "it contains two containers ivr and fsmExecutor"
+      }
+    },
+    "vonageNumber": {
+      "type": "securestring"
+    },
+    "vonageApiKey": {
+      "type": "securestring"
+    },
+    "vonageApiSecret": {
+      "type": "securestring"
+    },
+    "vonageApplicationId": {
+      "type": "securestring"
+    },
+    "pubsubConnectionString": {
+      "type": "securestring"
+    },
+    "blobStorageConnectionString": {
+      "type": "securestring"
+    },
+    "mongoDBStorageConnectionString": {
+      "type": "securestring"
+    },
+    "privateKeyName": {
+      "type": "securestring"
+    },
+    "seedsServerBaseUrl": {
+      "type": "string"
+    },
+    "seedsIvrServerBaseUrl": {
+      "type": "string"
+    },
+    "seedsIvrServerWebSocketBaseUrl": {
+      "type": "string"
+    },
+    "ivrServerHostName": {
+      "type": "string"
+    },
+    "azureServiceBusConnectionString": {
+      "type": "securestring"
+    },
+    "placeUrl": {
+      "type": "securestring"
+    },
+    "seedsRegistryUserName": {
+      "type": "securestring"
+    },
+    "seedsRegistryPassword": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "container1name": "ivr",
+    "container1image": "seedsregistry.azurecr.io/ivr-server:3.9",
+    "container1port": "8000",
+    "container2name": "fsm-executor",
+    "container2image": "seedsregistry.azurecr.io/fsm-executor-seeds:27.06.2023",
+    "container2port": "8082"
+  },
+  "resources": [
+    {
+      "name": "[parameters('containerGroupName')]",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2019-12-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "containers": [
+          {
+            "name": "[variables('container1name')]",
+            "properties": {
+              "environmentVariables": [
+                {
+                  "name": "VONAGE_NUMBER",
+                  "value": "[parameters('vonageNumber')]"
+                },
+                {
+                  "name": "VONAGE_API_KEY",
+                  "value": "[parameters('vonageApiKey')]"
+                },
+                {
+                  "name": "VONAGE_API_SECRET",
+                  "value": "[parameters('vonageApiSecret')]"
+                },
+                {
+                  "name": "VONAGE_APPLICATION_ID",
+                  "value": "[parameters('vonageApplicationId')]"
+                },
+                {
+                  "name": "PUBSUB_CONNECTION_STRING",
+                  "value": "[parameters('pubsubConnectionString')]"
+                },
+                {
+                  "name": "BLOB_STORAGE_CONNECTION_STRING",
+                  "value": "[parameters('blobStorageConnectionString')]"
+                },
+                {
+                  "name": "MONGODB_CONNECTION_STRING",
+                  "value": "[parameters('mongoDBStorageConnectionString')]"
+                },
+                {
+                  "name": "AZURE_PUBSUB_HUB_NAME",
+                  "value": "call_deploy"
+                },
+                {
+                  "name": "PRIVATE_KEY_NAME",
+                  "value": "[parameters('privateKeyName')]"
+                },
+                {
+                  "name": "CONFERENCE_COLLECTION_NAME",
+                  "value": "ConferenceDeploy"
+                },
+                {
+                  "name": "CONFERENCE_LOG_COLLECTION_NAME",
+                  "value": "ConferenceLogDeploy"
+                },
+                {
+                  "name": "MONO_CALL_USER_COLLECTION_NAME",
+                  "value": "MonoCallUserDeploy"
+                },
+                {
+                  "name": "MONOCALL_LOG_COLLECTION_NAME",
+                  "value": "PullModelLogDeploy"
+                },
+                {
+                  "name": "USER_SPENT_TIME_FOR_PULLMODEL_COLLECTION",
+                  "value": "userSpentTimeForPullModelDeploy"
+                },
+                {
+                  "name": "PULL_MODEL_INSIGHTS_COLLECTION",
+                  "value": "pullModelInsightsDeploy"
+                },
+                {
+                  "name": "PULL_MODEL_USER_SETTINGS_COLLECTION",
+                  "value": "pullModelUserSettingsDeploy"
+                },
+                {
+                  "name": "UNHANDLED_EXCEPTION_COLLECTION",
+                  "value": "unhandledExceptionDeploy"
+                },
+                {
+                  "name": "WARNING_COLLECTION",
+                  "value": "warningDeploy"
+                },
+                {
+                  "name": "SEEDS_SERVER_BASE_URL",
+                  "value": "[parameters('seedsServerBaseUrl')]"
+                },
+                {
+                  "name": "SEEDS_IVR_SERVER_BASE_URL",
+                  "value": "[parameters('seedsIvrServerBaseUrl')]"
+                },
+                {
+                  "name": "SEEDS_IVR_SERVER_WEBSOCKET_BASE_URL",
+                  "value": "[parameters('seedsIvrServerWebSocketBaseUrl')]"
+                },
+                {
+                  "name": "IVR_SERVER_HOST_NAME",
+                  "value": "[parameters('ivrServerHostName')]"
+                },
+                {
+                  "name": "IVR_CONTAINER_NAME",
+                  "value": "[variables('container1name')]"
+                },
+                {
+                  "name": "IVR_PORT",
+                  "value": "[variables('container1port')]"
+                },
+                {
+                  "name": "FSM_EXEC_CONTAINER_NAME",
+                  "value": "[variables('container2name')]"
+                },
+                {
+                  "name": "FSM_EXEC_PORT",
+                  "value": "[variables('container2port')]"
+                }
+              ],
+              "image": "[variables('container1image')]",
+              "resources": {
+                "requests": {
+                  "cpu": 2,
+                  "memoryInGB": 2
+                },
+                "limits": {
+                  "cpu": 3,
+                  "memoryInGB": 3
+                }
+              },
+              "ports": [
+                {
+                  "port": 8000,
+                  "protocol": "TCP"
+                }
+              ]
+            }
+          },
+          {
+            "name": "[variables('container2name')]",
+            "properties": {
+              "environmentVariables": [
+                {
+                  "name": "AZURE_SERVICE_BUS_CONNECTION_STRING",
+                  "value": "[parameters('azureServiceBusConnectionString')]"
+                },
+                {
+                  "name": "AZURE_SERVICE_BUS_PRICING_TIER",
+                  "value": "premium"
+                },
+                {
+                  "name": "AZURE_SERVICE_BUS_CLIENT_ID",
+                  "value": "fsm-exec-deployed-client-id"
+                },
+                {
+                  "name": "FSM_SUBS_NAME",
+                  "value": "fsm-executor-deployed"
+                },
+                {
+                  "name": "PLACE_URL",
+                  "value": "[parameters('placeUrl')]"
+                },
+                {
+                  "name": "PLACE_GET_LATEST_VERSION_API",
+                  "value": "getLatestVersion"
+                },
+                {
+                  "name": "PLACE_GET_FSM_API",
+                  "value": "fsmExecGetFSM"
+                },
+                {
+                  "name": "PLACE_GET_FSM_BY_ID_API",
+                  "value": "fsmExecGetFSMById"
+                },
+                {
+                  "name": "IVR_CONTAINER_NAME",
+                  "value": "[variables('container1name')]"
+                },
+                {
+                  "name": "IVR_PORT",
+                  "value": "[variables('container1port')]"
+                },
+                {
+                  "name": "FSM_EXEC_CONTAINER_NAME",
+                  "value": "[variables('container2name')]"
+                },
+                {
+                  "name": "FSM_EXEC_PORT",
+                  "value": "[variables('container2port')]"
+                }
+              ],
+              "image": "[variables('container2image')]",
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGB": "[json('1.5')]"
+                },
+                "limits": {
+                  "cpu": 2,
+                  "memoryInGB": 2
+                }
+              },
+              "ports": [
+                {
+                  "port": 8082,
+                  "protocol": "TCP"
+                }
+              ]
+            }
+          },
+          {
+            "name": "caddy-ssl-server",
+            "properties": {
+              "image": "caddy:latest",
+              "command": [
+                "caddy",
+                "reverse-proxy",
+                "--from",
+                "[parameters('ivrServerHostName')]",
+                "--to",
+                "[concat('localhost:', variables('container1port'))]"
+              ],
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": 443
+                },
+                {
+                  "protocol": "TCP",
+                  "port": 80
+                }
+              ],
+              "environmentVariables": [],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 1
+                }
+              }
+            }
+          }
+        ],
+        "imageRegistryCredentials": [
+          {
+            "password": "[parameters('seedsRegistryPassword')]",
+            "server": "seedsregistry.azurecr.io",
+            "username": "[parameters('seedsRegistryUserName')]"
+          }
+        ],
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "dnsNameLabel": "seeds-ivr",
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": 8000
+            },
+            {
+              "protocol": "TCP",
+              "port": 443
+            },
+            {
+              "protocol": "TCP",
+              "port": 80
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "containerIPv4Address": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroupName'))).ipAddress.ip]"
+    },
+    "fqdn": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerGroupName'))).ipAddress.fqdn]"
+    },
+    "baseURL": {
+      "type": "string",
+      "value": "[parameters('seedsIvrServerBaseUrl')]"
+    }
+  }
+}

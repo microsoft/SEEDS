@@ -1,0 +1,8 @@
+global.keyLearningWelcomeMessageUrl = 'experienceSpecificDialog/{language}/keyLearning/welcomeMessage/{speechRate}.mp3'
+global.keyLearningPressAnyKeyOnceMessageUrl = 'experienceSpecificDialog/{language}/keyLearning/pressAnyKeyOnce/{speechRate}.mp3'
+global.keyLearningPressAnyKeyTwiceMessageUrl = 'experienceSpecificDialog/{language}/keyLearning/pressAnyKeyTwice/{speechRate}.mp3'
+global.keyLearningGameOverMessageUrl = 'experienceSpecificDialog/{language}/keyLearning/gameOverMessage/{speechRate}.mp3'
+global.keyLearningPressedMessageUrl = 'experienceSpecificDialog/{language}/keyLearning/pressedMessage/{speechRate}.mp3'
+global.keyMessageUrl = 'keys/{language}/{key}/{speechRate}.mp3'
+global.hashMessageUrl = 'keys/{language}/%23/{speechRate}.mp3'
+global.starMessageUrl = 'keys/{language}/*/{speechRate}.mp3'

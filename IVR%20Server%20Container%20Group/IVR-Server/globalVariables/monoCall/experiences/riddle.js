@@ -1,0 +1,8 @@
+global.playingRiddleQuestionUrl = "experienceSpecificDialog/{language}/riddle/playing%20the%20Question/{speechRate}.mp3"
+global.playingRiddleAnswerUrl = "experienceSpecificDialog/{language}/riddle/playing%20the%20Answer/{speechRate}.mp3"
+global.repeatRiddleQuestionUrl = "experienceSpecificDialog/{language}/riddle/press%208%20to%20repeat%20the%20question/{speechRate}.mp3"
+global.knowTheAnswerUrl = "experienceSpecificDialog/{language}/riddle/press%200%20to%20know%20the%20Answer/{speechRate}.mp3"
+global.riddleQuestionUrl = "https://seedsblob.blob.core.windows.net/output-container/{audioId}/question/{speechRate}.wav"
+global.riddleAnswerUrl = "https://seedsblob.blob.core.windows.net/output-container/{audioId}/answer/{speechRate}.wav"
+global.takeToRiddleMainMenuUrl = "experienceSpecificDialog/{language}/riddle/taking%20you%20to%20riddle%20main%20menu/{speechRate}.mp3"
+global.goToPreviousMenuUrl = "experienceSpecificDialog/{language}/riddle/press%209%2C%20to%20go%20back%20to%20previous%20menu/{speechRate}.mp3"

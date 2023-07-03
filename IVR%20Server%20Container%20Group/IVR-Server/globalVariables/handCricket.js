@@ -1,0 +1,2 @@
+global.phoneNumberToHandCricketGameId = {}
+global.handCricketInfo = {}
