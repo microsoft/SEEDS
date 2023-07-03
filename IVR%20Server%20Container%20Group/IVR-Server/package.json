@@ -12,10 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "@azure/storage-blob": "^12.11.0",
-    "@azure/web-pubsub": "^1.0.0",
+    "@azure/web-pubsub": "^1.1.1",
     "@azure/web-pubsub-express": "^1.0.3",
     "@supercharge/queue-datastructure": "^2.1.0",
-    "@vonage/server-sdk": "^2.10.10",
+    "@vonage/server-sdk": "^2.11.3",
     "axios": "^0.27.2",
     "blob-to-buffer": "^1.2.9",
     "cors": "^2.8.5",
