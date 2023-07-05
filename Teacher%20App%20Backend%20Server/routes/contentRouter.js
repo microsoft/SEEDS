@@ -300,6 +300,63 @@ router.post("/populate-title-audios",async (req,res) => {
     return res.send("populating...")
 })
 
+async function deleteBlobFromAContainer(containerName,blobNamePrefix){
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const options = {
+      deleteSnapshots: 'include' // or 'only'
+    }
+    const blobList = containerClient.listBlobsFlat({prefix:blobNamePrefix})
+    for await (const blob of blobList){
+      await containerClient.deleteBlob(blob.name,options)
+      console.log(`Deleted blob with name = ${blob.name}`)
+    }
+  }
+
+async function deleteAudioBlobs(audioId){
+    const blobNamePrefix = audioId
+
+    var containerName = "output-container"
+    await deleteBlobFromAContainer(containerName,blobNamePrefix)
+
+    containerName = "output-original"
+    await deleteBlobFromAContainer(containerName,blobNamePrefix)
+
+    containerName = "experience-titles"
+    await deleteBlobFromAContainer(containerName,blobNamePrefix)
+}
+
+async function deleteUnnecessaryStorage(){
+    const docs = await Content.find({})
+    const containerName = "output-container"
+    const containerClient = blobServiceClient.getContainerClient(containerName)
+    for(const doc of docs){
+        var deleteDoc = false
+        var deleteBlob = false
+        if(!doc.isProcessed){
+            deleteDoc = true
+            deleteBlob = true
+        }
+        const blobs = containerClient.listBlobsFlat({prefix:doc.id})
+        const iterator = blobs.next()
+        const { done } = await iterator
+        if(done){
+            deleteDoc = true
+        }
+        if(deleteDoc){
+            await Content.deleteOne({ id: doc.id })
+            console.log(`Deleted doc with id = ${doc.id}`)
+        }
+        if(deleteBlob){
+            await deleteAudioBlobs(doc.id)
+            console.log(`Deleted blob with id = ${doc.id}`)
+        }
+    }
+}
+router.post("/delete-unnecessary-storage", async (req,res) => {
+    await deleteUnnecessaryStorage()
+    return res.send("Deleted Successfully")
+})
+
 // router.post("/change-type-from-snippets-to-snippet", async (req,res) => {
 //     await Content.updateMany({type:"Snippets"},{$set: {type: "Snippet"}})
 //     res.send("Done");
