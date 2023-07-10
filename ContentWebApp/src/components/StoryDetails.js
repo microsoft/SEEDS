@@ -1,10 +1,10 @@
 import React from "react";
 
 const StoryDetails = ({ type, story }) => {
-  var src = `https://seedsblob.blob.core.windows.net/output-original/${story.id}.mp3`;
-  var answerSrc = `https://seedsblob.blob.core.windows.net/output-original/${story.id}/answer.mp3`;
+  var src = `https://seedscontent.blob.core.windows.net/output-original/${story.id}.mp3`;
+  var answerSrc = `https://seedscontent.blob.core.windows.net/output-original/${story.id}/answer.mp3`;
   if (type == "Riddle") {
-    src = `https://seedsblob.blob.core.windows.net/output-original/${story.id}/question.mp3`;
+    src = `https://seedscontent.blob.core.windows.net/output-original/${story.id}/question.mp3`;
   }
   console.log(story);
   return (
