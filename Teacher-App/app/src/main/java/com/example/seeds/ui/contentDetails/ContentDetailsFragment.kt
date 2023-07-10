@@ -29,7 +29,7 @@ class ContentDetailsFragment : BaseFragment() {
         binding = FragmentContentDetailsBinding.inflate(inflater)
         binding.content = args.content
         binding.contentAudio.player = ExoPlayer.Builder(requireContext()).build()
-        val videoUri = Uri.parse("https://seedsblob.blob.core.windows.net/output-original/${args.content.id}.mp3")
+        val videoUri = Uri.parse("https://seedscontent.blob.core.windows.net/output-original/${args.content.id}.mp3")
         val mediaItem: MediaItem = MediaItem.fromUri(videoUri)
         binding.contentAudio.player?.setMediaItem(mediaItem)
         binding.contentAudio.player?.prepare()

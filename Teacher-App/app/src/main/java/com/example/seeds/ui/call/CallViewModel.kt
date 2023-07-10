@@ -154,7 +154,6 @@ class CallViewModel @Inject constructor(
             }
         }
 
-        Log.d("LEADERISHERE", leader)
         Log.d("CONTENTCALL", args.classroom.contents!!.map{
             content -> content.title
         }.toString())
@@ -213,7 +212,7 @@ class CallViewModel @Inject constructor(
             _audioPlaying.value = callStatus.audio.state == "play"
             Log.d("AUDIOCONTROLNETWORK", callStatus.audio.toString())
             _callState.postValue(networkCallState.sortedByDescending { it.raiseHand })
-            Log.d("MOMENTISHERE", networkCallState.toString())
+            Log.d("REFRESHED NETWORK CALL STATE", networkCallState.toString())
             _teacherCallStatus.postValue(networkCallState.find {
                 it.phoneNumber == teacherPhoneNumber
             })
