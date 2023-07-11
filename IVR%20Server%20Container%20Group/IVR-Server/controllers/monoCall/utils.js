@@ -571,27 +571,28 @@ async function handleCommonDTMF(params){
        }
    }
 
-  const tryCatchWrapper2 = f => { 
+   const tryCatchWrapper2 = f => { 
     return async function() { 
        const [req,res] = arguments 
         try {   
            return await f.apply(this, arguments)  
        } catch (error) {  
-           // console.log(JSON.stringify(error, ["message", "arguments", "type", "name"]))  
            console.log("from wrapper2")
            console.log(error)
-           const params = global.communicationApi.getRequiredParamsFromCommunicationApiBody(req)
-           const {userPhoneNumber} = params
-           const language = global.monoCallInfo[userPhoneNumber]['language']
-           const speechRate = global.speechRates[global.monoCallInfo[userPhoneNumber]['speechRateIndex'][language]]
-           const internalErrorMessageFullUrl = global.pullMenuMainUrl + global.internalErrorMessageUrl.replace('{language}',language).replace('{speechRate}',speechRate)
-          
-          res.json([getStreamAction(internalErrorMessageFullUrl,1,false)])
-
-          setTimeout(() => {
-            global.communicationApi.hangUpTheMonoCall(userPhoneNumber)
-          },10000)
-          
+           try{
+             const params = global.communicationApi.getRequiredParamsFromCommunicationApiBody(req)
+             const {userPhoneNumber} = params
+             const language = global.monoCallInfo[userPhoneNumber]['language']
+             const speechRate = global.speechRates[global.monoCallInfo[userPhoneNumber]['speechRateIndex'][language]]
+             const internalErrorMessageFullUrl = global.pullMenuMainUrl + global.internalErrorMessageUrl.replace('{language}',language).replace('{speechRate}',speechRate)
+            
+            res.json([getStreamAction(internalErrorMessageFullUrl,1,false)])
+  
+            setTimeout(() => {
+              global.communicationApi.hangUpTheMonoCall(userPhoneNumber)
+            },10000)
+           }
+           catch(error2){}
         }   
        }
    }
