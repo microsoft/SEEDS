@@ -60,7 +60,7 @@
   },
   "variables": {
     "container1name": "ivr",
-    "container1image": "seedsregistry.azurecr.io/ivr-server:3.9",
+    "container1image": "seedsregistry.azurecr.io/ivr-server:3.10",
     "container1port": "8000",
     "container2name": "fsm-executor",
     "container2image": "seedsregistry.azurecr.io/fsm-executor-seeds:27.06.2023",
