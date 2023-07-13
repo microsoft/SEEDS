@@ -2,6 +2,7 @@
 
 const { saveErrorAndSendToAndroidClient } = require("./conferenceCall");
 
+// It will catch any error occurs in HTTP req-res model regarding Conference Call
 module.exports.tryCatchWrapperForReqResModel = f => { 
      return async function() { 
         const [req,res] = arguments 
@@ -15,6 +16,7 @@ module.exports.tryCatchWrapperForReqResModel = f => {
         }
     }
 
+// It will catch any error occurs while handling Android Pubsub requests
 module.exports.tryCatchWrapperForAndroidPubSub = f => {
     return async function(req){
         try{
