@@ -4,23 +4,31 @@ const { WebPubSubServiceClient } = require("@azure/web-pubsub");
 const Conference = require("../../models/conference");
 const ConferenceLog = require("../../models/conferenceLog")
 
+// Initiating Azure WebPubsub client to send messages to android app via this pubsub later on
 const serviceClient = new WebPubSubServiceClient(
   process.env.PUBSUB_CONNECTION_STRING,
   process.env.AZURE_PUBSUB_HUB_NAME
 );
 
+
+/* 
+  It sends the refresh event to Android app everytime when server has new call state, so that 
+  android app then asks this server again to fetch the new call(conference call) state
+*/
 async function sendRefreshEvent(confId) {
   await serviceClient.sendToUser(confId, `refresh`, {
     contentType: "text/plain",
   });
 }
 
+// It sends any kind of text message to Android app but not just refresh event
 async function sendMessageToAndroidUser(confId,message){
   await serviceClient.sendToUser(confId, message, {
     contentType: "text/plain",
   });
 }
 
+// It will create the Conference Call state Document in MongoDB
 async function createConferenceObject(confId, numbers, names=[]) {
   const exists = await Conference.exists({_id: confId});
   if(!exists){
@@ -53,6 +61,7 @@ async function createConferenceObject(confId, numbers, names=[]) {
   return "success";
 }
 
+// It simply logs all the client requests like android app requests, vonage requets in MongoDB
 async function logClientRequest(confId,date,url,method,type,body){
   const exists = await ConferenceLog.exists({_id: confId});
   if(!exists){
@@ -86,6 +95,7 @@ function replaceErrors(key, value) {
   return value;
 }
 
+// It simply logs all the errors that need developer's attention, in MongoDB
 async function logError(confId,date,errorObject){
   try{
     const exists = await ConferenceLog.exists({_id: confId});
@@ -133,6 +143,7 @@ async function getAllPhoneNumbersInAConference(confId){
   }
   return phoneNumbers
 }
+
 async function endConference(confId) {
   await Conference.findById(confId).update({ isEnded: true });
   communicationApi.stopAudioStreamInConference(confId)
@@ -152,6 +163,7 @@ async function endAllConferencesInThisServer(){
   }
 }
 
+// write error to DB and push error to Android client
 async function saveErrorAndSendToAndroidClient(confId,error){
   //log error message and send error message to Android.
   console.log(error)
@@ -164,6 +176,7 @@ async function saveErrorAndSendToAndroidClient(confId,error){
 
 }
 
+// It prepares Muted or Unmuted messages and returns
 function getMutedOrUnMutedMessage(confId,userPhoneNumber,isMuted,originatorType){
   var message = ""
   var isMutedText = ""
@@ -185,6 +198,7 @@ function getMutedOrUnMutedMessage(confId,userPhoneNumber,isMuted,originatorType)
   return message
 }
 
+// It updates the call statuses like started,ringing,answered,completed for a user in conference call, in MongoDB
 async function updateCallStatus(confId, number, status) {
   await Conference.findById(confId).update(
     { "participants.phoneNumber": number },
@@ -196,7 +210,7 @@ async function updateCallStatus(confId, number, status) {
   );
 }
 
-// This function might be deleted if we move to Other Communication API
+// This function might be deleted if we move to Other Communication API because we are not sure if others also use UUIDs
 async function updateCallUUIDInConference(confId,phoneNumber,uuid){
   await Conference.findById(confId).update(
     { "participants.phoneNumber": phoneNumber },
@@ -208,6 +222,8 @@ async function updateCallUUIDInConference(confId,phoneNumber,uuid){
   );
 }
 
+// It updates the raiseHand field for a user in conference call, in MongoDB
+// And also plays a TTS message to Teacher in call
 async function updateRaiseHand(confId, number, flag) {
   await Conference.findById(confId).update(
     { "participants.phoneNumber": number },
@@ -243,6 +259,7 @@ async function updateRaiseHand(confId, number, flag) {
   }
 }
 
+// It updates the isMuted field and also updates the raiseHand to false if that user is UnMuted
 async function updateMutePropertyOfUserInConference(confId,phoneNumber,flag){
   await Conference.findById(confId).update(
     { "participants.phoneNumber": phoneNumber },
@@ -257,6 +274,7 @@ async function updateMutePropertyOfUserInConference(confId,phoneNumber,flag){
   }
 }
 
+// It is a generic function that handles all the requests which are intended to control/change the state of the conference call, irrespective of client (android app or Leader of conference)
 async function handleConferenceCallControls(confId,action,params,by='Teacher'){
         conf_obj = await Conference.findById(confId)
         if(conf_obj.isEnded){
@@ -420,6 +438,9 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
         }
       }
 
+// Not a good name. Apologies for that. Feel free to change and take care of breakages
+// It will be invoked when the user presses 0 during conference
+// it will check if that user is Muted, then only makes raiseHand field to true
 async function checkRaiseHand(confId,userPhoneNumber){
   const conference = await Conference.findById(confId);
   const participants = conference.participants;
@@ -431,6 +452,8 @@ async function checkRaiseHand(confId,userPhoneNumber){
   }
 }
 
+// It returns the user object if that user exists in conference, otherwise null
+// Again Naming here might not be good, so please feel free to change
 async function checkUserExistInConference(confId,userPhoneNumber){
   const conference = await Conference.findById(confId);
   const participants = conference.participants;
@@ -440,10 +463,12 @@ async function checkUserExistInConference(confId,userPhoneNumber){
   return participant
 }
 
+// It updates the Leader PhoneNumber field in a conference, in MongoDB
 async function updateLeader(confId,userPhoneNumber){
   await Conference.findById(confId).update({leaderPhoneNumber:userPhoneNumber})
 }
 
+// As name indicates, it will handle all the requests from Android, which came via pubsub
 async function handleUserEventFromAndroidPubsub(req){
   if (req.context.eventName === "message") {
     const confId = req.context.userId;
@@ -511,6 +536,7 @@ async function handleUserEventFromAndroidPubsub(req){
   }
 }
 
+// It removes mapping of phoneNumber To confId from Cache
 function deMapPhoneNumberToConfId(confId,phoneNumberList,afterHowManyMilliSeconds){
   setTimeout(()=>{
     for(const phoneNumber of phoneNumberList){
@@ -686,17 +712,17 @@ module.exports = {
   mapPhoneNumbersToConfId,
   getConferenceObjectById,
   createConferenceObject, 
-  updateCallStatus, // update call status for a single participant in the conference model in db.
+  updateCallStatus,
   endAllConferencesInThisServer,
   endConference,
-  sendRefreshEvent, // sending `refresh` event to Android through websocket.
-  updateMutePropertyOfUserInConference, // update mute property to true or false for a single user.
+  sendRefreshEvent,
+  updateMutePropertyOfUserInConference,
   logClientRequest,
   logError,
   handleConferenceCallControls,
-  checkUserExistInConference, // get user from conf DB
-  updateLeader, // updates the leader property in conf DB
-  handleUserEventFromAndroidPubsub, // delegate events from android app to handleConferenceCallControls
-  saveErrorAndSendToAndroidClient, // write error to DB and push error to Android client
+  checkUserExistInConference,
+  updateLeader,
+  handleUserEventFromAndroidPubsub,
+  saveErrorAndSendToAndroidClient,
   replaceErrors
 };
