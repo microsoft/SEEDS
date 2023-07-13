@@ -6,9 +6,10 @@ class VonageAPI {
         const express = require("express");
         const { tryCatchWrapperForReqResModel } = require("../controllers/Conference/utils");
         const { tryCatchWrapper1, tryCatchWrapper2 } = require("../controllers/monoCall/utils");
-        
+        // This model captures how much time a user spends on pull model on current day
         this.userSpentTimeForPullModel = require("../models/userSpentTimeForPullModel");
         this.isSlotFreeToMakeCalls = true;
+        // This Queue will store all the conference call and pull call requests
         this.queue = new Queue();
         this.vonage = new Vonage({
           apiKey: process.env.VONAGE_API_KEY,
@@ -16,6 +17,7 @@ class VonageAPI {
           applicationId: process.env.VONAGE_APPLICATION_ID,
           privateKey: privateKey,
         });
+        // Mappings from vonage call status to standard call status that a client can understand
         this.callStatusMappings = {
           "started":global.callStatuses.started,
           "ringing":global.callStatuses.ringing,
@@ -42,7 +44,7 @@ class VonageAPI {
         this.UUIDToGameID = {}
 
         // MonoCall
-        this.monoCallData = {}
+        this.monoCallData = {} // It will store all the user related settings in pull model, which are specific to vonage
         this.conversationUUIDToPhoneNumber = {}
 
         // audio configurations
@@ -189,6 +191,9 @@ class VonageAPI {
         }))
     }
 
+    // It checks if vonage is free to make calls. If yes, take request from queue and assigns it to vonage.
+    // Note: As there is a limit from vonage side that vonage can make only 3 calls per second, we are doing this thing.
+    // This function gets called recursively in every 1 sec. Go though definition to better understand exactly what is happening.
     async checkSlotAndQueue() {
         try{
         if (this.isSlotFreeToMakeCalls && this.queue.isNotEmpty()) {
@@ -277,6 +282,7 @@ class VonageAPI {
         );
     }
     
+    // It will simply queue up the conference call request
     makeConference(confId,listOfUserPhoneNumbers){
       this.queue.enqueue({
         callType:"conference",
@@ -297,6 +303,7 @@ class VonageAPI {
       .catch(console.log)
     }
 
+    // It will be invoked once the time limit for a user on pull model on that day, is over
     playTimeOverMessageAndCutTheCall(userPhoneNumber){
       const uuid = this.phoneNumberToUUID[userPhoneNumber]
       const message = "Your Time For Today is Over. So we are going to End the Call. Please try this on tomorrow."
@@ -309,7 +316,7 @@ class VonageAPI {
       }, timeToWaitToEndTheCall)
     }
 
-    // it makes a call to a phone Number with specific NCCO
+    // it makes a call to a phone Number with specific NCCO (Nexmo Call control object. It is vonage's version of CCO)
     makeVonageCall(phoneNumber,eventUrl,call_back_func,ncco){
         this.vonage.calls.create(
           {
@@ -329,6 +336,7 @@ class VonageAPI {
         )
     }
 
+    // As name indicates, it creates the NCCO to connect to a websocket endpoint
     createWebSocketNCCO(headers,socketEndpoint,eventEndpoint){
         const obj = {
           action: "connect",
@@ -347,7 +355,7 @@ class VonageAPI {
         return obj
     }
     
-    // this is to mute,unmute,hangup.
+    // this is to mute,unmute,hangup using UUID of a call
     updateCallLeg(uuid, action) {
         // console.log(`${uuid} ${action}.`);
         return new Promise((resolve, reject) => {
@@ -442,6 +450,7 @@ class VonageAPI {
         }
       }
 
+      // It makes calls to students. Once calls are over, it releases the lock of vonage, it means vonage is free to take other requests from then
       async makeCallsToStudents(confId, numbers, startIndex, n) {
         const { 
           getConferenceObjectById, 
@@ -541,6 +550,8 @@ class VonageAPI {
       res.send("got it.")
     }
     
+    // This name might be confusing. Apologies for that.
+    // But the intention of this function is to save any required data in DB and then removes from Cache (Local Memory) Upon Ending the Conference
     async SaveAndDeleteConferenceInfo(confId) {
       const { 
         deleteTeacherNameFromConference, 
@@ -585,7 +596,8 @@ class VonageAPI {
       }
     }
 
-    // if active user count is 0, websocket got disconnected, set EndState of Conference to true in DB.
+    // Not a good name for this function. Apologies for that. Feel free to change it but take care of breakages that will occur
+    // if active user count is 0, websocket will get disconnected, set EndState of Conference to true in DB.
     async checkConferenceExistency(confId) {
       const { updateConferenceCallAttributes, saveErrorAndSendToAndroidClient } = require("../controllers/Conference/conferenceCall");
       try{
@@ -639,7 +651,7 @@ class VonageAPI {
       }
     }
 
-    // handle conference call events from vonage for a single user.
+    // handle conference call events from vonage.
     async handleConferenceCallEvents(req){
       const { 
         logClientRequest, 
@@ -796,12 +808,14 @@ class VonageAPI {
     await this.disConnectWebsocket(confId)
   }
 
+  // it plays tts message in call using call UUID
   playTTSMessage(uuid,message,ttsLang='en-IN',style=4,speechRate='medium',loop=1){
     this.vonage.calls.talk.start(uuid, { text: `<speak> <prosody rate='${speechRate}'> ${message}</prosody> </speak>`, language:ttsLang,style:style,loop:loop }, (err, res) => {
       if(err) { console.error(err); }
     });
   }
 
+  // it stops ongoing tts message in call using call UUID
   stopTTSMessage(uuid){
     this.vonage.calls.talk.stop(uuid,(err,res) => {
       if(err){
@@ -812,18 +826,21 @@ class VonageAPI {
     })
   }
 
+  // it plays audio file in call using UUID
   playAudioMessage(uuid,streamUrl,loop=1,level=1){
     this.vonage.calls.stream.start(uuid,{stream_url:streamUrl,loop:loop,level:level},(err,resp) => {
       if(err) console.error(err)
     })
   }
 
+  // it stops ongoing audio message in call using UUID
   stopAudioMessage(uuid){
     this.vonage.calls.stream.stop(uuid,(err,resp) => {
       if(err) console.error(err)
     })
   }
 
+  // Mute Everybody except Originator/Initiator
   async muteAll(confId,by='Teacher'){
     const { 
       getConferenceObjectById, 
@@ -864,6 +881,7 @@ class VonageAPI {
     }
   }
 
+  // Unmute Everybody including Originator/Initiator
   async unMuteAll(confId,by='Teacher'){
     const { 
       getConferenceObjectById, 
@@ -889,8 +907,9 @@ class VonageAPI {
     }
   }
 
+  // Gets Frames of an audio Chunk (it is 25-sec audio chunk currently) and populate it in our cache to stream it further
   async loadChunkAndMapToFrames(conversationId,blobName,currentChunkNumber,contentLength){
-    // conversationId can be confId or userPhoneNumber as these are unique to a conversation
+    // conversationId can be confId(In Conference call) or userPhoneNumber(in Pull Model) as these are unique to a conversation
     const { getChunkAsFrames } = require("../audioManipulation")
     this.audioData[conversationId] = {}
     if(currentChunkNumber > 0){
@@ -904,6 +923,7 @@ class VonageAPI {
     }
   }
 
+  // It streams audio in conference by sending audio bytes to vonage using websocket connection
   async streamAudioInConference(confId,audioId,gap) {
     try{
       var currentChunkNumber = this.confIdToAudioControls[confId].audioIdToState[audioId]["chunkNumber"]
@@ -987,6 +1007,8 @@ class VonageAPI {
     };
   }
 
+  // Not a good name for this function. Apologies for that.
+  // It does some pre-processing before calling streaming function. Feel free to change the name and take care of breakages
   async playAudioStreamInConference(confId,audioMetaData){
     const { blobExists } = require("../audioManipulation")
     const { updateAudioIdInConference, updateAudioStateInConference, sendRefreshEvent, logError } = require("../controllers/Conference/conferenceCall")
@@ -1024,6 +1046,7 @@ class VonageAPI {
       }
     }        
   }
+
   async pauseAudioStreamInConference(confId,audioMetaData){
     const { updateAudioStateInConference, sendRefreshEvent } = require("../controllers/Conference/conferenceCall")
     if(this.confIdToAudioControls.hasOwnProperty(confId)){
@@ -1033,6 +1056,7 @@ class VonageAPI {
       // await sendRefreshEvent(confId)
     }
   }
+
   async resumeAudioStreamInConference(confId,audioMetaData){
     if(this.confIdToAudioControls.hasOwnProperty(confId)){
       const { blobExists } = require("../audioManipulation")
@@ -1069,6 +1093,7 @@ class VonageAPI {
       }
     }
   }
+
   async forwardAudioStreamInConference(confId,audioMetaData){
     const secondsToForward = 10
     const numberOfFramesToMove = secondsToForward * this.framesPerSecond
@@ -1094,6 +1119,7 @@ class VonageAPI {
       this.streamAudioInConference(confId,audioId,18);
     }
   }
+  
   async rewindAudioStreamInConference(confId,audioMetaData){
     const secondsToBackward = 10
     const numberOfFramesToMove = secondsToBackward * this.framesPerSecond
@@ -1197,6 +1223,7 @@ class VonageAPI {
       }
     }
   }
+
   async muteUserInConference(confId,userPhoneNumber,by){
     const { 
       getConferenceObjectById, 
@@ -1243,7 +1270,7 @@ class VonageAPI {
     this.playTTSMessage(uuid,message)
   }
 
-  // enqueues user to existed conference.
+  // It will be invoked when the teacher wants to add a participant in the middle of an ongoing conference
   addParticipantToConference(confId,userPhoneNumber){
     this.queue.enqueue({
       callType: "addToConference",
@@ -1251,6 +1278,7 @@ class VonageAPI {
       confId:confId
     });
   }
+
   async removeParticipantFromConference(confId,userPhoneNumber){
     const { 
       getConferenceObjectById, 
@@ -1275,6 +1303,10 @@ class VonageAPI {
     },Math.floor(message.length/10*1000))
   }
 
+  // It handles all the DTMF inputs from user.
+  // vonage sends all the key presses by users during a conversation(can be conference or pullModel as each call itself is a conversation) to this function
+  // currently using it for Conference call only because for pull model we have a separate way of collecting DTMF inputs from user (using request-response cycle)
+  // It will be helpful to know what key pressed and by whom also.
   async handleDTMFFromConversation(req){
     const { 
       checkRaiseHand,
@@ -1349,6 +1381,8 @@ class VonageAPI {
     }
   }
   
+  // It makes call to a user to connect to ongoing conference
+  // Note: this request was enqueued by *addParticipantToConference* Method above
   async makeCallToUserInConference(confId,phoneNumber){
     const { 
       getConferenceObjectById, 
@@ -1419,6 +1453,7 @@ class VonageAPI {
     }
   }
 
+  // It handles the websocket connection request came from vonage client
   handleWebSocketConnection(pathname,request,socket,head){
     if (pathname === "/vonage/websocket_conference") {
       const vonageConferenceWebSocket = this.createWebSocketForConference()
@@ -1487,6 +1522,7 @@ class VonageAPI {
     return wss;
   }
 
+  // As vonage treats each websocket as a participant, it sends all the events of the websocket, like started,ringing,answered etc.
   async handleVonageClientWebSocketEventsForConference(req,res){
     const { logClientRequest, saveErrorAndSendToAndroidClient, sendMessageToAndroidUser } = require("../controllers/Conference/conferenceCall");
     var confId = undefined
@@ -1786,6 +1822,7 @@ class VonageAPI {
     delete this.handCricketData[gameId]
   }
 
+  // It enqueues the Pull Call request
   createMonoCall(userPhoneNumber){
     this.queue.enqueue({
       callType: "mono",
@@ -1884,6 +1921,7 @@ class VonageAPI {
     this.makeVonageCall(number,eventUrl,call_back_func,ncco)
   }
 
+  // It handles all the Pull Call Events from Vonage
   async handleMonoCallEvents(req){
     const { setTimerToSaveUserTimeInDB } = require("../controllers/monoCall/monoCall")
     const { setTimerForInactivityOfUserInPullModel, stopTimerForInactivityOfUserInPullModel } = require("../controllers/monoCall/utils")
@@ -1991,6 +2029,7 @@ class VonageAPI {
     }
   }
 
+  // It takes the call event body and extracts only required params for further processing
   getRequiredParamsFromVonageBodyForMonoCall(body){
     const params = {}
     const uuid = body.uuid
@@ -2156,6 +2195,7 @@ class VonageAPI {
     });
     return wss;
   }
+
   handleVonageClientWebSocketEventsForMonoCall(req,res){
     try{
       const body = req.body;
@@ -2198,6 +2238,7 @@ class VonageAPI {
     res.end("ok");
   }
 
+  // Currently we are not using it. Instead directly taking user to content List Menu (to Method named *handleContentListMenuOfAudioExperienceInMonoCall*)
   async handleMainMenuOfAudioExperienceInMonoCall(req,res){
     const { handleMainMenuOfAudioExperience } = require("../controllers/monoCall/monoCall")
     const { getCurrentExperience } = require("../controllers/monoCall/utils")
@@ -2241,6 +2282,7 @@ class VonageAPI {
     this.monoCallData[userPhoneNumber]['contentLength'] = contentLength
   }
 
+  // It will populate audio bytes in cache to stream it further
   async initializeAudioContentToPlayInMonoCall(userPhoneNumber,audioId){
     const { getCurrentSpeechRateIndex } = require("../controllers/monoCall/utils")
     const currentSpeechRateIndex = getCurrentSpeechRateIndex(userPhoneNumber)
@@ -2252,6 +2294,7 @@ class VonageAPI {
     await this.loadChunkAndMapToFrames(userPhoneNumber,blobName,chunkNumber,contentLength)
   }
 
+  // it will be triggered when the audio stream is over in pull call, to take further actions
   async handleAudioStreamFinishedInMonoCall(userPhoneNumber){
     const { handleAudioStreamFinished } = require("../controllers/monoCall/monoCall")
     const { setTimerForInactivityOfUserInPullModel } = require("../controllers/monoCall/utils")
