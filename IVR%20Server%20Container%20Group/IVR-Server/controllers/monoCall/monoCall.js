@@ -15,6 +15,7 @@ const monoCallLog = require("../../models/monoCallLog")
 const pullModelInsights = require("../../models/pullModelInsights")
 const pullModelUserSettings = require("../../models/pullModelUserSettings")
 
+// It prepares the content for language menu
 function prepareContentForLanguageMenu(userPhoneNumber){
   global.monoCallInfo[userPhoneNumber]['currentMenuName'] = 'language'
   const endpoint = global.communicationApi.getEndPointForLanguageInput()
@@ -51,6 +52,7 @@ function prepareContentForLanguageMenu(userPhoneNumber){
   return actions
 }
 
+// It handles the input from user during Language Menu
 async function handleLanguageInput(params){
   const {userPhoneNumber,digits} = params
   //handling if the abrupts the call.
@@ -149,9 +151,10 @@ async function handleLanguageInput(params){
   }
 }
 
+// It handles the input from user during Themes Menu
 async function handleThemeTypeInput(params){
     const {userPhoneNumber,digits } = params
-    //handling if the abrupts the call.
+    //handling if the user abrupts the call.
     if(!isValidRequest(userPhoneNumber)){
       return []
     }
@@ -243,6 +246,7 @@ async function handleThemeTypeInput(params){
     }
 }
 
+// It handles the input from user during Experiences(Story/Poem/Song) Menu
 async function handleExperienceTypeInput(params){
   const {userPhoneNumber,digits } = params
   //handling if the abrupts the call.
@@ -359,6 +363,7 @@ async function handleContentListMenuOfAudioExperience(params){
   }
 }
 
+// It will be triggered when the audio streaming is finished in Pull Call, to take further actions
 async function handleAudioStreamFinished(userPhoneNumber){
   const obj = getCurrentAudioExperienceObjectInMonoCall(userPhoneNumber)
   if(obj){
@@ -470,6 +475,9 @@ async function handleRiddleContentPlaying(params){
     return []
   }
 }
+
+// After every global.timeInMillisecondsToUpdateUserTimeInDB milliseconds, it will update the DB with user spent time in pull call
+// And after updating, it will re-trigger the same function to do the same
 async function setTimerToSaveUserTimeInDB(userPhoneNumber){
   if(global.monoCallInfo.hasOwnProperty(userPhoneNumber)){
     const timeToWait = global.timeInMillisecondsToUpdateUserTimeInDB
@@ -488,6 +496,7 @@ async function setTimerToSaveUserTimeInDB(userPhoneNumber){
   }
 }
 
+// It parses the document to find all the required insights like callDuration, audioContentDurations for a single session/call for a user(based on phoneNumber)
 function parseDocument(doc){
   const res = {"callDuration":0, "audioContentDurations":{}}
   const interactionsLength = doc.interactions.length;
@@ -549,6 +558,7 @@ function parseDocument(doc){
   return res
 }
 
+// Prepare the Doc accordingly to save in MongoDB based on pullModelInsights Model
 async function preparePullModelInsightsDoc(doc,dateToSaveInsightsFor){
   const res = {}
   res["date"] = dateToSaveInsightsFor
@@ -563,6 +573,7 @@ async function preparePullModelInsightsDoc(doc,dateToSaveInsightsFor){
   return res;
 }
 
+// It will prepare the insights for all the pullmodel sessions for all dates specified in the List
 async function GetPullModelInsights(req,res){
   const dates = req.body.dates
   const results = {}
