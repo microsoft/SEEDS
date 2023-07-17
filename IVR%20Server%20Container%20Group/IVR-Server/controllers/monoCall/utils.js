@@ -4,6 +4,8 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require("../../nccoA
 const monoCallLog = require("../../models/monoCallLog")
 const pullModelUserSettings = require("../../models/pullModelUserSettings")
 
+// It will create a document to use further to store all the pullCall Logs
+// And saving that document's id in a global variable to refer it for later use
 async function createMonoCallLog(userPhoneNumber){
   const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
   try{
@@ -19,10 +21,9 @@ async function createMonoCallLog(userPhoneNumber){
   }
 }
 
+// It will initiate a MonoCall Object for a user in a global variable called *global.monoCallInfo*
 function createMonoCallObjectForUser(userPhoneNumber){
   global.monoCallInfo[userPhoneNumber] = {speechRateIndex:{},language:global.initialLanguage}
-  // console.log(`number = ${userPhoneNumber}`)
-  // console.log(global.monoCallInfo[userPhoneNumber])
 }
 
 function deleteMonoCallObject(userPhoneNumber){
@@ -37,6 +38,7 @@ function getCurrentAudioExperienceObjectInMonoCall(userPhoneNumber){
   }
 }
 
+// It will be triggered everytime, to store KeyPress Event or any other necessary event in Pull Model
 async function storeLog(userPhoneNumber,pressedKey,means){
   const collectionId = global.phoneNumberToLogCollectionId[userPhoneNumber]
   const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
@@ -55,6 +57,7 @@ async function storeLog(userPhoneNumber,pressedKey,means){
   }
 }
 
+// It will simply populate the field *endDate* when the call is over
 async function setCallEndedDateInMonoCallLog(userPhoneNumber){
     const collectionId = global.phoneNumberToLogCollectionId[userPhoneNumber]
     const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
@@ -66,6 +69,7 @@ async function setCallEndedDateInMonoCallLog(userPhoneNumber){
     delete global.phoneNumberToLogCollectionId[userPhoneNumber]
 }
 
+// It will simply slices out 4 items max from current position in the list
 function getTheNext4Items(currPos,items){
     var nextItemExist = false
     var prevItemExist = false
@@ -79,6 +83,7 @@ function getTheNext4Items(currPos,items){
     return [currentSectionOfItems,prevItemExist,nextItemExist]
   }
   
+  // It will map the key to item like 1 to 1st item, 2 to 2nd item etc.
   function mapTheKeys(keys){
     const length = keys.length
     const mappings = {}
@@ -88,6 +93,7 @@ function getTheNext4Items(currPos,items){
     return mappings
   }
   
+  // It will prepare the Audio Message Actions for all items in the list(audioUrls), to be played in Call as Menu
   function prepareMappingMessageActions(audioUrls,language,speechRate){
     const messageActions = []
     const length = audioUrls.length
@@ -99,6 +105,7 @@ function getTheNext4Items(currPos,items){
     return messageActions
   }
 
+  // This the main function which prepares all the audio messages required to be played as Menu in Call, upon user selecting the Next4/Prev4 items
 function prepareNext4MenuContent(obj,items,itemTitleToAudioUrl,exp){
     const language = obj.language
     const speechRate = global.speechRates[obj['speechRateIndex'][language]]
@@ -138,7 +145,7 @@ function prepareNext4MenuContent(obj,items,itemTitleToAudioUrl,exp){
 
   }
 
-  // here isValidRequest? means is that call active or not(ended)
+  // here isValidRequest? means is that call still alive or not(ended)
   function isValidRequest(userPhoneNumber){
     if(!userPhoneNumber || !global.monoCallInfo.hasOwnProperty(userPhoneNumber)){
         return false
@@ -149,9 +156,10 @@ function prepareNext4MenuContent(obj,items,itemTitleToAudioUrl,exp){
   }
 
   /* 
-  this function handles the common DTMF input like 8,9,"",invalidDigit Entered.
+  this function checks if the given input is Common DTMF or not
+  common DTMF inputs are  8,9,"",invalidDigit Entered.
   8 to repeat, 9 to go to previous menu, remaining are invalid Digits
-  Because these are common in most of the menus, i called it as common DTMF and handling it separetly to reduce redundancy
+  Because actions to these keys are same across all the menus, i called it as common DTMF and handling it separetly to reduce redundancy
   */
   function checkCommonDTMF(params){
     const {
@@ -175,6 +183,7 @@ function prepareNext4MenuContent(obj,items,itemTitleToAudioUrl,exp){
     }
   }
 
+//this function handles the common DTMF input like 8,9,"",invalidDigit Entered. It prepares the Action Menus accordingly
 async function handleCommonDTMF(params){
   const {
     validDigits,
@@ -216,6 +225,11 @@ async function handleCommonDTMF(params){
   return actions
 }
 
+/*
+This is a Base Class for all the story kind of experiences like story/poem/song/Snippet.
+Apologies for the Bad Naming. Please feel free to change it.
+All the experiences mentioned above will inherit this base class.
+*/
   class AudioExperience{
     constructor(number,experienceName,lang){
       this.userPhoneNumber = number
@@ -265,8 +279,9 @@ async function handleCommonDTMF(params){
 
     // }
 
+    
+    // It will inititate the Experience by preparing the Main Menu of the corresponding experience and returning to caller
     async initiate(params){
-        // return this.prepareMainMenu()
         const {userPhoneNumber,digits} = params
         const currentUserObj = global.monoCallInfo[userPhoneNumber]
 
@@ -279,12 +294,6 @@ async function handleCommonDTMF(params){
         await storeLog(userPhoneNumber,digits,`Chosen ${experience} Content List`)
 
         const expName = global.IVRExperienceNameToSEEDSServerExperienceName[experience]
-
-        const payload = {
-          language,
-          theme,
-          expName
-        }
 
         const resp = await axios.get(global.contentUrl+`?language=${language}&theme=${theme}&expName=${expName}`,{headers:{ authToken:'postman'}})
         const contents = resp.data
@@ -381,6 +390,8 @@ async function handleCommonDTMF(params){
     //   }
     // }
 
+
+    // It will handle user input to the content List Menu of that experience like the menu which list out all the audio titles
     async handleContentList(params){
       const {userPhoneNumber,digits} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -475,6 +486,8 @@ async function handleCommonDTMF(params){
       }
     }
 
+    // It will be triggered when the user opts to go back from audio streaming section
+    // And prepares the actions for previous menu
     async handleGoingBackToPreviousMenuFromStreaming(params){
       const { userPhoneNumber,digits } = params
       const experience = this.experienceName
@@ -499,6 +512,8 @@ async function handleCommonDTMF(params){
       return actions
     }
 
+    // It will be triggered when the audio streaming is over
+    // And it does all the required processing before sending *audioFinishedMessage* back to caller
     async handleStreamFinished(userPhoneNumber){
       this.setAudioState("finished")
       const title = this.audioTitle
@@ -514,6 +529,7 @@ async function handleCommonDTMF(params){
     }
   }
 
+  // It makes calls to FSM Executor
   async function callFSM(endPoint,clientEp,name,contextId,type,fsmType='onDemand'){
     try{
       console.log(`endPoint = ${endPoint}`)
@@ -541,6 +557,7 @@ async function handleCommonDTMF(params){
     }
   }
 
+  // It will be helpful to publish new experiences in PLACE Server
   async function publishFSM(id,fsmType,type){
     try{
       console.log(`Id = ${id}, fsmType = ${fsmType}, type = ${type}`)
@@ -558,6 +575,8 @@ async function handleCommonDTMF(params){
     }
   }
 
+  // it is for simple HTTP req-res model (Vonage's (Communication API) interactions are excluded as we are handling these interactions separately using an other tryCatchWrapper) in Pull Model
+  // If any error occurs anywhere in the code which is wrapped by this function, then it will simply return error message with 500 code
   const tryCatchWrapper1 = f => { 
     return async function() { 
        const [req,res] = arguments 
@@ -571,7 +590,8 @@ async function handleCommonDTMF(params){
        }
    }
 
-   const tryCatchWrapper2 = f => { 
+  // it is an error handling wrapper for all the interactions with Communication API (Vonage in this case) in Pull Model
+  const tryCatchWrapper2 = f => { 
     return async function() { 
        const [req,res] = arguments 
         try {   
@@ -597,6 +617,8 @@ async function handleCommonDTMF(params){
        }
    }
 
+   // It will handle all the events from FSM Executor
+   // Sends the required params to caller, like keyToEventMappings, eventActions. These params will be useful from caller side further
    function handleEventsFromFSM(events,language='kannada',speechRate){
     const length = events.length
     const data = {
@@ -709,6 +731,7 @@ function removeFSMIdToPhoneNumberMappingForUser(fsmId){
   }
 }
 
+// It will be triggered when the call is ended
 async function handleCallEndedEvent(userPhoneNumber){
   if(getCurrentExperience(userPhoneNumber) === "quiz"){
     const quizObj = getQuizObject(userPhoneNumber)
@@ -758,6 +781,7 @@ async function updateUserSettingsDocInDB(phoneNumber,settings){
   )
 }
 
+// It will start the timer to end the call in case if the user is inactive(not pressing any keys) for a certain period(look at *inactiveTimeLimitForUserInPullModel* for exact time period)
 function setTimerForInactivityOfUserInPullModel(userPhoneNumber){
   const currentUserObj = global.monoCallInfo[userPhoneNumber]
   if(currentUserObj){
@@ -770,6 +794,7 @@ function setTimerForInactivityOfUserInPullModel(userPhoneNumber){
   }
 }
 
+// It will stop the timer in case if the user interacted by pressing any key
 function stopTimerForInactivityOfUserInPullModel(userPhoneNumber){
   console.log("stopping the timer")
   const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -778,6 +803,7 @@ function stopTimerForInactivityOfUserInPullModel(userPhoneNumber){
   }
 }
 
+// It will be triggered when this server gets crashed by unexpected situations
 async function endAllPullModelCallsInThisServer(){
   for(const userPhoneNumber of Object.keys(global.monoCallInfo)){
     try{
