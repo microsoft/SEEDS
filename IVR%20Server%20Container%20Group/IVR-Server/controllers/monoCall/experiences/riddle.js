@@ -15,6 +15,7 @@ module.exports = class Riddle{
         this.audioTitleToId = {}
     }
 
+    // It prepares the Main Menu for Riddle Experience
     async initiate(params){
         const {userPhoneNumber,digits} = params
         const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -28,12 +29,6 @@ module.exports = class Riddle{
         await storeLog(userPhoneNumber,digits,`Chosen ${experience} Content List`)
 
         const expName = global.IVRExperienceNameToSEEDSServerExperienceName[experience]
-
-        const payload = {
-          language,
-          theme,
-          expName
-        }
 
         const resp = await axios.get(global.contentUrl+`?language=${language}&theme=${theme}&expName=${expName}`,{headers:{ authToken:'postman'}})
         const contents = resp.data
@@ -64,6 +59,8 @@ module.exports = class Riddle{
         return actions
     }
 
+    // It will be triggered when the user selects a particular riddle title
+    // And prepares the follow-up menu like playing riddle question, asking to guess about answer etc.
     async handleContentListMenu(params){
         const {userPhoneNumber,digits} = params
         const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -134,6 +131,7 @@ module.exports = class Riddle{
         }
     }
 
+    // It will be triggered after playing the Riddle Question and when user presses any key like 8 to repeat same question, 0 to reveal answer etc.
     async handleContentPlaying(params){
         const {userPhoneNumber,digits} = params
         const currentUserObj = global.monoCallInfo[userPhoneNumber]
