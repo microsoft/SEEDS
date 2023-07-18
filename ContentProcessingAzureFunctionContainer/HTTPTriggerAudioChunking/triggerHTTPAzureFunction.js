@@ -45,4 +45,6 @@ async function populateAllMessagesForPullModel(){
 }
 
 // Important Note!!! : For language dialog, you have to populate audio only for that language but not all
+// And also you can use this function to populate new Pull Model Audio Menus later, just modify the json Data(populated in*pullModelDialogData* variable). Just comment the data you don't want audio for and uncomment the data you want the audio for, in json file
+// After modifying json data and run this function to populate audio menus in Blob storage.
 populateAllMessagesForPullModel()
