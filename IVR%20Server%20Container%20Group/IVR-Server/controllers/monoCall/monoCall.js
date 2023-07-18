@@ -45,7 +45,7 @@ function prepareContentForLanguageMenu(userPhoneNumber){
       DTMFInputAction(endpoint)
       // {
       //     action: "record",
-      //     eventUrl:[remoteUrl + "mono_call/recording"]
+      //     eventUrl:[global.remoteUrl + "mono_call/recording"]
       // },
     ];
   

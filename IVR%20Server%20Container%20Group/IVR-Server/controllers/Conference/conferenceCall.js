@@ -146,8 +146,8 @@ async function getAllPhoneNumbersInAConference(confId){
 
 async function endConference(confId) {
   await Conference.findById(confId).update({ isEnded: true });
-  communicationApi.stopAudioStreamInConference(confId)
-  await communicationApi.hangUpAllInConference(confId)
+  global.communicationApi.stopAudioStreamInConference(confId)
+  await global.communicationApi.hangUpAllInConference(confId)
   const phoneNumbers = await getAllPhoneNumbersInAConference(confId)
   deMapPhoneNumberToConfId(confId,phoneNumbers,global.milliSecondsToWaitToReleaseTheLockOfAPhoneNumberFromAConference)
 }
@@ -284,69 +284,69 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
           await endConference(confId);
         }
         else if(action === "muteAll"){
-          await communicationApi.muteAll(confId,by)
+          await global.communicationApi.muteAll(confId,by)
           await serviceClient.sendToUser(confId, `muteAllDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "unMuteAll"){
-          await communicationApi.unMuteAll(confId,by)
+          await global.communicationApi.unMuteAll(confId,by)
           await serviceClient.sendToUser(confId, `unMuteAllDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "forwardStream"){
-          await communicationApi.forwardAudioStreamInConference(confId,{})
+          await global.communicationApi.forwardAudioStreamInConference(confId,{})
           await serviceClient.sendToUser(confId, `forwardStreamDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "backwardStream"){
-          await communicationApi.rewindAudioStreamInConference(confId,{})
+          await global.communicationApi.rewindAudioStreamInConference(confId,{})
           await serviceClient.sendToUser(confId, `backwardStreamDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "incrementSpeechRate"){
-          await communicationApi.increasePlaybackRateOfAudioStreamInConference(confId,{})
+          await global.communicationApi.increasePlaybackRateOfAudioStreamInConference(confId,{})
           await serviceClient.sendToUser(confId, `incrementSpeechRateDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "decrementSpeechRate"){
-          await communicationApi.decreasePlaybackRateOfAudioStreamInConference(confId,{})
+          await global.communicationApi.decreasePlaybackRateOfAudioStreamInConference(confId,{})
           await serviceClient.sendToUser(confId, `decrementSpeechRateDone`, {
             contentType: "text/plain",
           });
         } 
         else if (action === "play") {
           const audioMetaData = {audioId:params.audioId}
-          await communicationApi.playAudioStreamInConference(confId,audioMetaData)
+          await global.communicationApi.playAudioStreamInConference(confId,audioMetaData)
           await serviceClient.sendToUser(confId, `playDone`, {
             contentType: "text/plain",
           });
         } 
         else if (action === "pause") {
-          await communicationApi.pauseAudioStreamInConference(confId,{})
+          await global.communicationApi.pauseAudioStreamInConference(confId,{})
           await serviceClient.sendToUser(confId, `pauseDone`, {
             contentType: "text/plain",
           });
         } 
         else if (action === "resume") {
           const audioMetaData = {audioId:params.audioId}
-          await communicationApi.resumeAudioStreamInConference(confId,audioMetaData)
+          await global.communicationApi.resumeAudioStreamInConference(confId,audioMetaData)
           await serviceClient.sendToUser(confId, `resumeDone`, {
             contentType: "text/plain",
           });
         }
         else if(action === "mute"){
-          await communicationApi.muteUserInConference(confId,params.phoneNumber,by)
+          await global.communicationApi.muteUserInConference(confId,params.phoneNumber,by)
           await serviceClient.sendToUser(confId, `muteDone:${params.phoneNumber}`, {
             contentType: "text/plain",
           });
         }
         else if(action === "unmute"){
-          await communicationApi.unMuteUserInConference(confId,params.phoneNumber,by)
+          await global.communicationApi.unMuteUserInConference(confId,params.phoneNumber,by)
           await serviceClient.sendToUser(confId, `unmuteDone:${params.phoneNumber}`, {
             contentType: "text/plain",
           });
@@ -366,7 +366,7 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
                     await sendRefreshEvent(confId)
                     const messageToParticipant = `${user.name} is assigned as a leader.`
                     const messageToLeader = "you are assigned as a leader"
-                    await communicationApi.sendMessageToEverybodyInConference(confId,messageToParticipant,user.phoneNumber,messageToLeader)
+                    await global.communicationApi.sendMessageToEverybodyInConference(confId,messageToParticipant,user.phoneNumber,messageToLeader)
                 }
                 else{
                   setIntendedLeaderPhoneNumberInConference(confId,phoneNumber)
@@ -388,7 +388,7 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
                 await sendRefreshEvent(confId)
                 const messageToParticipant = `${nameOfLeader} is unassigned from leadership.`
                 const messageToLeader = "you are unassigned from leadership"
-                await communicationApi.sendMessageToEverybodyInConference(confId,messageToParticipant,phoneNumber,messageToLeader)
+                await global.communicationApi.sendMessageToEverybodyInConference(confId,messageToParticipant,phoneNumber,messageToLeader)
               }
               else if(global.confIdToIntendedLeaderPhoneNumber.hasOwnProperty(confId)){
                 deleteIntendedLeaderPhoneNumberFromConference(confId)
@@ -429,12 +429,12 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
                   $push: { participants: newParticipant },
                 });
               }
-              communicationApi.addParticipantToConference(confId,phoneNumber)
+              global.communicationApi.addParticipantToConference(confId,phoneNumber)
             }
         } 
         else if (action === "remove") {
           const phoneNumber = params.phoneNumber;
-          await communicationApi.removeParticipantFromConference(confId,phoneNumber)
+          await global.communicationApi.removeParticipantFromConference(confId,phoneNumber)
         }
       }
 

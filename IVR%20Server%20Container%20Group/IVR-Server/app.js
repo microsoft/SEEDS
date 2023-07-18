@@ -25,7 +25,7 @@ app.get("/healthCheck",(req,res) => {
 
 app.use("/azurepubsubhook", handler.getMiddleware());
 
-app.use("/vonage",morgan("tiny"),express.json(),communicationApi.router)
+app.use("/vonage",morgan("tiny"),express.json(),global.communicationApi.router)
 
 app.use(
   "/conference_call",

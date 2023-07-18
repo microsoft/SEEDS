@@ -342,7 +342,7 @@ class VonageAPI {
         action: "connect",
         from: "NexmoTest",
         eventType: "synchronous",
-        eventUrl: [remoteUrl + eventEndpoint],
+        eventUrl: [global.remoteUrl + eventEndpoint],
         endpoint: [
           {
             type: "websocket",
@@ -392,11 +392,11 @@ class VonageAPI {
             name: confId,
             // record:true,
             eventMethod:"POST",
-            // eventUrl:[remoteUrl + "vonage/conference_call/recording"]
+            // eventUrl:[global.remoteUrl + "vonage/conference_call/recording"]
           },
         ];
     
-        const eventUrl = [remoteUrl + "vonage/conference_call/events"]
+        const eventUrl = [global.remoteUrl + "vonage/conference_call/events"]
     
         const call_back_func = async (err, resp) => {
           var conference = undefined
@@ -464,7 +464,7 @@ class VonageAPI {
       if (!conference.isEnded) {
         var ct = 0;
         var current_length = Math.min(n - startIndex, 3);
-        const eventUrl = [remoteUrl + "vonage/conference_call/events"]
+        const eventUrl = [global.remoteUrl + "vonage/conference_call/events"]
         const ncco = [
           {
             action:"talk",
@@ -477,7 +477,7 @@ class VonageAPI {
             name: confId,
             // record:true,
             eventMethod:"POST",
-            // eventUrl:[remoteUrl + "vonage/conference_call/recording"]
+            // eventUrl:[global.remoteUrl + "vonage/conference_call/recording"]
           },
         ];
     
@@ -1176,7 +1176,7 @@ async increasePlaybackRateOfAudioStreamInConference(confId,audioMetaData){
       const nextSpeechRateLocalFramePos = this.getLocalFrameNumberFromGlobalFrameNumber(nextSpeechRateGlobalFramePos)
       const nextSpeechRateChunkNumber = this.getChunkNumberFromFrameNumber(nextSpeechRateGlobalFramePos)
 
-      const blobName = `${audioId}/${speechRates[nextSpeechRateIndex]}.wav`
+      const blobName = `${audioId}/${global.speechRates[nextSpeechRateIndex]}.wav`
       const contentLength = await getLengthOfBlob(blobName)
 
       this.confIdToAudioControls[confId].audioIdToState[audioId]["speechRateIndex"] = nextSpeechRateIndex
@@ -1208,7 +1208,7 @@ async decreasePlaybackRateOfAudioStreamInConference(confId,audioMetaData){
       const nextSpeechRateLocalFramePos = this.getLocalFrameNumberFromGlobalFrameNumber(nextSpeechRateGlobalFramePos)
       const nextSpeechRateChunkNumber = this.getChunkNumberFromFrameNumber(nextSpeechRateGlobalFramePos)
 
-      const blobName = `${audioId}/${speechRates[nextSpeechRateIndex]}.wav`
+      const blobName = `${audioId}/${global.speechRates[nextSpeechRateIndex]}.wav`
       const contentLength = await getLengthOfBlob(blobName)
 
       this.confIdToAudioControls[confId].audioIdToState[audioId]["speechRateIndex"] = nextSpeechRateIndex
@@ -1418,10 +1418,10 @@ async makeCallToUserInConference(confId,phoneNumber){
       name: confId,
       // record:true,
       eventMethod:"POST",
-      // eventUrl:[remoteUrl + "vonage/conference_call/recording"]
+      // eventUrl:[global.remoteUrl + "vonage/conference_call/recording"]
     });
     
-    const eventUrl = [remoteUrl + "vonage/conference_call/events"]
+    const eventUrl = [global.remoteUrl + "vonage/conference_call/events"]
 
     const call_back_func = async (err, resp) => {
       try{
@@ -1547,7 +1547,7 @@ async handleVonageClientWebSocketEventsForConference(req,res){
             action: "connect",
             from: "NexmoTest",
             eventType: "synchronous",
-            eventUrl: [remoteUrl + "vonage/conference_websocket_events"],
+            eventUrl: [global.remoteUrl + "vonage/conference_websocket_events"],
             endpoint: [
               {
                 type: "websocket",
@@ -1615,7 +1615,7 @@ makeHandCricketCall(gameId,numbers) {
       name: gameId,
       // record:true,
       eventMethod:"POST",
-      // eventUrl:[remoteUrl + "conference_call/recording"]
+      // eventUrl:[global.remoteUrl + "conference_call/recording"]
     },
   ];
   
@@ -1631,7 +1631,7 @@ makeHandCricketCall(gameId,numbers) {
     }
   }
 
-  const eventUrl = [remoteUrl + "vonage/handCricket/events"]
+  const eventUrl = [global.remoteUrl + "vonage/handCricket/events"]
   
   for(let i=0;i<2;i++){
     console.log(`number = ${numbers[i]}`)
@@ -1916,7 +1916,7 @@ async makeMonoCall(number) {
     this.startCheckingSlot(0)
   }
 
-  const eventUrl = [remoteUrl + "vonage/mono_call/events"]
+  const eventUrl = [global.remoteUrl + "vonage/mono_call/events"]
   this.makeVonageCall(number,eventUrl,call_back_func,ncco)
 }
 
@@ -2214,7 +2214,7 @@ handleVonageClientWebSocketEventsForMonoCall(req,res){
             action: "connect",
             from: process.env.VONAGE_NUMBER,
             eventType: "synchronous",
-            eventUrl: [remoteUrl + "vonage/monocall_websocket_events"],
+            eventUrl: [global.remoteUrl + "vonage/monocall_websocket_events"],
             endpoint: [
               {
                 type: "websocket",

@@ -30,7 +30,6 @@ global.speechRateToName = {
   "2.0":"very high"
 }
 global.defaultSpeechRateIndex = 2
-global.conversationUUIDToPhoneNumber = {}
 
 global.callStatuses = {
   started:"started",
@@ -62,7 +61,7 @@ server.on("upgrade", function upgrade(request, socket, head) {
     
     console.log(`pathname = ${pathname}`)
     if(pathname.startsWith("/vonage/")){
-      communicationApi.handleWebSocketConnection(pathname,request,socket,head)
+      global.communicationApi.handleWebSocketConnection(pathname,request,socket,head)
     }
     else {
       socket.destroy();

@@ -33,7 +33,7 @@ router.post("/",
   setTeacherNumberInConference(confId,numbers[0])
   setTeacherNameInConference(confId,names[0])
   await createConferenceObject(confId, numbers, names);
-  communicationApi.makeConference(confId,numbers)
+  global.communicationApi.makeConference(confId,numbers)
   res.send("success.");
 }));
 
