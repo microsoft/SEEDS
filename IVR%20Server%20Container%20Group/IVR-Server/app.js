@@ -9,7 +9,7 @@ const handCricketRouter = require("./routes/handCricket");
 const conferenceCallRouter = require("./routes/Conference/conferenceCall");
 const handler = require("./websockets/AndroidAppClient");
 
-
+// This function will just show the Client Ip Address. we can modify it to allow only few Ip Addresses to this IVR server
 const showIp = (req,res,next) => {
     console.log("Client Address...")
     console.log(req.originalUrl)
@@ -19,12 +19,6 @@ const showIp = (req,res,next) => {
   
   // app.use(showIp)
   
-  
-  // app.post("/temp",(req,res) => {
-  //   tryCatchWrapperForCustomizedFunction(doSomething)("mani","suresh")
-  //   res.send("received from temp end point.")
-  // })
-
 app.get("/healthCheck",(req,res) => {
   res.send("alive").status(200)
 })

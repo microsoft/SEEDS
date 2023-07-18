@@ -54,6 +54,7 @@ const { endAllPullModelCallsInThisServer } = require("./controllers/monoCall/uti
 
 const server = require("http").createServer(app);
 
+// This is needed to handle the websocket connection requests. Read the blogs on the internet to know more about *upgrade* event
 server.on("upgrade", function upgrade(request, socket, head) {
 
   try{
@@ -72,10 +73,18 @@ server.on("upgrade", function upgrade(request, socket, head) {
   }
 });
 
+
+// This event will be triggered right before the *uncaughtException* event. we are not using it currently.
 // process.on('uncaughtExceptionMonitor', async (err, origin) => {
 //   await unhandledExceptionModel.create({error:JSON.stringify(err), origin: origin})
 // });
 
+
+// All the UnHandled Exceptions in this server will land here and will be populated in MongoDB
+// It also ends all the conferences and pull calls in this server before kills this process.
+// Reason to Kill process: if we don't kill on unhandled exceptions, it will lead to very unexpected behaviour from this server
+// As anyway we are handing the errors in almost all the places, but if something which is unexpected happens, better to exit. 
+// As we are populating it in DB. You can go the specific collection in MongoDB and check if there are any unhandled exceptions in this server and figure out why it occured.
 process.on('uncaughtException', async (err, origin) => {
   await endAllConferencesInThisServer()
   await endAllPullModelCallsInThisServer()
@@ -84,6 +93,7 @@ process.on('uncaughtException', async (err, origin) => {
   process.exit(1);
 });
 
+// All the warnings raised in this server will land here and will be populated in MongoDB
 process.on('warning', async (warning) => {
   await warningModel.create({name:warning.name,message:warning.message,stack:warning.stack})
 });
@@ -95,6 +105,7 @@ startServer = async () => {
     await require("./db")()
     server.listen(process.env.IVR_PORT, () =>{
       console.log(`Running on port ${process.env.IVR_PORT}`)
+      // It will trigger the function of checking slots whether vonage is free and our queue has any requests, to initiate calls.
       global.communicationApi.startCheckingSlot(0)
     });
   }

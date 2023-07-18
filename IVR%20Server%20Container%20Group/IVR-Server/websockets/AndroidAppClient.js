@@ -28,6 +28,8 @@ let handler = new WebPubSubEventHandler(process.env.AZURE_PUBSUB_HUB_NAME, {
     console.log(`Android Websocket with confId ${confId} is disconnected`)
     const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
     const timeToWaitBeforeEndingConference = 180000
+    // when the Android app is disconnected, we are initiating some timer with time period *timeToWaitBeforeEndingConference*
+    //  if the android app is not re-connected within this time, we will end the whole Conference running in that App. so, below function is to achieve the same.
     global.confIdToEndConferenceTimeoutId[confId] = setTimeout(() =>{
       console.log("Android websocket timeout happened.");
       endConference(confId).then(console.log).catch(console.log);

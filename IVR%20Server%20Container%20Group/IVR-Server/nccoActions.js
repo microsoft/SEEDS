@@ -1,3 +1,9 @@
+/*
+Important! : You can rename this filename as ccoActions.js as eventhough i took all these actions as a reference from Vonage website, but my intention is to make all these actions as generic, so that should work irrespctive of Communication API
+That's why i put it here separately instead in *vonage.js* file. So, you can use these actions as generic ones like how i am using currently.
+*/
+
+// This is for playing TTS Message
 function getTalkAction(
   textToTalk,
   lang='en-IN',
@@ -25,6 +31,7 @@ function getTalkAction(
   return talkAction;
 }
 
+// This is to prompt the user for input(Voice input only)
 function speechInputAction(
   endpoint,
   inputLang = 'en-IN'
@@ -41,6 +48,7 @@ function speechInputAction(
   return inputAction;
 }
 
+// This is to prompt the user for input(DTMF only)
 function DTMFInputAction(endpoint,maxDigits = 1,timeOut=3){
   let inputAction = {
     action: "input",
@@ -54,6 +62,7 @@ function DTMFInputAction(endpoint,maxDigits = 1,timeOut=3){
   return inputAction;
 }
 
+// This is for playing audio messages
 function getStreamAction(
   streamUrl,
   loop=1,
