@@ -119,9 +119,9 @@ module.exports = class Riddle{
                 await storeLog(userPhoneNumber,digits,`chosen previous menu(experiences menu)`)
                 currentUserObj.currentItemStartingIndex = 0
                 prepareNext4MenuContent(currentUserObj,global.experienceNames['english'],global.experienceDialogAudioUrls,'experience')
-                monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
+                global.monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
                 const endpoint = global.communicationApi.getEndPointForExperienceTypeInput()
-                monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
+                global.monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
                 const actions = []
                 actions.push(...currentUserObj.currentContentActions)
                 actions.push(DTMFInputAction(endpoint))

@@ -199,14 +199,14 @@ async function handleCommonDTMF(params){
   var priorMessageAction = undefined
   const currentMenuContentActions = global.monoCallInfo[userPhoneNumber]['currentContentActions']
   if(digits === ""){
-     const priorMessageUrl = chosenNoOptionUrl.replace('{language}',language).replace('{speechRate}',currentSpeechRate)
+     const priorMessageUrl = global.chosenNoOptionUrl.replace('{language}',language).replace('{speechRate}',currentSpeechRate)
      priorMessageAction = getStreamAction(global.pullMenuMainUrl + priorMessageUrl)
   }
   else if(digits === "8"){
     // Do Nothing
   }
   else if(digits.length > 1 || !validDigits.hasOwnProperty(digits)){
-    const priorMessageUrl = chosenWrongOptionUrl.replace('{language}',language).replace('{speechRate}',currentSpeechRate)
+    const priorMessageUrl = global.chosenWrongOptionUrl.replace('{language}',language).replace('{speechRate}',currentSpeechRate)
     priorMessageAction = getStreamAction(global.pullMenuMainUrl + priorMessageUrl)
   }
   if(digits === "8"){
@@ -375,9 +375,9 @@ All the experiences mentioned above will inherit this base class.
     //       await storeLog(userPhoneNumber,digits,`chosen previous menu(experiences menu)`)
     //       currentUserObj.nextItemStartingIndex = 0
     //       prepareNext4MenuContent(currentUserObj,global.experienceNames['english'],global.experienceDialogAudioUrls,'experience')
-    //       monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
+    //       global.monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
     //       endpoint = global.communicationApi.getEndPointForExperienceTypeInput()
-    //       monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
+    //       global.monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
     //     }
 
     //     if(priorMessageAction){
@@ -464,9 +464,9 @@ All the experiences mentioned above will inherit this base class.
           await storeLog(userPhoneNumber,digits,`chosen previous menu(experiences menu)`)
           currentUserObj.currentItemStartingIndex = 0
           prepareNext4MenuContent(currentUserObj,global.experienceNames['english'],global.experienceDialogAudioUrls,'experience')
-          monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
+          global.monoCallInfo[userPhoneNumber]['currentMenuName'] = 'experience'
           const endpoint = global.communicationApi.getEndPointForExperienceTypeInput()
-          monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
+          global.monoCallInfo[userPhoneNumber]['currentEndPoint'] = endpoint
           const actions = []
           actions.push(...currentUserObj.currentContentActions)
           actions.push(DTMFInputAction(endpoint))

@@ -79,7 +79,7 @@ const removeContactsExistInAnotherConference = (req,res,next) => {
     const length = req.body.phoneNumbers.length
     for(let i=0;i<length;i++){
         const phoneNumber = req.body.phoneNumbers[i]
-        if(!phoneNumberToConfId.hasOwnProperty(phoneNumber)){
+        if(!global.phoneNumberToConfId.hasOwnProperty(phoneNumber)){
             phoneNumbers.push(phoneNumber)
             names.push(req.body.names[i])
         }

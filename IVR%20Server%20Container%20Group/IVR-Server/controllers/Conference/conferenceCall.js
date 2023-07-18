@@ -236,7 +236,7 @@ async function updateRaiseHand(confId, number, flag) {
   if(flag){
     sendRefreshEvent(confId)
     // play Message to Teacher that this person raised the Hand.
-    const teacherNumber = confIdToTeacherNumber[confId]
+    const teacherNumber = global.confIdToTeacherNumber[confId]
     const conference = await Conference.findById(confId);
     const participants = conference.participants;
     const length = participants.length
@@ -390,7 +390,7 @@ async function handleConferenceCallControls(confId,action,params,by='Teacher'){
                 const messageToLeader = "you are unassigned from leadership"
                 await communicationApi.sendMessageToEverybodyInConference(confId,messageToParticipant,phoneNumber,messageToLeader)
               }
-              else if(confIdToIntendedLeaderPhoneNumber.hasOwnProperty(confId)){
+              else if(global.confIdToIntendedLeaderPhoneNumber.hasOwnProperty(confId)){
                 deleteIntendedLeaderPhoneNumberFromConference(confId)
               }
             }
@@ -555,58 +555,58 @@ async function getConferenceObjectById(confId){
 
 function mapPhoneNumbersToConfId(phoneNumbers,confId){
   for(const phoneNumber of phoneNumbers){
-    phoneNumberToConfId[phoneNumber] = confId
+    global.phoneNumberToConfId[phoneNumber] = confId
   }
 }
 
 function messageToBePlayedForStudentsOnPickingTheCallInConference(confId){
-  const nameOfTeacher = confIdToTeacherName[confId]
+  const nameOfTeacher = global.confIdToTeacherName[confId]
   return `${nameOfTeacher} is inviting you to the conference from the SEEDS App.`
 }
 
 function isThisLeaderInConferene(confId,phoneNumber){
-  return confIdToLeaderPhoneNumber[confId] === phoneNumber
+  return global.confIdToLeaderPhoneNumber[confId] === phoneNumber
 }
 
 function setLeaderPhoneNumberInConference(confId,userPhoneNumber){
-  confIdToLeaderPhoneNumber[confId] = userPhoneNumber
+  global.confIdToLeaderPhoneNumber[confId] = userPhoneNumber
 }
 
 function getLeaderPhoneNumberFromConference(confId){
-  return confIdToLeaderPhoneNumber[confId]
+  return global.confIdToLeaderPhoneNumber[confId]
 }
 
 function deleteLeaderPhoneNumberFromConference(confId){
-  if(confIdToLeaderPhoneNumber.hasOwnProperty(confId)){
-    delete confIdToLeaderPhoneNumber[confId]
+  if(global.confIdToLeaderPhoneNumber.hasOwnProperty(confId)){
+    delete global.confIdToLeaderPhoneNumber[confId]
   }
 }
 
 function setIntendedLeaderPhoneNumberInConference(confId,userPhoneNumber){
-  confIdToIntendedLeaderPhoneNumber[confId] = userPhoneNumber
+  global.confIdToIntendedLeaderPhoneNumber[confId] = userPhoneNumber
 }
 
 function getIntendedLeaderPhoneNumberFromConference(confId){
-  return confIdToIntendedLeaderPhoneNumber[confId]
+  return global.confIdToIntendedLeaderPhoneNumber[confId]
 }
 
 function deleteIntendedLeaderPhoneNumberFromConference(confId){
-  if(confIdToIntendedLeaderPhoneNumber.hasOwnProperty(confId)){
-    delete confIdToIntendedLeaderPhoneNumber[confId]
+  if(global.confIdToIntendedLeaderPhoneNumber.hasOwnProperty(confId)){
+    delete global.confIdToIntendedLeaderPhoneNumber[confId]
   }
 }
 
 function setLeaderNameInConference(confId,userName){
-  confIdToLeaderName[confId] = userName
+  global.confIdToLeaderName[confId] = userName
 }
 
 function getLeaderNameFromConference(confId){
-  return confIdToLeaderName[confId]
+  return global.confIdToLeaderName[confId]
 }
 
 function deleteLeaderNameFromConference(confId){
-  if(confIdToLeaderName.hasOwnProperty(confId)){
-    delete confIdToLeaderName[confId]
+  if(global.confIdToLeaderName.hasOwnProperty(confId)){
+    delete global.confIdToLeaderName[confId]
   }
 }
 
@@ -615,36 +615,36 @@ async function updateConferenceCallAttributes(confId,attribObj){
 }
 
 function setTeacherNameInConference(confId,userName){
-  confIdToTeacherName[confId] = userName
+  global.confIdToTeacherName[confId] = userName
 }
 
 function getTeacherNameFromConference(confId){
-  return confIdToTeacherName[confId]
+  return global.confIdToTeacherName[confId]
 }
 
 function deleteTeacherNameFromConference(confId){
-  if(confIdToTeacherName.hasOwnProperty(confId)){
-    delete confIdToTeacherName[confId]
+  if(global.confIdToTeacherName.hasOwnProperty(confId)){
+    delete global.confIdToTeacherName[confId]
   }
 }
 
 function setTeacherNumberInConference(confId,userPhoneNumber){
-  confIdToTeacherNumber[confId] = userPhoneNumber
+  global.confIdToTeacherNumber[confId] = userPhoneNumber
 }
 
 function getTeacherNumberFromConference(confId){
-  return confIdToTeacherNumber[confId]
+  return global.confIdToTeacherNumber[confId]
 }
 
 function deleteTeacherNumberFromConference(confId){
-  if(confIdToTeacherNumber.hasOwnProperty(confId)){
-    delete confIdToTeacherNumber[confId]
+  if(global.confIdToTeacherNumber.hasOwnProperty(confId)){
+    delete global.confIdToTeacherNumber[confId]
   }
 }
 
 function deleteMusicStateInConference(confId){
-  if(confIdToMusicState.hasOwnProperty(confId)){
-    delete confIdToMusicState[confId]
+  if(global.confIdToMusicState.hasOwnProperty(confId)){
+    delete global.confIdToMusicState[confId]
   }
 }
 
@@ -661,11 +661,11 @@ function createMessageForUserBeforeGettingDisconnectedByTeacher(){
 }
 
 function doesThisConferenceHaveMusicState(confId){
-  return confIdToMusicState.hasOwnProperty(confId)
+  return global.confIdToMusicState.hasOwnProperty(confId)
 }
 
 function getMusicStateFromConference(confId){
-  return confIdToMusicState[confId]
+  return global.confIdToMusicState[confId]
 }
 
 function deletePhoneNumberToConferenceMapping(userPhoneNumber){

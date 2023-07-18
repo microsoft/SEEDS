@@ -24,7 +24,7 @@ global.verbalLanguageToIVRTTSLanguageCode = {
 
 global.initialLanguage = 'english'
 global.initialSpeechRateIndex = 2
-global.initialTTSLanguage = verbalLanguageToIVRTTSLanguageCode[initialLanguage]
+global.initialTTSLanguage = global.verbalLanguageToIVRTTSLanguageCode[initialLanguage]
 
 global.languageDialogUrls = {
   'english':'languageDialog/english/For%20English/{speechRate}.mp3',
