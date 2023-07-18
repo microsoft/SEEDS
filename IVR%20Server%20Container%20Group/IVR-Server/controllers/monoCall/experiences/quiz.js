@@ -24,6 +24,7 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
       this.isEnded = undefined
     }
 
+    // we are using it multiple times. That's why separating out from *initiate* method(In *initiate* method, there are some prior Actions. Look at this method.)
     async prepareContentForMainMenu(currentUserObj){
       const resp = await axios.get(`https://place-seeds.azurewebsites.net/getAllQuizzesByLanguage?language=${this.language}`)
       for(const quizInfo of resp.data['quizzes']){
@@ -34,7 +35,7 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
         }
       }
       currentUserObj.nextItemStartingIndex = 0
-      prepareNext4MenuContent(currentUserObj,this.quizTitles,this.quizTitleToAudioMessageUrl,'quiz')
+      prepareNext4MenuContent(currentUserObj,this.quizTitles,this.quizTitleToAudioMessageUrl,'quiz') // currentUserObj.currentContentActions will get filled out here
       const endpoint = global.communicationApi.getEndPointForQuizMainMenuInMonoCall()
       currentUserObj.currentEndPoint = endpoint
     }
@@ -53,13 +54,14 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
 
       const actions = [
         ...priorMessageActions,
-        ...currentUserObj.currentContentActions,
+        ...currentUserObj.currentContentActions, // currentUserObj.currentContentActions will get filled out after the call of *this.prepareContentForMainMenu(currentUserObj)* above
         DTMFInputAction(currentUserObj.currentEndPoint)
       ]
 
       return actions
     }
 
+    // It will start the Quiz FSM with FSM Executor
     async initiateFSM(){
       this.isEnded = false
       this.fsmContextId = uuidv4()
@@ -119,13 +121,16 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
             }
       }
     }
+
+    // It will be triggered when the last question in quiz is just completed i.e. Quiz is Over
+    // It will prepare the Actions that announce the Final Score to user and take the user back to Quiz Main Menu
     async handleQuizEndState(currentUserObj,body){
       const speechRate = global.speechRates[global.monoCallInfo[this.userPhoneNumber]['speechRateIndex']]
       const ttsLanguage = global.verbalLanguageToIVRTTSLanguageCode[this.language]
       this.isEnded = true
       const fsmId = body.fsmContextId
 
-      // sending Mapping of fsmContextId to PhoneNumbers the Call to SEEDS server
+      // sending Mapping of fsmContextId to PhoneNumbers in the Call(only one phoneNumber mostly as it is pull model), to SEEDS server
       axios.post(global.fsmContentIdToPhoneNumberMappingUrl,{
         fsmContextId:fsmId,
         phoneNumbers:[this.userPhoneNumber]
@@ -172,6 +177,7 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
       return actions
     }
 
+    // It will prepare the actions that announce the Quiz Questions along with answer choices and waits for user input
     async playQuestionAlongWithMultipleChoices(currentUserObj,body){
       const speechRate = global.speechRates[global.monoCallInfo[this.userPhoneNumber]['speechRateIndex']]
       const ttsLanguage = global.verbalLanguageToIVRTTSLanguageCode[this.language]
@@ -233,6 +239,7 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
       return actions
     }
 
+    // It will receive the next states from FSMExecutor like Previous Quiz Question Answer, Next Quiz Question
     async handleStatesFromFSMExecutor(body){
       const states = body.states;
       const userPhoneNumber = this.userPhoneNumber
@@ -263,6 +270,7 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
       }
     }
 
+    // It submits the user selected answer to FSMExecutor to validate and gets the response of score, next question
     async submitAnswerToFSMForValidation(answeredEvent){
       return await axios.post(this.URLToSendUserInput,{
         fsmContextId:this.fsmContextId,
@@ -270,8 +278,8 @@ const { getTalkAction, DTMFInputAction, getStreamAction } = require('../../../nc
       })
     }
 
+    // This is the main function which handles the user selected input for a quiz question
     async handleMultipleChoiceSelection(params){
-      // handle for digits 8 to repeat, invalid choice, valid answers.
       const {userPhoneNumber,digits} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
       const speechRate = global.speechRates[currentUserObj.speechRateIndex]
