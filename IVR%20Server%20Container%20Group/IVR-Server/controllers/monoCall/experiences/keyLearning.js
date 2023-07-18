@@ -6,6 +6,7 @@ class KeyLearning{
         this.userPhoneNumber = number
         this.language = lang
     }
+    // It will prepare the main menu of Key Learning Experience
     initiate(params){
         const {userPhoneNumber} = params
         const speechRate = global.speechRates[global.monoCallInfo[userPhoneNumber]['speechRateIndex']]
@@ -34,7 +35,7 @@ class KeyLearning{
             return false
         }
     }
-    async handleUserInput(params,res){
+    async handleUserInput(params){
         const {userPhoneNumber,digits} = params
         const currentUserObj = global.monoCallInfo[userPhoneNumber]
         const currentEndPoint = currentUserObj.currentEndPoint
