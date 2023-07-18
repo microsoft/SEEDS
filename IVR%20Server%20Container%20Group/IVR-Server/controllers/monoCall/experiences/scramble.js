@@ -12,6 +12,8 @@ class ScrambleGame{
       this.randomLineSequence = []
       this.randomLineNumberToAudioId = {}
     }
+
+    // we are using it multiple times. That's why separating out from *initiate* method(In *initiate* method, there are some prior Actions. Look at this method.)
     prepareContentForMainMenu(currentUserObj){
       currentUserObj.nextItemStartingIndex = 0
       prepareNext4MenuContent(currentUserObj,global.poems,global.poemTitleToAudioMessageUrl,'poetry')
@@ -19,6 +21,7 @@ class ScrambleGame{
       const endpoint = global.communicationApi.getEndPointForScrambleMainMenu()
       currentUserObj.currentEndPoint = endpoint
     }
+
     initiate(params){
       const {userPhoneNumber} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -39,9 +42,12 @@ class ScrambleGame{
 
       return actions
     }
+
     getBlobUrlFromAudioId(id){
         return global.poemIdToBlobUrl[id]
     }
+
+    // It will be triggered when they choose a paritcular poem title to start the game or want to repeat the game with same poem
     startOrRepeatScrambleGame(){
       const speechRate = global.speechRates[global.monoCallInfo[this.userPhoneNumber]['speechRateIndex']]
       const endpoint = global.communicationApi.getEndPointForScrambleExploringPoemLineOrdering()
@@ -73,6 +79,8 @@ class ScrambleGame{
         nextActions:actions
       }
     }
+
+    // It will simply prepare the menu to announce the audio messages(audio url populated in *global.guessSequenceMessageUrl*)
     startOrRepeatHandleSequenceMenu(){
       const speechRate = global.speechRates[global.monoCallInfo[this.userPhoneNumber]['speechRateIndex']]
 
@@ -92,6 +100,8 @@ class ScrambleGame{
       }
 
     }
+
+    // It will handle input of user when they choose a particular poem from the list of poems OR to choose next 4 poems
     async handleMainMenu(params){
       const {userPhoneNumber,digits} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -149,6 +159,9 @@ class ScrambleGame{
           }
       }
     }
+
+    // It will be triggered while user is pressing keys to know the mapped Poem Line. Basically it will announce that poem line upon user pressing the valid key.
+    // User will use this option to explore the keys and mapped Poem Lines. so that user can guess and enter the correct sequence by pressing 0 further
     async handleExplorePoemLineOrdering(params){
       const {userPhoneNumber,digits} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
@@ -186,6 +199,8 @@ class ScrambleGame{
 
       }
     }
+
+    // It will receive the user entered Sequence and validate whether it is correct or not
     async handleEnteredPoemLineSequence(params){
       const {userPhoneNumber,digits} = params
       const ttsLanguage = global.verbalLanguageToIVRTTSLanguageCode[this.language]
@@ -240,6 +255,7 @@ class ScrambleGame{
       }
     }
 
+    // It will be triggered when the user chooses an option for the prompt of either entering the sequence again or repeating the whole game again with same poem
     async handleEnterSequenceAgainOrRepeatContentInput(params){
       const {userPhoneNumber,digits} = params
       const currentUserObj = global.monoCallInfo[userPhoneNumber]
