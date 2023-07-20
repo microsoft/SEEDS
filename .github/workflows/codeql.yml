@@ -73,19 +73,19 @@ jobs:
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
     - name: Build TeacherApp
-    - run: |
+      run: |
         echo "Building the Java project with Gradle"
         cd Teacher-App
         ./gradlew build
     
     - name: Build FSM Executor
-    - run: |
+      run: |
         echo "Building the Java Project with MVN"
         cd FSM-Executor
         mvn clean package
         
     - name: Build PLACE
-    - run: |
+      run: |
         echo "Building the Java Project with MVN"
         cd PLACE
         mvn clean package
