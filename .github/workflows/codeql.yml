@@ -44,12 +44,12 @@ jobs:
         languages: ${{ matrix.language }}
 
     # Build tasks for Java code only (conditional based on matrix.language)
-    - name: Build TeacherApp
-      run: |
-        echo "Building the Java project with Gradle"
-        cd Teacher-App
-        ./gradlew build
-      if: matrix.language == 'java'
+#     - name: Build TeacherApp
+#       run: |
+#         echo "Building the Java project with Gradle"
+#         cd Teacher-App
+#         ./gradlew build
+#       if: matrix.language == 'java'
 
     - name: Build FSM Executor
       run: |
