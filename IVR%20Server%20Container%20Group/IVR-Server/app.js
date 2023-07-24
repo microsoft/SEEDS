@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors') 
 const bp = require("body-parser");
 const morgan = require("morgan");
+const rateLimit = require('express-rate-limit');
 
 const monoCallRouter = require("./routes/monoCall/monoCall");
 const handCricketRouter = require("./routes/handCricket");
@@ -23,6 +24,13 @@ app.get("/healthCheck",(req,res) => {
   res.send("alive").status(200)
 })
 
+// Define the rate limiter options
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes - The time window for which requests are counted.
+  max: 2000, // 100 requests - The maximum number of requests per IP within the time window.
+});
+
+app.use(limiter);
 app.use("/azurepubsubhook", handler.getMiddleware());
 
 app.use("/vonage",morgan("tiny"),express.json(),global.communicationApi.router)
