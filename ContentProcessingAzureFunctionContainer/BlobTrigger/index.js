@@ -70,6 +70,61 @@ async function copyBlobToOriginalContainer(ffmpeg,myBlob,blobExtension,inputBloc
     }
 }
 
+async function copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,blobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata){
+  // all the settings in this function are related to roshni's blob storage account
+  const { BlobServiceClient } = require('@azure/storage-blob');
+
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+    process.env.ROSHNI_BLOB_STORAGE_CONNECTION_STRING
+    );
+
+  const outputOriginalContainerName = "output-original"
+  const outputOriginalContainerClient = blobServiceClient.getContainerClient(outputOriginalContainerName);
+  var outputOriginalBlobNameWithExtension = `${inputBlobName}.mp3`
+  const experienceName = metadata['experience']
+  if(experienceName === "Riddle"){
+    inputBlobName = inputBlobName.split("_")[0]
+    if(metadata["question"] === "true"){
+      outputOriginalBlobNameWithExtension = `${inputBlobName}/question.mp3`
+    }
+    else{
+      outputOriginalBlobNameWithExtension = `${inputBlobName}/answer.mp3`
+    }
+  }
+  const outputOriginalBlockBlobClient = outputOriginalContainerClient.getBlockBlobClient(outputOriginalBlobNameWithExtension);
+
+  // if(blobExtension !== "mp3"){
+  //     ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
+  //     await ffmpeg.run(
+  //       "-i",
+  //       `temp_in.${blobExtension}`,
+  //       "-filter:a",
+  //       `atempo=1.0`,
+  //       "-vn",
+  //       `temp_out.mp3`
+  //     );
+  //     const data = ffmpeg.FS("readFile", `temp_out.mp3`);
+  
+  //     await outputOriginalBlockBlobClient.uploadData(data)
+  //   }
+  //   else{
+  //     await outputOriginalBlockBlobClient.beginCopyFromURL(inputBlockBlobClient.url)
+  //   }
+
+  ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
+  await ffmpeg.run(
+    "-i",
+    `temp_in.${blobExtension}`,
+    "-filter:a",
+    `atempo=1.0`,
+    "-vn",
+    `temp_out.mp3`
+  );
+  const data = ffmpeg.FS("readFile", `temp_out.mp3`);
+
+  await outputOriginalBlockBlobClient.uploadData(data)
+}
+
 async function deleteBlob(inputBlockBlobClient){
   const options = {
     deleteSnapshots: 'include' // or 'only'
@@ -167,6 +222,12 @@ module.exports = async function (context, myBlob) {
     console.log(`Started Copying blob ${inputBlobName} to original container...`)
     await copyBlobToOriginalContainer(ffmpeg,myBlob,inputBlobExtension,inputBlockBlobClient,outputOriginalBlockBlobClient,fetchFile)
     console.log(`Finished Copying blob ${inputBlobName} to original container`)
+
+    // Temporary Code until we get public access enabled for SEEDS-MSRI subscription based account blobs
+    // converting input file to mp3 into Roshni output-original container
+    console.log(`Started Copying blob ${inputBlobName} to Roshni original container...`)
+    await copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,inputBlobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata)
+    console.log(`Finished Copying blob ${inputBlobName} to Roshni original container`)
 
     // tell SEEDS server that audio is processed successfully if that is final audio with that content id
     try{
