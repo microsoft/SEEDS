@@ -573,17 +573,48 @@ async function preparePullModelInsightsDoc(doc,dateToSaveInsightsFor){
   return res;
 }
 
+function isValidDateFormat(dateString) {
+  const datePattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+  return datePattern.test(dateString);
+}
+
+
 // It will prepare the insights for all the pullmodel sessions for all dates specified in the List
 async function GetPullModelInsights(req,res){
   const dates = req.body.dates
   const results = {}
   for(const date of dates){
-    var currentDate = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'})
-    currentDate = currentDate.split(",")[0]
-    var milliSecondsDifference = new Date(currentDate) - new Date(date)
-    if(milliSecondsDifference > 0){
-      const exists = await pullModelInsights.exists({date:date})
-      if(!exists){
+    const isValidDate = isValidDateFormat(date);
+    if(isValidDate){
+      var currentDate = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'})
+      currentDate = currentDate.split(",")[0]
+      var milliSecondsDifference = new Date(currentDate) - new Date(date)
+      if(milliSecondsDifference > 0){
+        const exists = await pullModelInsights.exists({date:date})
+        if(!exists){
+          const docList = await monoCallLog.find({createdDate:{$regex:`^${date}`}})
+          const finalResult = {}
+          for(const doc of docList){
+            const res = parseDocument(doc)
+            if(!finalResult.hasOwnProperty(doc.userPhoneNumber)){
+              finalResult[doc.userPhoneNumber] = { "callDuration": 0, "audioContentDurations":{}}
+            }
+            finalResult[doc.userPhoneNumber]["callDuration"] += res["callDuration"]
+            for(const [contentName,duration] of Object.entries(res["audioContentDurations"])){
+              if(!finalResult[doc.userPhoneNumber]["audioContentDurations"].hasOwnProperty(contentName)){
+                finalResult[doc.userPhoneNumber]["audioContentDurations"][contentName] = 0
+              }
+              finalResult[doc.userPhoneNumber]["audioContentDurations"][contentName] += duration
+            }
+          }
+          const finalDoc = await preparePullModelInsightsDoc(finalResult,date)
+          await pullModelInsights.create(finalDoc)
+          console.log("fetched logs, created insights and saved in DB successfully.")
+        }
+        const result = await pullModelInsights.findOne({date:date}).exec(); // Note: here we dont' necessarirly use .exec() method unless we use a chain of queries.
+        results[date] = result
+      }
+      else if(milliSecondsDifference === 0){
         const docList = await monoCallLog.find({createdDate:{$regex:`^${date}`}})
         const finalResult = {}
         for(const doc of docList){
@@ -600,30 +631,11 @@ async function GetPullModelInsights(req,res){
           }
         }
         const finalDoc = await preparePullModelInsightsDoc(finalResult,date)
-        await pullModelInsights.create(finalDoc)
-        console.log("fetched logs, created insights and saved in DB successfully.")
+        results[date] = finalDoc
       }
-      const result = await pullModelInsights.findOne({date:date}).exec(); // Note: here we dont' necessarirly use .exec() method unless we use a chain of queries.
-      results[date] = result
-    }
-    else if(milliSecondsDifference === 0){
-      const docList = await monoCallLog.find({createdDate:{$regex:`^${date}`}})
-      const finalResult = {}
-      for(const doc of docList){
-        const res = parseDocument(doc)
-        if(!finalResult.hasOwnProperty(doc.userPhoneNumber)){
-          finalResult[doc.userPhoneNumber] = { "callDuration": 0, "audioContentDurations":{}}
-        }
-        finalResult[doc.userPhoneNumber]["callDuration"] += res["callDuration"]
-        for(const [contentName,duration] of Object.entries(res["audioContentDurations"])){
-          if(!finalResult[doc.userPhoneNumber]["audioContentDurations"].hasOwnProperty(contentName)){
-            finalResult[doc.userPhoneNumber]["audioContentDurations"][contentName] = 0
-          }
-          finalResult[doc.userPhoneNumber]["audioContentDurations"][contentName] += duration
-        }
+      else{
+        results[date] = {}
       }
-      const finalDoc = await preparePullModelInsightsDoc(finalResult,date)
-      results[date] = finalDoc
     }
     else{
       results[date] = {}
