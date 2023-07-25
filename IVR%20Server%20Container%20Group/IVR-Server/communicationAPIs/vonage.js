@@ -2307,6 +2307,10 @@ async handleAudioStreamFinishedInMonoCall(userPhoneNumber){
 
 async streamAudioInMonoCall(userPhoneNumber,audioId,gap){
   try{
+    // This if condition is to satisfy the security constraints of github's code security scanning.
+    if(userPhoneNumber === '__proto__' || userPhoneNumber === 'constructor' || userPhoneNumber === 'prototype') {
+      throw "Prototype-polluting assignment (Prototype pollution Attack)"
+    }
     var currentChunkNumber = this.monoCallData[userPhoneNumber]['chunkNumber']
     if(this.audioData[userPhoneNumber].hasOwnProperty(currentChunkNumber)){
       var currentFrameNumber = this.monoCallData[userPhoneNumber]['frameNumber']
