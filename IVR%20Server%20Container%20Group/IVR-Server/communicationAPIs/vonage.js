@@ -910,6 +910,10 @@ async unMuteAll(confId,by='Teacher'){
 async loadChunkAndMapToFrames(conversationId,blobName,currentChunkNumber,contentLength){
   // conversationId can be confId(In Conference call) or userPhoneNumber(in Pull Model) as these are unique to a conversation
   const { getChunkAsFrames } = require("../audioManipulation")
+  // This if condition is to satisfy the security constraints of github's code security scanning.
+  if(conversationId === '__proto__' || conversationId === 'constructor' || conversationId === 'prototype') {
+    throw "Prototype-polluting assignment (Prototype pollution Attack)"
+  }
   this.audioData[conversationId] = {}
   if(currentChunkNumber > 0){
     const startBytePos = (currentChunkNumber - 1) * this.numberOfBytesPerChunk
@@ -925,6 +929,10 @@ async loadChunkAndMapToFrames(conversationId,blobName,currentChunkNumber,content
 // It streams audio in conference by sending audio bytes to vonage using websocket connection
 async streamAudioInConference(confId,audioId,gap) {
   try{
+    // This if condition is to satisfy the security constraints of github's code security scanning.
+    if(confId === '__proto__' || confId === 'constructor' || confId === 'prototype') {
+      throw "Prototype-polluting assignment (Prototype pollution Attack)"
+    }
     var currentChunkNumber = this.confIdToAudioControls[confId].audioIdToState[audioId]["chunkNumber"]
     if(this.audioData[confId].hasOwnProperty(currentChunkNumber)){
       var currentFrameNumber = this.confIdToAudioControls[confId].audioIdToState[audioId]["frameNumber"]
@@ -1945,9 +1953,13 @@ async handleMonoCallEvents(req){
       this.conversationUUIDToPhoneNumber[body.conversation_uuid] = userPhoneNumber
     }
     if(body.status === "answered"){
-
+      userPhoneNumber = body.to
+      // This if condition is to satisfy the security constraints of github's code security scanning.
+      if(userPhoneNumber === '__proto__' || userPhoneNumber === 'constructor' || userPhoneNumber === 'prototype') {
+        throw "Prototype-polluting assignment (Prototype pollution Attack)"
+      }
       // start the Time for Inactive time
-      setTimerForInactivityOfUserInPullModel(body.to)
+      setTimerForInactivityOfUserInPullModel(userPhoneNumber)
 
 
       // fetch document with this phoneNumber.
@@ -1961,7 +1973,7 @@ async handleMonoCallEvents(req){
       // after above steps, every 5 mins update db with current calculated milliSeconds.
       // but before updating everytime, we will check if the time exceeds, if yes update db and cut the call with message.
 
-      const user = await this.userSpentTimeForPullModel.findOne({phoneNumber:body.to}).exec();
+      const user = await this.userSpentTimeForPullModel.findOne({phoneNumber:userPhoneNumber}).exec();
       if(user){
         console.log(user.date)
         var currentDate = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'})
@@ -1969,18 +1981,18 @@ async handleMonoCallEvents(req){
         if(currentDate === user.date){
           if(user.timeInMilliSeconds >= global.maxTimeLimitForUserInMilliseconds){
             // play message and cut the call
-            this.playTimeOverMessageAndCutTheCall(body.to)
+            this.playTimeOverMessageAndCutTheCall(userPhoneNumber)
           }
           else{
-            global.monoCallInfo[body.to]['timeSpentInMilliSeconds'] = user.timeInMilliSeconds
-            setTimerToSaveUserTimeInDB(body.to)
+            global.monoCallInfo[userPhoneNumber]['timeSpentInMilliSeconds'] = user.timeInMilliSeconds
+            setTimerToSaveUserTimeInDB(userPhoneNumber)
           }
         }
         else{
           console.log("date not matching...")
-          await this.userSpentTimeForPullModel.findOne({phoneNumber:body.to}).update({timeInMilliSeconds:0,date:currentDate})
-          global.monoCallInfo[body.to]['timeSpentInMilliSeconds'] = 0
-          setTimerToSaveUserTimeInDB(body.to)
+          await this.userSpentTimeForPullModel.findOne({phoneNumber:userPhoneNumber}).update({timeInMilliSeconds:0,date:currentDate})
+          global.monoCallInfo[userPhoneNumber]['timeSpentInMilliSeconds'] = 0
+          setTimerToSaveUserTimeInDB(userPhoneNumber)
         }
       }
       else{
@@ -1988,12 +2000,12 @@ async handleMonoCallEvents(req){
         currentDate = currentDate.split(",")[0]
 
         await this.userSpentTimeForPullModel.create({
-          phoneNumber: body.to,
+          phoneNumber: userPhoneNumber,
           timeInMilliSeconds: 0,
           date: currentDate
         })
-        global.monoCallInfo[body.to]['timeSpentInMilliSeconds'] = 0
-        setTimerToSaveUserTimeInDB(body.to)
+        global.monoCallInfo[userPhoneNumber]['timeSpentInMilliSeconds'] = 0
+        setTimerToSaveUserTimeInDB(userPhoneNumber)
       }
     }
   }
@@ -2174,6 +2186,10 @@ createWebSocketForMonoCall() {
           console.log(message);
           if (message["event"] === "websocket:connected") {
             const userPhoneNumber = message["userPhoneNumber"];
+            // This if condition is to satisfy the security constraints of github's code security scanning.
+            if(userPhoneNumber === '__proto__' || userPhoneNumber === 'constructor' || userPhoneNumber === 'prototype') {
+              throw "Prototype-polluting assignment (Prototype pollution Attack)"
+            }
             if(!this.monoCallData.hasOwnProperty(userPhoneNumber)){
               this.monoCallData[userPhoneNumber] = {}
             }
@@ -2201,6 +2217,10 @@ handleVonageClientWebSocketEventsForMonoCall(req,res){
     console.log(body);
     if (body.hasOwnProperty("status")) {
       const userPhoneNumber = body.headers.userPhoneNumber;
+      // This if condition is to satisfy the security constraints of github's code security scanning.
+      if(userPhoneNumber === '__proto__' || userPhoneNumber === 'constructor' || userPhoneNumber === 'prototype') {
+        throw "Prototype-polluting assignment (Prototype pollution Attack)"
+      }
       if (body.status === "answered") {
         if(!this.monoCallData.hasOwnProperty(userPhoneNumber)){
           this.monoCallData[userPhoneNumber] = {}
