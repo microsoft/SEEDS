@@ -77,19 +77,24 @@ const removeContactsExistInAnotherConference = (req,res,next) => {
     const phoneNumbers = []
     const names = []
     const length = req.body.phoneNumbers.length
-    for(let i=0;i<length;i++){
-        const phoneNumber = req.body.phoneNumbers[i]
-        if(!global.phoneNumberToConfId.hasOwnProperty(phoneNumber)){
-            phoneNumbers.push(phoneNumber)
-            names.push(req.body.names[i])
+    if(length > 100){
+        return res.status(400).json({message:"Number of Contacts Limit Exceeded"})
+    }
+    else{
+        for(let i=0;i<length;i++){
+            const phoneNumber = req.body.phoneNumbers[i]
+            if(!global.phoneNumberToConfId.hasOwnProperty(phoneNumber)){
+                phoneNumbers.push(phoneNumber)
+                names.push(req.body.names[i])
+            }
         }
+        if(phoneNumbers.length === 0){
+            return res.status(400).json({message:"All contacts exist in Other Conferences"})
+        }
+        req.body.phoneNumbers = phoneNumbers
+        req.body.names = names
+        next()
     }
-    if(phoneNumbers.length === 0){
-        return res.status(400).json({message:"All contacts exist in Other Conferences"})
-    }
-    req.body.phoneNumbers = phoneNumbers
-    req.body.names = names
-    next()
 }
 
 module.exports = {
