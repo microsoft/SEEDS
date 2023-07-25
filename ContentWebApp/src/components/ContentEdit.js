@@ -9,7 +9,7 @@ import { SEEDS_URL } from "../Constants";
 
 const ContentEdit = () => {
   const { type, id } = useParams();
-  console.log(type, id);
+  // console.log(type, id);
   const [content, setContent] = useState({});
   const [experience, setExperience] = useState("quiz");
   const navigate = useNavigate();

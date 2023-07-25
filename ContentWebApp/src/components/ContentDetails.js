@@ -7,7 +7,7 @@ import { SEEDS_URL } from "../Constants";
 
 const ContentDetails = () => {
   const { type, id } = useParams();
-  console.log(type, id);
+  // console.log(type, id);
   const [content, setContent] = useState(null);
 
   useEffect(() => {
