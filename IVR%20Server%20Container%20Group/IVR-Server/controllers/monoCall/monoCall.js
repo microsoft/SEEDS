@@ -483,6 +483,10 @@ async function setTimerToSaveUserTimeInDB(userPhoneNumber){
     const timeToWait = global.timeInMillisecondsToUpdateUserTimeInDB
     global.monoCallInfo[userPhoneNumber]["timeoutIdForUpdateUserTimeInDB"] = setTimeout(async () => {
       const totalTime = global.monoCallInfo[userPhoneNumber]['timeSpentInMilliSeconds'] + timeToWait
+      // This if condition is to satisfy the security constraints of github's code security scanning.
+      if(userPhoneNumber === '__proto__' || userPhoneNumber === 'constructor' || userPhoneNumber === 'prototype') {
+          throw "Prototype-polluting assignment (Prototype pollution Attack)"
+      }
       global.monoCallInfo[userPhoneNumber]['timeSpentInMilliSeconds'] = totalTime
       await userSpentTimeForPullModel.findOne({phoneNumber:userPhoneNumber}).update({timeInMilliSeconds:totalTime})
       if(totalTime >= global.maxTimeLimitForUserInMilliseconds){
