@@ -3,7 +3,7 @@ package com.microsoft.seeds.place.models.fsm;
 import com.microsoft.seeds.place.models.fsm.actions.SkipAction;
 import com.microsoft.seeds.place.models.utils.Constants;
 import com.microsoft.seeds.place.models.utils.ExpectedInputType;
-import javafx.util.Pair;
+// import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
