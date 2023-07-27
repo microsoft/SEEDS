@@ -32,8 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
-#         'java',
+        language: [ 'javascript','java' ]
 
     steps:
     - name: Checkout repository
@@ -52,19 +51,19 @@ jobs:
 #         ./gradlew build
 #       if: matrix.language == 'java'
 
-#     - name: Build FSM Executor
-#       run: |
-#         echo "Building the Java Project with MVN"
-#         cd FSM-Executor
-#         mvn clean package
-#       if: matrix.language == 'java'
+    - name: Build FSM Executor
+      run: |
+        echo "Building the Java Project with MVN"
+        cd FSM-Executor
+        mvn clean package
+      if: matrix.language == 'java'
 
-#     - name: Build PLACE
-#       run: |
-#         echo "Building the Java Project with MVN"
-#         cd PLACE
-#         mvn clean package
-#       if: matrix.language == 'java'
+    - name: Build PLACE
+      run: |
+        echo "Building the Java Project with MVN"
+        cd PLACE
+        mvn clean package
+      if: matrix.language == 'java'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
