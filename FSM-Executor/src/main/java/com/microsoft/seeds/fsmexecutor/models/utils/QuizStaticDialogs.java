@@ -19,14 +19,13 @@ public class QuizStaticDialogs {
 
     private static final String ENGLISH_MOVING_TO_NEXT_QUESTION = "Let's move on to next question.";
 
-    private static final String CONGRATULATIONS_FOR_CORRECT_ANSWER = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,";
-    private static final String WRONG_ANSWER = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,";
-    private static final String YOUR_SCORE_IS = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/yourScore/your%20Score%20is,";
-    private static final String FINAL_SCORE = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/yourFinalScore/Your%20final%20score%20is,";
-    private static final String THANKS_FOR_PARTICIPATING = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/thanksForParticipating/Thanks%20for%20participating!";
-    private static final String MOVING_TO_NEXT_QUESTION = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question";
-
-    private static final String TO_GO_TO_NEXT_QUESTION = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/toGoToNextQuestion/to go to the next question";
+    private static final String CONGRATULATIONS_FOR_CORRECT_ANSWER = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/correctAnswer";
+    private static final String WRONG_ANSWER = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/wrongAnswer";
+    private static final String YOUR_SCORE_IS = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/yourScore";
+    private static final String FINAL_SCORE = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/yourFinalScore";
+    private static final String THANKS_FOR_PARTICIPATING = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/thanksForParticipating";
+    private static final String MOVING_TO_NEXT_QUESTION = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/movingToNextQuestion";
+    private static final String TO_GO_TO_NEXT_QUESTION = "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/${lang}/quiz/toGoToNextQuestion";
     public String congratulations;
     public String wrongAnswer;
     public String yourScoreIs;

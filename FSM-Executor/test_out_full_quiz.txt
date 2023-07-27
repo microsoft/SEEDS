@@ -1,0 +1,3397 @@
+
+------------------- STARTFSM REQ ------------------------
+{
+    "fsmName": "PullModel_Kannada",
+    "fsmContextId": "st12345",
+    "fsmType": "static",
+    "type": "Pull Model"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 1,
+        "time": 1679654628155,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": []},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 2,
+        "time": 1679654628164,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/0.5.mp3"
+                    }
+                }],
+                "name": "story"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/0.5.mp3"
+                    }
+                }],
+                "name": "song"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/0.5.mp3"
+                    }
+                }],
+                "name": "quiz"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/0.5.mp3"
+                    }
+                }],
+                "name": "REPEAT_MENU"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "quiz"
+}
+-------------------- NEW STATES --------------------
+{"states": [{
+    "opsEvents": [{
+        "audioData": [],
+        "name": "POP_FSM"
+    }],
+    "data": {"audioData": [{
+        "1.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/readingContentTitlesDialog/kannada/quiz/reading%20Quiz%20Titles/1.5.mp3"
+        },
+        "0.75": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/readingContentTitlesDialog/kannada/quiz/reading%20Quiz%20Titles/0.75.mp3"
+        },
+        "1.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/readingContentTitlesDialog/kannada/quiz/reading%20Quiz%20Titles/1.0.mp3"
+        },
+        "2.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/readingContentTitlesDialog/kannada/quiz/reading%20Quiz%20Titles/2.0.mp3"
+        },
+        "0.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/readingContentTitlesDialog/kannada/quiz/reading%20Quiz%20Titles/0.5.mp3"
+        }
+    }]},
+    "expectedInputType": "EVENT_NAME",
+    "fsmContextId": "st12345",
+    "isEndState": false,
+    "id": 31,
+    "time": 1679654628185,
+    "type": "PULL_MODEL",
+    "userInputEp": "http://localhost:8082/userInput",
+    "events": [
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.5.mp3"
+                }
+            }],
+            "name": "GO_BACK"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.5.mp3"
+                }
+            }],
+            "name": "SELECT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.5.mp3"
+                }
+            }],
+            "name": "NEXT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.5.mp3"
+                }
+            }],
+            "name": "GO_TO_PREV_MENU"
+        }
+    ],
+    "abortEvent": "AbortExperience"
+}]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "NEXT"
+}
+-------------------- NEW STATES --------------------
+{"states": [{
+    "opsEvents": [{
+        "audioData": [],
+        "name": "POP_FSM"
+    }],
+    "data": {"audioData": [{
+        "1.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/40008d8b-a582-452c-b1c0-a0079615f749/1.5.mp3"
+        },
+        "0.75": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/40008d8b-a582-452c-b1c0-a0079615f749/0.75.mp3"
+        },
+        "1.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/40008d8b-a582-452c-b1c0-a0079615f749/1.0.mp3"
+        },
+        "2.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/40008d8b-a582-452c-b1c0-a0079615f749/2.0.mp3"
+        },
+        "0.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/40008d8b-a582-452c-b1c0-a0079615f749/0.5.mp3"
+        }
+    }]},
+    "expectedInputType": "NIL",
+    "fsmContextId": "st12345",
+    "isEndState": false,
+    "id": 32,
+    "time": 1679654628189,
+    "type": "PULL_MODEL",
+    "userInputEp": "http://localhost:8082/userInput",
+    "events": [
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.5.mp3"
+                }
+            }],
+            "name": "GO_BACK"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.5.mp3"
+                }
+            }],
+            "name": "SELECT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.5.mp3"
+                }
+            }],
+            "name": "NEXT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.5.mp3"
+                }
+            }],
+            "name": "GO_TO_PREV_MENU"
+        }
+    ],
+    "abortEvent": "AbortExperience"
+}]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "NEXT"
+}
+-------------------- NEW STATES --------------------
+{"states": [{
+    "opsEvents": [{
+        "audioData": [],
+        "name": "POP_FSM"
+    }],
+    "data": {"audioData": [{
+        "1.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/1.5.mp3"
+        },
+        "0.75": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/0.75.mp3"
+        },
+        "1.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/1.0.mp3"
+        },
+        "2.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/2.0.mp3"
+        },
+        "0.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/0.5.mp3"
+        }
+    }]},
+    "expectedInputType": "NIL",
+    "fsmContextId": "st12345",
+    "isEndState": false,
+    "id": 33,
+    "time": 1679654628192,
+    "type": "PULL_MODEL",
+    "userInputEp": "http://localhost:8082/userInput",
+    "events": [
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.5.mp3"
+                }
+            }],
+            "name": "GO_BACK"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.5.mp3"
+                }
+            }],
+            "name": "SELECT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.5.mp3"
+                }
+            }],
+            "name": "NEXT"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.5.mp3"
+                }
+            }],
+            "name": "GO_TO_PREV_MENU"
+        }
+    ],
+    "abortEvent": "AbortExperience"
+}]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "SELECT"
+}
+-------------------- NEW STATES --------------------
+{"states": [{
+    "opsEvents": [{
+        "audioData": [],
+        "name": "POP_FSM"
+    }],
+    "data": {"audioData": [{
+        "1.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_4/1.5.mp3"
+        },
+        "0.75": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_4/0.75.mp3"
+        },
+        "1.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_4/1.0.mp3"
+        },
+        "2.0": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_4/2.0.mp3"
+        },
+        "0.5": {
+            "duration": 0,
+            "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_4/0.5.mp3"
+        }
+    }]},
+    "expectedInputType": "EVENT_NAME",
+    "fsmContextId": "st12345",
+    "isEndState": false,
+    "id": 1,
+    "time": 1679654628346,
+    "type": "PULL_MODEL",
+    "userInputEp": "http://localhost:8082/userInput",
+    "events": [
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/4/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/4/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/4/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/4/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/4/0.5.mp3"
+                }
+            }],
+            "name": "questionNum-0-optionNum-0"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/1/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/1/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/1/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/1/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/1/0.5.mp3"
+                }
+            }],
+            "name": "questionNum-0-optionNum-1"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/3/0.5.mp3"
+                }
+            }],
+            "name": "questionNum-0-optionNum-2"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/2/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/2/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/2/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/2/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_4/2/0.5.mp3"
+                }
+            }],
+            "name": "questionNum-0-optionNum-3"
+        }
+    ],
+    "abortEvent": "AbortExperience"
+}]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-0-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/0/0/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/0/0/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/0/0/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/0/0/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/0/0/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 3,
+        "time": 1679654628348,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_9/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_9/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_9/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_9/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_9/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 4,
+        "time": 1679654628353,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-1-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-1-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-1-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_9/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-1-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-1-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/1/1/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/1/1/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/1/1/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/1/1/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/1/1/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 5,
+        "time": 1679654628354,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_7/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_7/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_7/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_7/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_7/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 7,
+        "time": 1679654628355,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-2-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-2-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-2-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_7/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-2-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-2-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/2/2/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/2/2/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/2/2/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/2/2/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/2/2/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 8,
+        "time": 1679654628357,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_1/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_1/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_1/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_1/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_1/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 10,
+        "time": 1679654628358,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-3-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-3-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-3-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_1/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-3-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-3-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 11,
+        "time": 1679654628359,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_3/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_3/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_3/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_3/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_3/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 13,
+        "time": 1679654628360,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-4-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-4-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-4-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_3/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-4-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-4-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 15,
+        "time": 1679654628362,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_5/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_5/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_5/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_5/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_5/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 16,
+        "time": 1679654628363,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-5-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-5-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-5-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_5/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-5-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-5-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 18,
+        "time": 1679654628364,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_2/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_2/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_2/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_2/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_2/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 19,
+        "time": 1679654628365,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-6-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-6-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-6-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_2/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-6-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-6-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 21,
+        "time": 1679654628367,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_6/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_6/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_6/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_6/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_6/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 22,
+        "time": 1679654628371,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-7-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-7-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-7-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_6/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-7-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-7-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/3/3/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 24,
+        "time": 1679654628373,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_8/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_8/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_8/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_8/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_8/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 25,
+        "time": 1679654628375,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-8-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-8-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-8-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_8/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-8-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-8-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/correctAnswer/Congratulations!%20You%20have%20chosen%20the%20correct%20answer,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourScore/your%20Score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/movingToNextQuestion/Let's%20move%20on%20to%20next%20question/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 26,
+        "time": 1679654628377,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_10/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_10/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_10/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_10/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/question_10/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 28,
+        "time": 1679654628379,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/2/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/2/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/2/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/2/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/2/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-9-optionNum-0"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/3/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/3/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/3/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/3/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/3/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-9-optionNum-1"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/4/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/4/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/4/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/4/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/4/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-9-optionNum-2"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/1/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/1/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/1/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/1/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/output-container/Quiz/af4af276-c6ec-474f-bed6-51b84b724e51/option_10/1/0.5.mp3"
+                    }
+                }],
+                "name": "questionNum-9-optionNum-3"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "questionNum-9-optionNum-0"
+}
+-------------------- NEW STATES --------------------
+{"states": [
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/wrongAnswer/Oh%20no!%20You%20chose%20the%20wrong%20answer,/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 30,
+        "time": 1679654628380,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourFinalScore/Your%20final%20score%20is,/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourFinalScore/Your%20final%20score%20is,/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourFinalScore/Your%20final%20score%20is,/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourFinalScore/Your%20final%20score%20is,/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/yourFinalScore/Your%20final%20score%20is,/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/keys/kannada/4/4/0.5.mp3"
+                }
+            },
+            {
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/thanksForParticipating/Thanks%20for%20participating!/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/thanksForParticipating/Thanks%20for%20participating!/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/thanksForParticipating/Thanks%20for%20participating!/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/thanksForParticipating/Thanks%20for%20participating!/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experienceSpecificDialog/kannada/quiz/thanksForParticipating/Thanks%20for%20participating!/0.5.mp3"
+                }
+            }
+        ]},
+        "expectedInputType": "EVENT_NAME",
+        "fsmContextId": "st12345",
+        "isEndState": true,
+        "id": 31,
+        "time": 1679654628381,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [],
+        "abortEvent": "AbortExperience"
+    },
+    {
+        "opsEvents": [{
+            "audioData": [],
+            "name": "POP_FSM"
+        }],
+        "data": {"audioData": [{
+            "1.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/1.5.mp3"
+            },
+            "0.75": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/0.75.mp3"
+            },
+            "1.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/1.0.mp3"
+            },
+            "2.0": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/2.0.mp3"
+            },
+            "0.5": {
+                "duration": 0,
+                "filePath": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/af4af276-c6ec-474f-bed6-51b84b724e51/0.5.mp3"
+            }
+        }]},
+        "expectedInputType": "NIL",
+        "fsmContextId": "st12345",
+        "isEndState": false,
+        "id": 33,
+        "time": 1679654628382,
+        "type": "PULL_MODEL",
+        "userInputEp": "http://localhost:8082/userInput",
+        "events": [
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousTitle/${lang}/To%20go%20to%20previous%20title/0.5.mp3"
+                    }
+                }],
+                "name": "GO_BACK"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/playCurrTitle/${lang}/To%20play%20current%20title/0.5.mp3"
+                    }
+                }],
+                "name": "SELECT"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/nextTitle/${lang}/To%20go%20to%20next%20title/0.5.mp3"
+                    }
+                }],
+                "name": "NEXT"
+            },
+            {
+                "audioData": [{
+                    "1.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.5.mp3"
+                    },
+                    "0.75": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.75.mp3"
+                    },
+                    "1.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/1.0.mp3"
+                    },
+                    "2.0": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/2.0.mp3"
+                    },
+                    "0.5": {
+                        "duration": 0,
+                        "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/previousMenuDialog/${lang}/To%20go%20to%20Previous%20Menu/0.5.mp3"
+                    }
+                }],
+                "name": "GO_TO_PREV_MENU"
+            }
+        ],
+        "abortEvent": "AbortExperience"
+    }
+]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "GO_TO_PREV_MENU"
+}
+-------------------- NEW STATES --------------------
+{"states": [{
+    "opsEvents": [{
+        "audioData": [],
+        "name": "POP_FSM"
+    }],
+    "data": {"audioData": []},
+    "expectedInputType": "EVENT_NAME",
+    "fsmContextId": "st12345",
+    "isEndState": false,
+    "id": 2,
+    "time": 1679654628384,
+    "type": "PULL_MODEL",
+    "userInputEp": "http://localhost:8082/userInput",
+    "events": [
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/story/For%20Stories/0.5.mp3"
+                }
+            }],
+            "name": "story"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/music/For%20Songs/0.5.mp3"
+                }
+            }],
+            "name": "song"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/experiencesDialog/kannada/quiz/to%20play%20quiz/0.5.mp3"
+                }
+            }],
+            "name": "quiz"
+        },
+        {
+            "audioData": [{
+                "1.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/1.5.mp3"
+                },
+                "0.75": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/0.75.mp3"
+                },
+                "1.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/1.0.mp3"
+                },
+                "2.0": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/2.0.mp3"
+                },
+                "0.5": {
+                    "duration": 0,
+                    "filePath": "https://seedsblob.blob.core.windows.net/pull-model-menus/repeatMenuDialog/${lang}/To%20repeat%20Current%20Menu/0.5.mp3"
+                }
+            }],
+            "name": "REPEAT_MENU"
+        }
+    ],
+    "abortEvent": "AbortExperience"
+}]}
+------------------- INPUT ------------------------
+{
+    "fsmContextId": "st12345",
+    "event": "AbortExperience"
+}
+----------------------------------------------------
+Will not receive any further states. 
+EXIT. 

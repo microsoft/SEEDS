@@ -42,7 +42,7 @@ public class FSMExecutorController {
 
     private static final String CLIENT_STATES_ARRAY_KEY = "states";
 
-    private String userInputEp = "http://localhost:8082/userInput";
+    private String userInputEp;
     private final Clock clock = Clock.systemDefaultZone();
 
     private LRUCache<String, ExpFSM> fsmCache;
@@ -65,8 +65,13 @@ public class FSMExecutorController {
     @Value("${seeds.place.get.fsm.byid.api}")
     private String getPlaceGetFSMApiById;
 
+    @Value("${FSM_EXEC_PORT}")
+    private String port;
+
     @PostConstruct
     public void initializeController(){
+        userInputEp = "http://localhost:" + port + "/userInput";
+        logger.info("USER INPUT URL: " + userInputEp);
         fsmCache  = StaticExpFSMCache.getInstance().getCache();
         onDemandFSMDataCache = StaticOnDemandFSMDataCache.getInstance().getCache();
 //        startFSMReqQueue = new StartFSMReqQueue(Constants.START_FSM_REQ_QUEUE_TIMEOUT);

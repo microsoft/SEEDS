@@ -242,9 +242,16 @@ public class PlaceController {
     ResponseEntity<HashMap<String, Object>> create(@RequestBody String requestStr){
         JSONObject requestJSON = new JSONObject(requestStr);
         if(requestJSON.has("type")){
-            switch (requestJSON.getString("type")){
+            String type = requestJSON.getString("type");
+            switch (type.toLowerCase()){
                 case Constants.QUIZ_FSM_TYPE:
                     return createQuiz(requestJSON);
+                case Constants.STORY_FSM_TYPE:
+                case Constants.POEM_FSM_TYPE:
+                case Constants.RHYMES_FSM_TYPE:
+                case Constants.SPEECH_FSM_TYPE:
+                case Constants.SONGS_FSM_TYPE:
+                    return createAudioExperience(requestJSON);
                 default:
                     return new ResponseEntity<>(CustomResponse
                             .getErrorResponse("Creation logic for type " + requestJSON.getString("type") + " is not defined."),
@@ -254,6 +261,10 @@ public class PlaceController {
         }else{
             return new ResponseEntity<>(CustomResponse.getErrorResponse("type key not defined"), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private ResponseEntity<HashMap<String, Object>> createAudioExperience(JSONObject json){
+        return new ResponseEntity<>(CustomResponse.getSuccessResponse(), HttpStatus.OK);
     }
 
     private ResponseEntity<HashMap<String, Object>> createQuiz(JSONObject quizJSON){

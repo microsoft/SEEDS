@@ -40,5 +40,5 @@ public class Constants {
     public static final String KANNADA_LANG = "Kannada";
     public static final List<Double> AUDIO_FILE_SPEECH_RATES = new ArrayList<>(Arrays.asList(0.5, 0.75, 1.0, 1.5, 2.0));
     public static final String AUDIO_FILE_EXTENSION = "mp3";
-    public static final String VERSION_DESCRIPTION = "Flat Pull Model; startFSM and userInput APIs Sync";
+    public static final String VERSION_DESCRIPTION = "Change quiz static dialogs path, user input port through appsettings";
 }
