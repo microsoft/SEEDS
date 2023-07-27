@@ -73,7 +73,7 @@
 		</plugins>
 	</build>
 
-  <repositories>
+  <!-- <repositories>
     <repository>
       <id>central</id>
       <url>https://pkgs.dev.azure.com/msri/seeds/_packaging/seeds_PublicPackages/maven/v1</url>
@@ -97,5 +97,5 @@
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories>
+  </pluginRepositories> -->
 </project>
