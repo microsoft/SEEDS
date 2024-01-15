@@ -8,6 +8,10 @@ const router = express.Router();
 
 //req.body will be an array of log objects
 router.post('/', tryCatchWrapper( async (req, res) => {
+    console.log(req.body)
+    for (var log in req.body){
+        console.log(log)
+    }
     await Log.insertMany(req.body)
     return res.sendStatus(200)
 }))
