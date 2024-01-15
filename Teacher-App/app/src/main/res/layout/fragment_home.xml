@@ -37,6 +37,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="@null"
+            android:clickable="false"
             android:contentDescription="Filter Content"
             app:layout_constraintTop_toTopOf="@+id/content_search_text_box"
             app:layout_constraintBottom_toBottomOf="@+id/content_search_text_box"

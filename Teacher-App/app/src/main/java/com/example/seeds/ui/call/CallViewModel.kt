@@ -41,7 +41,7 @@ class CallViewModel @Inject constructor(
     private lateinit var token: AccessToken
     private var cancelCallOnFailure: Job? = null
 
-    val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
+    val teacherPhoneNumber = teacherRepository.getTeacherPhoneNumber()
     var startedAudio = false
 
     var content: Content? = if (args.classroom.contents!!.isNotEmpty()) args.classroom.contents!![0] else null
@@ -229,12 +229,16 @@ class CallViewModel @Inject constructor(
     }
 
     fun filterContent(languages: MutableSet<String>, experiences: MutableSet<String>) {
-        var languagesChosen = languages.map{ it.lowercase()}.toMutableSet()
-        var experiencesChosen = experiences.map{ it.lowercase()}.toMutableSet()
-        if (experiences.isEmpty()) experiencesChosen = _experiences.value!!.toMutableSet().map{ it.lowercase()}.toMutableSet()
-        if (languages.isEmpty()) languagesChosen = _languages.value!!.toMutableSet().map{ it.lowercase()}.toMutableSet()
-        _filteredContent.value = allContent.value?.filter {
-            languagesChosen.contains(it.language.lowercase()) && experiencesChosen.contains(it.type.lowercase())
+        val languagesChosen = languages.map { it.lowercase() }.toMutableSet()
+        val experiencesChosen = experiences.map { it.lowercase() }.toMutableSet()
+
+        _filteredContent.value = when {
+            languages.isEmpty() && experiences.isEmpty() -> allContent.value
+            languages.isEmpty() -> allContent.value?.filter { experiencesChosen.contains(it.type.lowercase()) }
+            experiences.isEmpty() -> allContent.value?.filter { languagesChosen.contains(it.language.lowercase()) }
+            else -> allContent.value?.filter {
+                languagesChosen.contains(it.language.lowercase()) && experiencesChosen.contains(it.type.lowercase())
+            }
         }
     }
 
@@ -360,7 +364,11 @@ class CallViewModel @Inject constructor(
     }
 
     fun endCall() {
-        socket.send("end")
+        //how to check if socket is initialized
+        if (this::socket.isInitialized) {
+            socket.send("end")
+        }
+         // Null Error here
     }
 
     /*

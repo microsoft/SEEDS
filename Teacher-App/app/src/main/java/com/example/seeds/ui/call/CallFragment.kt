@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -24,6 +26,7 @@ import com.example.seeds.ui.BaseFragment
 import com.example.seeds.ui.createclassroom.CreateClassroomFragmentArgs
 import com.example.seeds.utils.ContactUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.log
 
@@ -135,6 +138,22 @@ class CallFragment : BaseFragment() {
             }
         })
 
+        binding.retryTeacher.setOnClickListener {
+            viewModel.connectParticipant("Teacher", viewModel.teacherPhoneNumber)
+            lifecycleScope.launch {
+                delay(120000) // 120000 milliseconds = 2 minutes
+
+                // Check if the teacher's status is still not ANSWERED
+                if (viewModel.teacherCallStatus.value?.callerState != CallerState.ANSWERED) {
+                    // Implement logic to end the conference
+                    // Example: viewModel.endCall()
+                    logMessage("Call ended because teacher disconnected - Reason: ${viewModel.teacherCallStatus.value?.callerState}")
+
+                }
+            }
+
+        }
+
         binding.endCallBtn.setOnClickListener {
             val classroom = args.classroom
             classroom.contentIds = viewModel.selectedContentList.value!!.map{
@@ -218,6 +237,7 @@ class CallFragment : BaseFragment() {
                 viewModel._forwardStreamDone.postValue(false)
                 logMessage("Audio forward clicked ${viewModel.selectedContent.value!!.id} ${viewModel.selectedContent.value!!.title}}")
                 viewModel.forwardAudio()
+                showFeedback(binding.forwardFeedback, "+10s")
             }
         }
 
@@ -226,9 +246,20 @@ class CallFragment : BaseFragment() {
                 viewModel._backwardStreamDone.postValue(false)
                 logMessage("Audio backward clicked ${viewModel.selectedContent.value!!.id} ${viewModel.selectedContent.value!!.title}}")
                 viewModel.backwardAudio()
+                showFeedback(binding.backwardFeedback, "-10s")
             }
         }
         return binding.root
+    }
+
+    private fun showFeedback(textView: TextView, message: String) {
+        textView.text = message
+        textView.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            delay(1500) // Delay for 1.5 seconds
+            textView.visibility = View.INVISIBLE
+        }
     }
 
     private fun removeUser(phoneNumber: String) {

@@ -91,7 +91,7 @@
         <fragment
             android:id="@+id/callFragment"
             android:name="com.example.seeds.ui.call.CallFragment"
-            android:label="Call"
+            android:label="Session"
             tools:layout="@layout/fragment_call">
             <argument
                 android:name="phoneNumbers"

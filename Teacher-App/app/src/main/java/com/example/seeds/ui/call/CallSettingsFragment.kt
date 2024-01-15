@@ -1,20 +1,15 @@
 package com.example.seeds.ui.call
 
-import android.Manifest
 import android.app.AlertDialog
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -28,9 +23,6 @@ import com.example.seeds.databinding.AssignLeaderBinding
 import com.example.seeds.databinding.FragmentCallSettingsBinding
 import com.example.seeds.model.Content
 import com.example.seeds.ui.BaseFragment
-import com.example.seeds.ui.home.HomeFragmentDirections
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -80,7 +72,7 @@ class CallSettingsFragment : BaseFragment() {
 
         binding.selectedContentList.adapter = ContentListAdapter(showRemoveContent = true,
             onContentClickListener = ContentListAdapter.OnClickListener {
-                removeUser(it)
+                removeContent(it)
             })
 
         if(args.selectedStudents == null){
@@ -91,19 +83,26 @@ class CallSettingsFragment : BaseFragment() {
             (binding.myStudentsList.adapter as CheckboxNameListAdapter).usersInGroup.addAll(args.selectedStudents!!)
         }
 
+        viewModel.classroom.observe(viewLifecycleOwner, Observer {
+           if (it!=null){
+               binding.addContentCs.isEnabled = true
+               binding.startCallBtn.isEnabled = true
+               binding.editClassroomButton.isEnabled = true
+
+           }
+        })
+
         binding.addContentCs.setOnClickListener {
             val phoneNumbers = (binding.myStudentsList.adapter as CheckboxNameListAdapter).usersInGroup
             logMessage("Call Settings add content - to classroom: ${viewModel.classroom.value}")
             findNavController().navigate(CallSettingsFragmentDirections.actionCallSettingsFragmentToHomeFragment().setSelectedStudents(phoneNumbers.toTypedArray()).setClassroom(args.classroom).setSelectedContent(
-                viewModel.classroom.value!!.contents!!.map{it.id}.toTypedArray() //Null Error possible
+                viewModel.classroom.value?.contents?.map{it.id}?.toTypedArray() //TODO:Null Error fix
             ))
         }
 
         binding.studentsSearchTextBox.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun afterTextChanged(p0: Editable?) {
                 val text = binding.studentsSearchTextBox.text.toString().lowercase()
                 if(text.isNotEmpty()){
@@ -129,7 +128,8 @@ class CallSettingsFragment : BaseFragment() {
                     .show()
             }
             else{
-                val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
+                //val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
+                val teacherPhoneNumber = requireActivity().getSharedPreferences("sharedPref", AppCompatActivity.MODE_PRIVATE).getString("phone", null).toString().replace("+", "")
                 val teachList = arrayListOf(teacherPhoneNumber)
                 teachList.addAll(phoneNumbersForCall)
                 var leaderForCall = getLeader()
@@ -266,7 +266,7 @@ class CallSettingsFragment : BaseFragment() {
         return binding.root
     }
 
-    private fun removeUser(content: Content) {
+    private fun removeContent(content: Content) {
         AlertDialog.Builder(requireContext())
             .setMessage("Are you sure you want to remove ${content.title}?")
             .setCancelable(true)
@@ -409,7 +409,6 @@ class CallSettingsFragment : BaseFragment() {
 //                    )
 //                }
 //            }
-//            //TODO: show rationale
 //            else -> {
 //                requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
 //            }

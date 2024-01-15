@@ -75,10 +75,10 @@ fun bindFilterContentRecyclerView(recyclerView: RecyclerView, data: List<String>
 //    }
 //}
 
-@BindingAdapter("studentCallStatusData")
-fun bindStudentCallStatusRecyclerView(recyclerView: RecyclerView, data: List<StudentCallStatus>?) {
+@BindingAdapter("studentCallStatusData", "teacherPhoneNumber")
+fun bindStudentCallStatusRecyclerView(recyclerView: RecyclerView, data: List<StudentCallStatus>?, teacherPhoneNumber: String) {
     val adapter = recyclerView.adapter as StudentCallStatusAdapter
-    val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
+//    val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
     Log.d("studentCallStatusData", data.toString())
     data?.let {
         adapter.submitList(it.toMutableList().filter { state ->

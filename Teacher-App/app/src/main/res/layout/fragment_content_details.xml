@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="content"
             type="com.example.seeds.model.Content" />
@@ -114,7 +115,7 @@
             android:layout_marginBottom="16dp"
             app:hide_on_touch="false"
             app:show_timeout="0"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/content_audio_answer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:shutter_background_color="@color/white"
@@ -123,6 +124,27 @@
             app:scrubber_color="@color/seeds_yellow"
             app:played_color="@color/seeds_yellow"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/content_audio_answer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:hide_on_touch="false"
+            app:show_timeout="0"
+            android:visibility="@{content.type.equals(`Riddle`) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shutter_background_color="@color/white"
+            android:foregroundTint="@color/seeds_yellow"
+            android:backgroundTint="@color/seeds_yellow"
+            app:scrubber_color="@color/seeds_yellow"
+            app:played_color="@color/seeds_yellow"
+            app:layout_constraintTop_toBottomOf="@+id/content_audio" />
+
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

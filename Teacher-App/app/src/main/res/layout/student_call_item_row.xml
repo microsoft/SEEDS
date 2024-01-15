@@ -78,7 +78,7 @@
                 android:contentDescription="Retry call"
                 android:paddingHorizontal="8dp"
                 android:src="@drawable/ic_retry"
-                android:visibility='@{studentCallStatus.callerState == CallerState.UNANSWERED || studentCallStatus.callerState == CallerState.BUSY || studentCallStatus.callerState == CallerState.TIMEOUT || studentCallStatus.callerState == CallerState.UNDEFINED ? View.VISIBLE: View.GONE}'
+                android:visibility='@{studentCallStatus.callerState == CallerState.UNANSWERED || studentCallStatus.callerState == CallerState.BUSY || studentCallStatus.callerState == CallerState.TIMEOUT || studentCallStatus.callerState == CallerState.UNDEFINED  || studentCallStatus.callerState == CallerState.COMPLETED ? View.VISIBLE: View.GONE}'
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

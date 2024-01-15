@@ -29,7 +29,17 @@ class ContentDetailsFragment : BaseFragment() {
         binding = FragmentContentDetailsBinding.inflate(inflater)
         binding.content = args.content
         binding.contentAudio.player = ExoPlayer.Builder(requireContext()).build()
-        val videoUri = Uri.parse("https://seedscontent.blob.core.windows.net/output-original/${args.content.id}.mp3")
+        var src = "https://seedscontent.blob.core.windows.net/output-original/${args.content.id}.mp3"
+        val answerSrc = "https://seedscontent.blob.core.windows.net/output-original/${args.content.id}/answer.mp3"
+        if (args.content.type == "Riddle") {
+            src = "https://seedscontent.blob.core.windows.net/output-original/${args.content.id}/question.mp3";
+            binding.contentAudioAnswer.player = ExoPlayer.Builder(requireContext()).build()
+            val answerVideoUri = Uri.parse(answerSrc)
+            val answerMediaItem: MediaItem = MediaItem.fromUri(answerVideoUri)
+            binding.contentAudioAnswer.player?.setMediaItem(answerMediaItem)
+            binding.contentAudioAnswer.player?.prepare()
+        }
+        val videoUri = Uri.parse(src)
         val mediaItem: MediaItem = MediaItem.fromUri(videoUri)
         binding.contentAudio.player?.setMediaItem(mediaItem)
         binding.contentAudio.player?.prepare()
@@ -40,6 +50,8 @@ class ContentDetailsFragment : BaseFragment() {
         logMessage("Music player released ${args.content.id} ${args.content.title} ${binding.contentAudio.player?.contentPosition} ${binding.contentAudio.player?.contentDuration}")
         binding.contentAudio.player?.stop()
         binding.contentAudio.player?.release()
+        binding.contentAudioAnswer.player?.stop()
+        binding.contentAudioAnswer.player?.release()
         super.onDestroyView()
     }
 

@@ -1,6 +1,7 @@
 package com.example.seeds
 
 import android.app.Application
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import androidx.work.*
@@ -29,7 +30,10 @@ class SeedsApplication: Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        val remoteTree = TimberRemoteTree(logDatabase)
+        val sharedPreferences = getSharedPreferences("YourSharedPreferencesName", Context.MODE_PRIVATE)
+        val teacherPhoneNumber = sharedPreferences.getString("phone", "") ?: ""
+            .replace("+", "")
+        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
         Timber.plant(remoteTree)
         //delayedInit()
     }

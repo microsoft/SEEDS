@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassroomViewModel @Inject constructor(
-    private val classroomRepository: ClassroomRepository, private val contentRepository: ContentRepository
+    private val classroomRepository: ClassroomRepository
 ): ViewModel() {
 
     private val _classrooms = MutableLiveData<List<Classroom>>(null)

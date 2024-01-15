@@ -72,6 +72,19 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/retry_teacher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:contentDescription="Retry call"
+                    android:paddingHorizontal="8dp"
+                    android:src="@drawable/ic_retry"
+                    android:visibility='@{viewModel.teacherCallStatus.callerState == CallerState.UNANSWERED || viewModel.teacherCallStatus.callerState == CallerState.BUSY || viewModel.teacherCallStatus.callerState == CallerState.TIMEOUT || viewModel.teacherCallStatus.callerState == CallerState.UNDEFINED  || viewModel.teacherCallStatus.callerState == CallerState.COMPLETED ? View.VISIBLE: View.GONE}'
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -212,7 +225,7 @@
             app:layout_constraintStart_toEndOf="@+id/pause_play_button"
             app:layout_constraintTop_toTopOf="@+id/pause_play_button"
             app:srcCompat="@drawable/ic_forward" />
-        
+
         <TextView
             android:id="@+id/initiating_call_text"
             style="@style/AllTitles"
@@ -340,11 +353,37 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:studentCallStatusData="@{viewModel.callState}"
+                    app:teacherPhoneNumber="@{viewModel.teacherPhoneNumber}"
                     tools:itemCount="5"
                     tools:listitem="@layout/student_call_item_row" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/forward_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="+10s"
+            android:textColor="@color/dark_gray"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/forward_button"
+            app:layout_constraintStart_toEndOf="@+id/forward_button"
+            app:layout_constraintTop_toTopOf="@+id/forward_button"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/backwardFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="-10s"
+            android:textColor="@color/dark_gray"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/backward_button"
+            app:layout_constraintEnd_toStartOf="@+id/backward_button"
+            app:layout_constraintTop_toTopOf="@+id/backward_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

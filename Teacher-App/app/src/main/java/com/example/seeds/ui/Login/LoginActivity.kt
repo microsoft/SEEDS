@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private var storedVerificationId: String? = null
-    private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
+    private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
     private lateinit var phoneNumber: String
     private var timerJob: Job? = null
 
@@ -39,16 +39,36 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        savedInstanceState?.let { bundle ->
+            storedVerificationId = bundle.getString("storedVerificationId")
+            resendToken = bundle.getParcelable("resendToken")
+            phoneNumber = bundle.getString("phoneNumber", "")
+        }
+
+        if (storedVerificationId != null) {
+            // OTP has been sent, update UI to show OTP input field
+            binding.codeSentText.visibility = View.VISIBLE
+            binding.editTextPhone.hint = "Please Enter 6 digit OTP"
+            binding.privacyPolicyFirstLine.visibility = View.INVISIBLE
+            binding.privacyPolicySecondLine.visibility = View.INVISIBLE
+            binding.signUpGoogleBtn.text = "Verify"
+            binding.editTextPhone.text.clear()
+        }
+
         binding.signUpGoogleBtn.setOnClickListener{
             var isValidPhoneNumber = false
             val MobilePattern = "[0-9]{10}"
             var enteredPhoneNumber = binding.editTextPhone.text.toString()
+
+            if (binding.editTextName.text.toString().isEmpty())  {
+                Toast.makeText(applicationContext,"Please Enter Name", Toast.LENGTH_SHORT).show();
+            }
             if(Pattern.matches(MobilePattern, enteredPhoneNumber)) {
                 isValidPhoneNumber = true
             }
             enteredPhoneNumber = "+91$enteredPhoneNumber"
 
-            if(isValidPhoneNumber && storedVerificationId == null) {
+            if(binding.editTextName.text.toString().isNotEmpty() && isValidPhoneNumber && storedVerificationId == null) {
                 binding.signUpGoogleBtn.isEnabled = false
                 startPhoneNumberVerification(enteredPhoneNumber)
                 phoneNumber = enteredPhoneNumber
@@ -57,15 +77,13 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext,"Please Enter Valid Phone Number", Toast.LENGTH_SHORT).show();
 
             if(storedVerificationId != null){
-                verifyPhoneNumberWithCode(storedVerificationId, binding.editTextPhone.text.toString())
+                verifyPhoneNumberWithCode(storedVerificationId!!, binding.editTextPhone.text.toString())
             }
         }
 
         binding.editTextPhone.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun afterTextChanged(p0: Editable?) {
                 if(storedVerificationId != null)
                     binding.signUpGoogleBtn.isEnabled = binding.editTextPhone.text.toString().length == 6
@@ -73,7 +91,10 @@ class LoginActivity : AppCompatActivity() {
         })
 
         binding.resendCodeLink.setOnClickListener {
-            resendVerificationCode(phoneNumber, resendToken)
+            resendToken?.let { token ->
+                resendVerificationCode(phoneNumber, token) // **Changed**
+            }
+//            resendVerificationCode(phoneNumber, resendToken)
         }
     }
 
@@ -117,8 +138,12 @@ class LoginActivity : AppCompatActivity() {
                 storedVerificationId = verificationId
                 resendToken = token
                 binding.editTextPhone.text.clear()
+
+                startResendTimer()
             }
         }
+
+
 
         val options = PhoneAuthOptions.newBuilder(Firebase.auth)
             .setPhoneNumber(phoneNumber)       // Phone number to verify
@@ -126,20 +151,45 @@ class LoginActivity : AppCompatActivity() {
             .setActivity(this)                 // Activity (for callback binding)
             .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
             .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+        PhoneAuthProvider.verifyPhoneNumber(options) //PhoneAuthOptions is a configuration tool that tailors the phone number verification process to your specific requirements. It encapsulates all necessary information for Firebase to execute the OTP sending and verification process according to the provided specifications.
 
-        timerJob?.cancel()
+//        timerJob?.cancel()
+//        timerJob = lifecycleScope.launch {
+//            var timer = 60
+//            while(timer >= 0){
+//                delay(1000)
+//                binding.timeRemaining.setText("Resend OTP in: ${timer}s")
+//                timer -= 1
+//            }
+//            binding.codeSentText.visibility = View.GONE
+//            binding.resendCodeLink.visibility = View.VISIBLE
+//            binding.resendCodeText.visibility = View.VISIBLE
+//        }
+    }
+
+    private fun startResendTimer() {
+        timerJob?.cancel()  // Cancel any existing timer
         timerJob = lifecycleScope.launch {
-            var timer = 60
+            var timer = 60  // Set the countdown duration
             while(timer >= 0){
                 delay(1000)
                 binding.timeRemaining.setText("Resend OTP in: ${timer}s")
                 timer -= 1
             }
+            // Update UI to allow resending the OTP
             binding.codeSentText.visibility = View.GONE
             binding.resendCodeLink.visibility = View.VISIBLE
             binding.resendCodeText.visibility = View.VISIBLE
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("storedVerificationId", storedVerificationId)
+        resendToken?.let { token -> // **Added**
+            outState.putParcelable("resendToken", token) // **Added**
+        }
+        outState.putString("phoneNumber", phoneNumber) // **Added**
     }
 
     private fun resendVerificationCode(
@@ -180,6 +230,10 @@ class LoginActivity : AppCompatActivity() {
                 // Save verification ID and resending token so we can use them later
                 storedVerificationId = verificationId
                 resendToken = token
+                binding.codeSentText.visibility = View.VISIBLE
+                binding.editTextPhone.hint = "Enter OTP"
+                binding.signUpGoogleBtn.text = "Verify"
+
                 binding.editTextPhone.text.clear()
             }
         }
@@ -207,8 +261,8 @@ class LoginActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun verifyPhoneNumberWithCode(verificationId: String?, code: String) {
-        val credential = PhoneAuthProvider.getCredential(verificationId!!, code)
+    private fun verifyPhoneNumberWithCode(verificationId: String, code: String) {
+        val credential = PhoneAuthProvider.getCredential(verificationId, code)
         signInWithPhoneAuthCredential(credential)
     }
 
