@@ -2,6 +2,7 @@ package com.example.seeds
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import androidx.work.*
@@ -30,11 +31,16 @@ class SeedsApplication: Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        val sharedPreferences = getSharedPreferences("YourSharedPreferencesName", Context.MODE_PRIVATE)
-        val teacherPhoneNumber = sharedPreferences.getString("phone", "") ?: ""
-            .replace("+", "")
-        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
-        Timber.plant(remoteTree)
+//        val sharedPreferences = context.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+//        var phoneNumber = sharedPreferences.getString("phone", null) // Default value as an example
+//        if (phoneNumber != null) phoneNumber = "+91$phoneNumber"
+//        Log.d("PHONEAUTH", "Phone number is $phoneNumber")
+
+//        val sharedPreferences = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+//        val teacherPhoneNumber = sharedPreferences.getString("phone", "unknown") ?: "unknown"
+//            .replace("+", "")
+//        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
+//        Timber.plant(remoteTree)
         //delayedInit()
     }
 

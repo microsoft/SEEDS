@@ -1,8 +1,10 @@
 package com.example.seeds
 
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +15,8 @@ import com.example.seeds.dao.LogDao
 import com.example.seeds.databinding.ActivityMainBinding
 import com.example.seeds.network.SeedsService
 import com.example.seeds.utils.Constants
+import com.example.seeds.utils.TimberInitializer
+import com.example.seeds.utils.TimberRemoteTree
 import com.example.seeds.workers.UploadLogsWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,6 +44,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.mainToolbar)
+
+        val sharedPreferences = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        var teacherPhoneNumber = sharedPreferences.getString("phone", null) ?: ""
+        teacherPhoneNumber = "+91$teacherPhoneNumber"
+        Log.d("MainActivity", "teacherPhoneNumber: $teacherPhoneNumber")
+        if (teacherPhoneNumber.length == 13) TimberInitializer.plantTimberTree(database, teacherPhoneNumber)
+        else TimberInitializer.plantTimberTree(database, "Unknown")
+//        }
+//        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
+//        Timber.plant(remoteTree)
 
         val navView: BottomNavigationView = binding.navView
 

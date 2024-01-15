@@ -33,3 +33,16 @@ class TimberRemoteTree(val database: LogDao,
         }
     }
 }
+
+object TimberInitializer {
+
+    private var isTreePlanted = false
+
+    fun plantTimberTree(logDatabase: LogDao, teacherPhoneNumber: String) {
+        if (!isTreePlanted) {
+            val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
+            Timber.plant(remoteTree)
+            isTreePlanted = true
+        }
+    }
+}
