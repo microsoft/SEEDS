@@ -255,9 +255,12 @@ async function updateRaiseHand(confId, number, flag) {
       }
       if(flag1 && flag2){break;}
     }
-    playMessage(teacherUUID,`${handRaisedUserName} raised the Hand.`)
+    //playMessage(teacherUUID,`${handRaisedUserName} raised the Hand.`) // error // call tts
+    global.communicationApi.playMessage(teacherUUID,`${handRaisedUserName} raised the Hand.`)
   }
 }
+
+
 
 // It updates the isMuted field and also updates the raiseHand to false if that user is UnMuted
 async function updateMutePropertyOfUserInConference(confId,phoneNumber,flag){
@@ -277,7 +280,7 @@ async function updateMutePropertyOfUserInConference(confId,phoneNumber,flag){
 // It is a generic function that handles all the requests which are intended to control/change the state of the conference call, irrespective of client (android app or Leader of conference)
 async function handleConferenceCallControls(confId,action,params,by='Teacher'){
         conf_obj = await Conference.findById(confId)
-        if(conf_obj.isEnded){
+        if(conf_obj.isEnded){ //null error here
           return;
         }
         if (action === "end") {
