@@ -398,3 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 package-lock.json
+
+IVRv2/venv/

@@ -1,0 +1,12 @@
+- Create python virtual env. Make sure to have python version 3.10 
+    python -m venv venv
+
+- Activate the venv:
+    Linux: source venv/bin/activate
+    Cmd Prompt: venv\Scripts\activate
+
+- Install required packages
+    pip install -r ./requirements.txt
+
+- Run the application
+    uvicorn main:app
