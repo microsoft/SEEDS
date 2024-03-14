@@ -22,11 +22,13 @@ const app = express();
 // Define the rate limiter options
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes - The time window for which requests are counted.
-  max: 100, // 100 requests - The maximum number of requests per IP within the time window.
+  max: 5000, // 5000 requests - The maximum number of requests per IP within the time window.
 });
 
 // Apply the rate limiter middleware to all requests
-app.use(morgan('dev'))
+morgan.format('custom', '[:date[iso]] :method :url :status :response-time ms - :res[content-length]');
+app.use(morgan('custom'));
+// app.use(morgan('dev'))
 app.use(limiter);
 app.use(cors())
 app.use("/call", verifyToken, bodyParser.json(), callRouter);

@@ -1,4 +1,6 @@
 package com.example.seeds
+
+import NetworkConnectivityLiveData
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -60,4 +62,9 @@ object HiltAppModule {
     @Provides
     fun provideLogDao(database: StudentDatabase) = database.logDao
 
+//    @Singleton
+//    @Provides
+//    fun provideConnectivityLiveData(@ApplicationContext context: Context): NetworkConnectivityLiveData {
+//        return NetworkConnectivityLiveData(context)
+//    }
 }

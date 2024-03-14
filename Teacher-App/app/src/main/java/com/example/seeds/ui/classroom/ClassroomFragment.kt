@@ -74,10 +74,6 @@ class ClassroomFragment : BaseFragment() {
         //scroll to the top
         logMessage("onStart")
         binding.searchTextBox.setText("")
-        val a = "919606612444"
-        //convert variable a to have spaces between each number
-        val b = a.chunked(2).joinToString(" ")
-
         super.onStart()
     }
 

@@ -1,5 +1,6 @@
 package com.example.seeds.ui.call
 
+import NetworkConnectivityLiveData
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,6 +36,8 @@ class CallFragment : BaseFragment() {
     private lateinit var binding: FragmentCallBinding
     private val viewModel: CallViewModel by navGraphViewModels(R.id.call_nav) { defaultViewModelProviderFactory }
     private val args : CallFragmentArgs by navArgs()
+    private lateinit var networkConnectivityLiveData: NetworkConnectivityLiveData
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,12 +46,21 @@ class CallFragment : BaseFragment() {
         binding = FragmentCallBinding.inflate(inflater)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        networkConnectivityLiveData = NetworkConnectivityLiveData(requireActivity().applicationContext)
+
+        networkConnectivityLiveData.observe(viewLifecycleOwner, Observer { isConnected ->
+            if(isConnected) {
+                Log.d("CallFragment", "Network is connected")
+            } else {
+                findNavController().navigate(CallFragmentDirections.actionCallFragmentToCallNoInternetFragment())
+                Log.d("CallFragment", "Network is not connected")
+            }
+        })
 
         binding.myStudentsList.adapter = StudentCallStatusAdapter(StudentCallStatusAdapter.OnClickListener{
             logMessage("Muted: ${it.name} - ${it.phoneNumber}")
             viewModel.muteParticipant(it.phoneNumber)
         }, StudentCallStatusAdapter.OnClickListener{
-            Log.d("UNMUTE CLICKED", "UNMUTE CLICKED")
             logMessage("Unmuted: ${it.name} - ${it.phoneNumber}")
             viewModel.unmuteParticipant(it.phoneNumber)
         }, StudentCallStatusAdapter.OnClickListener{
@@ -60,9 +72,18 @@ class CallFragment : BaseFragment() {
 
         viewModel.callToken.observe(viewLifecycleOwner, Observer {
             if(it != null) {
+                Log.d("CallFragment", "Call token: $it")
                 logMessage("Call token: $it")
             }
         })
+
+//        viewModel.networkConnectivityLiveData.observe(viewLifecycleOwner, Observer { isConnected ->
+//            if(isConnected) {
+//                Log.d("CallFragment", "Network is connected")
+//            } else {
+//                Log.d("CallFragment", "Network is not connected")
+//            }
+//        })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if(viewModel.navigateBack.value == true) {
@@ -134,9 +155,18 @@ class CallFragment : BaseFragment() {
         viewModel.navigateBack.observe(viewLifecycleOwner, Observer {
             if(it){
                 requireActivity().onBackPressed()
-                //
             }
         })
+
+//        viewModel.networkConnected.observe(viewLifecycleOwner) { isConnected ->
+//            if (isConnected) {
+//                // Handle reconnection logic, possibly re-establish WebSocket connection
+//                // and refresh UI state to reflect current call state
+//            } else {
+//                // Navigate to "No Internet" screen
+//                findNavController().navigate(CallFragmentDirections.actionCallFragmentToCallNoInternetFragment())
+//            }
+//        }
 
         binding.retryTeacher.setOnClickListener {
             viewModel.connectParticipant("Teacher", viewModel.teacherPhoneNumber)
@@ -147,7 +177,13 @@ class CallFragment : BaseFragment() {
                 if (viewModel.teacherCallStatus.value?.callerState != CallerState.ANSWERED) {
                     // Implement logic to end the conference
                     // Example: viewModel.endCall()
-                    logMessage("Call ended because teacher disconnected - Reason: ${viewModel.teacherCallStatus.value?.callerState}")
+                    val classroom = args.classroom
+                    classroom.contentIds = viewModel.selectedContentList.value!!.map{
+                        it.id
+                    }
+                    viewModel.updateClassroomContent(classroom)
+
+                    logMessage("Call ended because teacher didn't rejoin within 2 minutes - Reason: ${viewModel.teacherCallStatus.value?.callerState}")
 
                 }
             }

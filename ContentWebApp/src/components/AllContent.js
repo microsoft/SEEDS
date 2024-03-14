@@ -213,12 +213,12 @@ const AllContent = () => {
         {content.length > 0 && <table className="table table-striped table-bordered">
           <thead>
             <tr className="tableHeading">
-              <th style={{ color: "white" }}> TITLE </th>
-              <th style={{ color: "white" }}> THEME </th>
-              <th style={{ color: "white" }}> UPLOADED </th>
-              <th style={{ color: "white" }}> LANGUAGE </th>
-              <th style={{ color: "white" }}> TYPE </th>
-              <th style={{ color: "white" }}> ACTIONS </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> TITLE </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> THEME </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> UPLOADED </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> LANGUAGE </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> TYPE </th>
+              <th style={{ color: "white", backgroundColor:"#28574f" }}> ACTIONS </th>
             </tr>
           </thead>
           <tbody>

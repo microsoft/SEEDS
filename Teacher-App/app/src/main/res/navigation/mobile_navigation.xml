@@ -114,6 +114,9 @@
             <action
                 android:id="@+id/action_callFragment_to_addMoreContentToCallFragment"
                 app:destination="@id/addMoreContentToCallFragment" />
+            <action
+                android:id="@+id/action_callFragment_to_callNoInternetFragment"
+                app:destination="@id/callNoInternetFragment" />
         </fragment>
         <fragment
             android:id="@+id/addStudentsFragment"
@@ -134,6 +137,11 @@
             android:name="com.example.seeds.ui.call.AddMoreContentToCallFragment"
             tools:layout="@layout/fragment_add_more_content_to_call"
             android:label="All Content" />
+        <fragment
+            android:id="@+id/callNoInternetFragment"
+            android:name="com.example.seeds.ui.noInternet.CallNoInternetFragment"
+            android:label="No Internet"
+            tools:layout="@layout/fragment_call_no_internet"/>
     </navigation>
     <fragment
         android:id="@+id/classroomFragment"
@@ -168,4 +176,10 @@
             android:name="content"
             app:argType="com.example.seeds.model.Content" />
     </fragment>
+    <fragment
+        android:id="@+id/noInternetFragment"
+        android:name="com.example.seeds.ui.noInternet.NoInternetFragment"
+        android:label="NoInternetFragment" />
+    <action android:id="@+id/action_global_noInternetFragment"
+        app:destination="@id/noInternetFragment"/>
 </navigation>
