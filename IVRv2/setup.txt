@@ -10,3 +10,8 @@
 
 - Run the application
     uvicorn main:app
+
+- Use Ngrok
+ngrok http 8000
+
+- Update the URLs in the Vonage API dashboard and .env
