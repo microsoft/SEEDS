@@ -9,3 +9,6 @@ class InputAction(Action):
         
     def get(self):
         raise NotImplementedError("Get() Function called on Base Action `InputAction`")
+    
+    def __str__(self):
+        return f"InputAction: {self.type} {self.eventUrl} {self.extra_args}"

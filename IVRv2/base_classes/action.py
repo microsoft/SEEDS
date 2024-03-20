@@ -5,3 +5,6 @@ class Action(ABC):
     def get(self):
         pass
     
+    def __repr__(self):
+        return self.__str__()
+    
