@@ -7,4 +7,4 @@ class TalkAction(Action):
         self.extra_args = kwargs
         
     def get(self):
-        raise NotImplementedError
+        raise NotImplementedError("Get() Function called on Base Action `TalkAction`")

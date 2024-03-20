@@ -37,4 +37,10 @@ class VonageStreamAction(StreamAction):
         self.loop = loop
     
     def get(self):
-        pass
+        return {
+            'action': "stream",
+            'streamUrl': [self.streamUrl],
+            'loop': self.loop,
+            'bargeIn': self.bargeIn,
+            'level': self.level
+        }

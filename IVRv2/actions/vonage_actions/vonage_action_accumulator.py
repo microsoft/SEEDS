@@ -3,4 +3,5 @@ from base_classes.action_accumulator import ActionAccumulator
 
 class VonageActionAccumulator(ActionAccumulator):
     def combine(self, actions: list[Action]):
-        raise NotImplementedError
+        return [x.get() for x in actions]
+        # raise NotImplementedError

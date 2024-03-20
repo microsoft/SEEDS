@@ -3,6 +3,8 @@ from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.talk_action import TalkAction
 from actions.vonage_actions.vonage_action_accumulator import VonageActionAccumulator
 from actions.vonage_actions.vonage_stream_action import VonageStreamAction
+from actions.vonage_actions.vonage_talk_action import VonageTalkAction
+from actions.vonage_actions.vonage_input_action import VonageInputAction
 from base_classes.action import Action
 from base_classes.action_factory import ActionFactory
 
@@ -11,13 +13,23 @@ class VonageActionFactory(ActionFactory):
     def get_action_implmentation(self, action: Action):
         if isinstance(action, StreamAction):
             return VonageStreamAction(streamUrl=action.url,
-                                      level=action.extra_args.get("level", VonageStreamAction.default_level),
+                                      level=action.extra_args.get("volume", VonageStreamAction.default_level),
                                       bargeIn=action.extra_args.get("bargeIn", VonageStreamAction.default_bargeIn),
                                       loop=action.extra_args.get("loop", VonageStreamAction.default_loop))
+            
         elif isinstance(action, TalkAction):
-            pass
+            return VonageTalkAction(text=action.text,
+                                    level=action.extra_args.get("volume", VonageTalkAction.default_level),
+                                    bargeIn=action.extra_args.get("bargeIn", VonageTalkAction.default_bargeIn),
+                                    loop=action.extra_args.get("loop", VonageTalkAction.default_loop),
+                                    language=action.extra_args.get("language", VonageTalkAction.default_language))
+            
         elif isinstance(action, InputAction):
-            pass
+            return VonageInputAction(type_=action.type,
+                                    eventUrl=action.eventUrl,
+                                    maxDigits=action.extra_args["maxDigits"],
+                                    timeOut=action.extra_args["timeOut"],
+                                    submitOnHash=action.extra_args["submitOnHash"])
         
         raise NotImplementedError()
             
