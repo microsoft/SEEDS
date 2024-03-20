@@ -8,3 +8,6 @@ class StreamAction(Action):
         
     def get(self):
         raise NotImplementedError("Get() Function called on Base Action `StreamAction`")
+    
+    def __str__(self):
+        return f"StreamAction: {self.url} {self.extra_args}"

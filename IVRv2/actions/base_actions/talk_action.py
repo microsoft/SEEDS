@@ -8,3 +8,6 @@ class TalkAction(Action):
         
     def get(self):
         raise NotImplementedError("Get() Function called on Base Action `TalkAction`")
+    
+    def __str__(self):
+        return f"TalkAction: {self.text} {self.extra_args}"
