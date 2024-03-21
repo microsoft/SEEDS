@@ -94,8 +94,8 @@ print("PRESSING 2")
 print(fsm.get_next_actions("2")) # S2
 print("PRESSING 1")
 print(fsm.get_next_actions("1")) # S3
-print("PRESSING 3")
-print(fsm.get_next_actions("3")) # S5
+print("PRESSING 9")
+print(fsm.get_next_actions("9")) # S5
 
 
 
