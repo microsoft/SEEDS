@@ -1,14 +1,17 @@
 import vonage
 from dotenv import load_dotenv
 import os
+from utils.sas_gen import SASGen
 # from vonage.voice import Ncco
 
 load_dotenv()
 
 application_id = os.getenv("VONAGE_APPLICATION_ID")
-print(application_id)
 api_secret = os.getenv("VONAGE_API_SECRET")
 api_key = os.getenv("VONAGE_API_KEY")
+
+sas_gen = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
+audio_url = sas_gen.get_url_with_sas("https://seedsblob.blob.core.windows.net/output-original/04573140-93e9-4edc-9efc-e9b21d3052f8.mp3")
 
 client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
 
@@ -17,8 +20,8 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
     
 
 response = client.voice.create_call({
-  'to': [{'type': 'phone', 'number': '919606612444'}],
-  'from': {'type': 'phone', 'number': '18334295295'},
+  'to': [{'type': 'phone', 'number': os.getenv("KAVYANSH_NUMBER")}],
+  'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
   'ncco': [
          {
             'action': 'talk', 
@@ -26,20 +29,21 @@ response = client.voice.create_call({
          },
          {
             'action': "stream",
-            'streamUrl': ['https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3'],
+            # 'streamUrl': ['https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3'],
+            'streamUrl': [audio_url],
             'loop': 1,
             'bargeIn': 'False',
         },
-        {
-            'action': 'input',
-            'eventUrl': [os.getenv("NGROK_URL")+ '/input'],
-            'type': ['dtmf'],
-            'dtmf': {
-                'maxDigits': 6,
-                'submitOnHash': 'True',
-                'timeOut': 1000
-            }
-        }
+        # {
+        #     'action': 'input',
+        #     'eventUrl': [os.getenv("NGROK_URL")+ '/input'],
+        #     'type': ['dtmf'],
+        #     'dtmf': {
+        #         'maxDigits': 6,
+        #         'submitOnHash': 'True',
+        #         'timeOut': 1000
+        #     }
+        # }
   ]
 })
 
