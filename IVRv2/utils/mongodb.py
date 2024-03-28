@@ -20,4 +20,14 @@ class MongoDB:
     async def find(self, query: dict) -> dict | None:
         doc = await self.collection.find_one(query)
         return doc
- 
+    
+    async def update_document(self, id: str, new_doc: dict):
+        if "_id" not in new_doc:
+            new_doc["_id"] = id
+        result = await self.collection.replace_one({"_id": id}, new_doc, upsert=True)
+        if result.modified_count > 0:
+            print(f"Document with _id: {id} replaced.")
+        elif result.upserted_id is not None:
+            print(f"New document inserted with _id: {result.upserted_id}.")
+        else:
+            print("No document was replaced.")
