@@ -20,7 +20,7 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
     
 
 response = client.voice.create_call({
-  'to': [{'type': 'phone', 'number': os.getenv("KAVYANSH_NUMBER")}],
+  'to': [{'type': 'phone', 'number': '919606612444'}],
   'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
   'ncco': [
          {
@@ -29,21 +29,21 @@ response = client.voice.create_call({
          },
          {
             'action': "stream",
-            # 'streamUrl': ['https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3'],
-            'streamUrl': [audio_url],
+            'streamUrl': ['https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3'],
+            # 'streamUrl': [audio_url],
             'loop': 1,
             'bargeIn': 'False',
         },
-        # {
-        #     'action': 'input',
-        #     'eventUrl': [os.getenv("NGROK_URL")+ '/input'],
-        #     'type': ['dtmf'],
-        #     'dtmf': {
-        #         'maxDigits': 6,
-        #         'submitOnHash': 'True',
-        #         'timeOut': 1000
-        #     }
-        # }
+        {
+            'action': 'input',
+            'eventUrl': [os.getenv("NGROK_URL")+ '/input'],
+            'type': ['dtmf'],
+            'dtmf': {
+                'maxDigits': 6,
+                'submitOnHash': 'True',
+                'timeOut': 1000
+            }
+        }
   ]
 })
 
