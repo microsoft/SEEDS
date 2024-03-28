@@ -15,6 +15,7 @@ from fsm.fsm import FSM
 
 from dotenv import load_dotenv
 import os
+from utils.model_classes import DTMFInput
 from utils.sas_gen import SASGen
 
 load_dotenv()
@@ -149,13 +150,6 @@ def get_event():
 def get_event():
     return {"hello": "world"}
 
-class DTMFDetails(BaseModel):
-    digits: str
-    timed_out: bool
-
-class DTMFInput(BaseModel):
-    dtmf: DTMFDetails
-
 @app.post("/input")
 async def dtmf(input: DTMFInput):
     print(f"Received request body: {input}")
@@ -165,7 +159,6 @@ async def dtmf(input: DTMFInput):
     print("NCCO", ncco)
     return JSONResponse(ncco)
     
-
 @app.get("/fallback")
 def get_answer():
     return {"hello": "world"}
