@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+import json
+from fastapi import FastAPI, Request, Response
 import vonage
 from pydantic import BaseModel
 from typing import Optional
@@ -16,6 +17,7 @@ from fsm.fsm import FSM
 from dotenv import load_dotenv
 import os
 from utils.model_classes import DTMFInput
+from utils.mongodb import MongoDB
 from utils.sas_gen import SASGen
 
 load_dotenv()
@@ -40,7 +42,9 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
 # from vonage.voice import Ncco
 
 app = FastAPI()
-
+ongoing_fsm_mongo = MongoDB(conn_str=os.getenv("MONGO_CONN_STR"), 
+                            db_name="ivr", 
+                            collection_name="ongoingIVRState")
 
 fsm = FSM(fsm_id="fsm1")
 input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
@@ -101,25 +105,32 @@ action_factory = VonageActionFactory()
 accumulator = action_factory.get_action_accumulator_implmentation()
 
 @app.post("/startivr")
-async def start_ivr(request: Request):
+async def start_ivr(request: Request, response: Response):
     data = await request.json()
     phone_number = data.get("phone_number")
-    fsm.set_init_state_id("1")
     print(f"Received request body: {data}")
     print("PHONE NUMBER", phone_number)
+    
+    doc = await ongoing_fsm_mongo.find_by_id(phone_number)
+    if doc != None:
+        response.status_code = 403
+        return {"message": "IVR already running for phone number: " + phone_number}
+    current_state_id = "1" # SET TO INITIAL STATE
+    doc = {"_id": phone_number, "current_state_id": current_state_id} 
+    await ongoing_fsm_mongo.insert(doc)
+ 
     ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
-    print("NCCO", ncco_actions)
+    print("NCCO:", json.dumps(ncco_actions, indent=2))
     
     response = client.voice.create_call({
         'to': [{'type': 'phone', 'number': phone_number}],
         'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
         'ncco': ncco_actions
-        })
+    })
     
     print("RESPONSE", response)
     print()
-    # Perform any necessary operations with the phone number
-    # Return a dummy response
+    response.status_code = 200
     return {"message": "IVR started for phone number: " + phone_number}
 
 
@@ -155,8 +166,16 @@ async def dtmf(input: DTMFInput):
     print(f"Received request body: {input}")
     digits = input.dtmf.digits
     print("DIGITS", digits)
-    ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_next_actions(digits)])
-    print("NCCO", ncco)
+    phone_number = input.to
+    doc = await ongoing_fsm_mongo.find_by_id(phone_number)
+    if doc == None:
+        ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.on_error_actions])
+        return JSONResponse(ncco)
+    
+    current_user_state_id = doc["current_state_id"]
+    ncco = accumulator.combine([action_factory.get_action_implmentation(x) 
+                                for x in fsm.get_next_actions(digits, current_user_state_id)])
+    print("NCCO", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
     
 @app.get("/fallback")

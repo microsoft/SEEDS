@@ -7,3 +7,4 @@ class DTMFDetails(BaseModel):
 
 class DTMFInput(BaseModel):
     dtmf: DTMFDetails
+    to: str
