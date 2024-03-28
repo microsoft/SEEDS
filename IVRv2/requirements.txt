@@ -3,3 +3,6 @@ uvicorn
 vonage
 python-dotenv
 azure-storage-blob
+pymongo
+motor
+asyncio
