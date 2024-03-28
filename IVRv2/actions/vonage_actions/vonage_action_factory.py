@@ -27,9 +27,9 @@ class VonageActionFactory(ActionFactory):
         elif isinstance(action, InputAction):
             return VonageInputAction(type_=action.type,
                                     eventUrl=action.eventUrl,
-                                    maxDigits=action.extra_args["maxDigits"],
-                                    timeOut=action.extra_args["timeOut"],
-                                    submitOnHash=action.extra_args["submitOnHash"])
+                                    maxDigits=action.extra_args.get("maxDigits", 1),
+                                    timeOut=action.extra_args.get("timeOut", 10),
+                                    submitOnHash=action.extra_args.get("submitOnHash", False))
         
         raise NotImplementedError()
             
