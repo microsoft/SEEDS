@@ -173,8 +173,11 @@ async def dtmf(input: DTMFInput):
         return JSONResponse(ncco)
     
     current_user_state_id = doc["current_state_id"]
-    ncco = accumulator.combine([action_factory.get_action_implmentation(x) 
-                                for x in fsm.get_next_actions(digits, current_user_state_id)])
+    next_actions, next_state_id = fsm.get_next_actions(digits, current_user_state_id)
+    doc["current_state_id"] = next_state_id
+    await ongoing_fsm_mongo.update_document(doc["_id"], doc)
+    
+    ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
     print("NCCO", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
     
