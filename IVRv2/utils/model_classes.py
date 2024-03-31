@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pydantic import BaseModel
 
 
@@ -8,3 +9,10 @@ class DTMFDetails(BaseModel):
 class DTMFInput(BaseModel):
     dtmf: DTMFDetails
     to: str
+    
+@dataclass
+class MongoCreds:
+    host: str
+    password: str
+    port: int
+    user_name: str

@@ -1,8 +1,14 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 import uuid
 
+from utils.model_classes import MongoCreds
+
 class MongoDB:
-    def __init__(self, conn_str: str, db_name: str, collection_name: str):
+    def __init__(self, conn_creds: MongoCreds, db_name: str, collection_name: str):
+        options = f'ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@{conn_creds.user_name}@'
+
+        # Construct the connection string
+        conn_str = f'mongodb://{conn_creds.user_name}:{conn_creds.password}@{conn_creds.host}:{conn_creds.port}/?{options}'
         client = AsyncIOMotorClient(conn_str)
         db = client[db_name]
         self.collection = db[collection_name]
