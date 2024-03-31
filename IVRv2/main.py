@@ -16,7 +16,7 @@ from fsm.fsm import FSM
 
 from dotenv import load_dotenv
 import os
-from utils.model_classes import DTMFInput, MongoCreds
+from utils.model_classes import DTMFInput, MongoCreds, StartIVRRequest
 from utils.mongodb import MongoDB
 from utils.sas_gen import SASGen
 
@@ -110,10 +110,9 @@ action_factory = VonageActionFactory()
 accumulator = action_factory.get_action_accumulator_implmentation()
 
 @app.post("/startivr")
-async def start_ivr(request: Request, response: Response):
-    data = await request.json()
-    phone_number = data.get("phone_number")
-    print(f"Received request body: {data}")
+async def start_ivr(request: StartIVRRequest, response: Response):
+    phone_number = request.phone_number
+    print(f"Received request body: {json.dumps(request.dict(), indent=2)}")
     print("PHONE NUMBER", phone_number)
     
     doc = await ongoing_fsm_mongo.find_by_id(phone_number)
@@ -159,7 +158,9 @@ def get_answer():
     return ncco
 
 @app.post("/event")
-def get_event():
+async def get_event(req: Request):
+    req_json = await req.json()
+    print(json.dumps(req_json, indent=2))
     return {"hello": "world"}
 
 @app.post("/conversation_events")
