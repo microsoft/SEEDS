@@ -10,6 +10,9 @@ class DTMFInput(BaseModel):
     dtmf: DTMFDetails
     to: str
     
+class StartIVRRequest(BaseModel):
+    phone_number: str
+    
 @dataclass
 class MongoCreds:
     host: str
