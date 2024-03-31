@@ -16,7 +16,7 @@ from fsm.fsm import FSM
 
 from dotenv import load_dotenv
 import os
-from utils.model_classes import DTMFInput
+from utils.model_classes import DTMFInput, MongoCreds
 from utils.mongodb import MongoDB
 from utils.sas_gen import SASGen
 
@@ -42,7 +42,12 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
 # from vonage.voice import Ncco
 
 app = FastAPI()
-ongoing_fsm_mongo = MongoDB(conn_str=os.getenv("MONGO_CONN_STR"), 
+mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
+                         password=os.environ.get("MONGO_PASSWORD"),
+                         port=int(os.environ.get("MONGO_PORT")),
+                         user_name=os.environ.get("MONGO_USER_NAME"))
+
+ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
                             db_name="ivr", 
                             collection_name="ongoingIVRState")
 
