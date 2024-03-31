@@ -126,14 +126,13 @@ async def start_ivr(request: StartIVRRequest, response: Response):
     ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
     print("NCCO:", json.dumps(ncco_actions, indent=2))
     
-    response = client.voice.create_call({
+    vonage_resp = client.voice.create_call({
         'to': [{'type': 'phone', 'number': phone_number}],
         'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
         'ncco': ncco_actions
     })
     
-    print("RESPONSE", response)
-    print()
+    print("VONAGE RESPONSE", vonage_resp)
     response.status_code = 200
     return {"message": "IVR started for phone number: " + phone_number}
 
@@ -160,11 +159,15 @@ def get_answer():
 @app.post("/event")
 async def get_event(req: Request):
     req_json = await req.json()
+    print("EVENT URL REQ: ")
     print(json.dumps(req_json, indent=2))
     return {"hello": "world"}
 
 @app.post("/conversation_events")
-def get_event():
+async def get_conv_event(req: Request):
+    req_json = await req.json()
+    print("CONV URL REQ:")
+    print(json.dumps(req_json, indent=2))
     return {"hello": "world"}
 
 @app.post("/input")
