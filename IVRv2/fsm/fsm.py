@@ -43,4 +43,36 @@ class FSM:
                 
         return transition_actions + self.states[dest_state_id].actions, dest_state_id
     
+    def visualize_fsm(self, current_state_id=None, depth=0, visited=None):
+        # Initialize the recursion
+        if visited is None:
+            visited = set()
+        if current_state_id is None:
+            current_state_id = self.init_state_id
+            # Start with the initial state
+            tree_str = f"FSM ID: {self.fsm_id}\n"
+        else:
+            tree_str = ""
+        
+        # Avoid revisiting states to prevent infinite loops in cyclic FSMs
+        if current_state_id in visited:
+            return tree_str
+        visited.add(current_state_id)
+        
+        current_state = self.states[current_state_id]
+        indent = "    " * depth  # Indentation for visualization
+        
+        # Add the current state to the visualization
+        tree_str += f"{indent}State ID: {current_state_id}\n"
+        
+        # Iterate over each transition from the current state
+        for input_, transition in current_state.transition_map.items():
+            tree_str += f"{indent}    Transition on '{input_}' to State ID: {transition.dest_state_id}\n"
+            
+            # Recursively visualize the destination state
+            tree_str += self.visualize_fsm(transition.dest_state_id, depth + 2, visited)
+        
+        return tree_str
+
+    
     

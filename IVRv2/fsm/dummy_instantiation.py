@@ -62,3 +62,5 @@ fsm.add_transition(t7)
 fsm.add_transition(t8)
 fsm.add_transition(t9)
 fsm.add_transition(t10)
+
+print(fsm.visualize_fsm())
