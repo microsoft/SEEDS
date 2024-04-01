@@ -26,6 +26,9 @@ class MongoDB:
     async def find(self, query: dict) -> dict | None:
         doc = await self.collection.find_one(query)
         return doc
+
+    async def delete(self, doc_id: str):
+        await self.collection.delete_one({"_id": doc_id})
     
     async def update_document(self, id: str, new_doc: dict):
         if "_id" not in new_doc:

@@ -60,4 +60,43 @@ class FSM:
             # print("\n\n")
         print("#################")
     
+    def visualize_fsm(self, current_state_id=None, depth=0, visited=None, parent_prefix=''):
+        # Initialize the recursion
+        if visited is None:
+            visited = set()
+        if current_state_id is None:
+            current_state_id = self.init_state_id
+            # Start with the initial state
+            tree_str = f"FSM ID: {self.fsm_id}\n"
+        else:
+            tree_str = ""
+        
+        # Avoid revisiting states to prevent infinite loops in cyclic FSMs
+        if current_state_id in visited:
+            return tree_str
+        visited.add(current_state_id)
+        
+        current_state = self.states[current_state_id]
+        indent = "│   " * depth  # Indentation for visualization with vertical lines
+        
+        # Add the current state to the visualization
+        tree_str += f"{parent_prefix}State ID: {current_state_id}\n"
+        
+        transitions = list(current_state.transition_map.items())
+        for index, (input_, transition) in enumerate(transitions):
+            # Check if this is the last transition to adjust the prefix accordingly
+            is_last_transition = index == len(transitions) - 1
+            transition_prefix = "└── " if is_last_transition else "├── "
+            next_parent_prefix = parent_prefix + ("    " if is_last_transition else "│   ")
+            
+            tree_str += f"{parent_prefix}{transition_prefix}Transition on '{input_}' to State ID: {transition.dest_state_id}\n"
+            
+            # Recursively visualize the destination state with updated parent prefix for proper indentation
+            tree_str += self.visualize_fsm(transition.dest_state_id, depth + 1, visited, next_parent_prefix)
+        
+        return tree_str
+
+
+
+    
     
