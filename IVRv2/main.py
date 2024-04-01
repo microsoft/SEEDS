@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
-from fsm.dummy_instantiation import fsm
+from fsm.instantiation import fsm
 from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest
 from utils.mongodb import MongoDB
 
