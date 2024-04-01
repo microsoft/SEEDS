@@ -43,7 +43,7 @@ class FSM:
                 
         return transition_actions + self.states[dest_state_id].actions, dest_state_id
     
-    def visualize_fsm(self, current_state_id=None, depth=0, visited=None):
+    def visualize_fsm(self, current_state_id=None, depth=0, visited=None, parent_prefix=''):
         # Initialize the recursion
         if visited is None:
             visited = set()
@@ -60,19 +60,26 @@ class FSM:
         visited.add(current_state_id)
         
         current_state = self.states[current_state_id]
-        indent = "    " * depth  # Indentation for visualization
+        indent = "│   " * depth  # Indentation for visualization with vertical lines
         
         # Add the current state to the visualization
-        tree_str += f"{indent}State ID: {current_state_id}\n"
+        tree_str += f"{parent_prefix}State ID: {current_state_id}\n"
         
-        # Iterate over each transition from the current state
-        for input_, transition in current_state.transition_map.items():
-            tree_str += f"{indent}    Transition on '{input_}' to State ID: {transition.dest_state_id}\n"
+        transitions = list(current_state.transition_map.items())
+        for index, (input_, transition) in enumerate(transitions):
+            # Check if this is the last transition to adjust the prefix accordingly
+            is_last_transition = index == len(transitions) - 1
+            transition_prefix = "└── " if is_last_transition else "├── "
+            next_parent_prefix = parent_prefix + ("    " if is_last_transition else "│   ")
             
-            # Recursively visualize the destination state
-            tree_str += self.visualize_fsm(transition.dest_state_id, depth + 2, visited)
+            tree_str += f"{parent_prefix}{transition_prefix}Transition on '{input_}' to State ID: {transition.dest_state_id}\n"
+            
+            # Recursively visualize the destination state with updated parent prefix for proper indentation
+            tree_str += self.visualize_fsm(transition.dest_state_id, depth + 1, visited, next_parent_prefix)
         
         return tree_str
+
+
 
     
     
