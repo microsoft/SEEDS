@@ -1,0 +1,1005 @@
+INFO:     216.147.17.11:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "direction": "outbound",
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    }
+  },
+  "id": 3,
+  "timestamp": "2024-03-31T09:45:14.168Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "sip:ringing"
+}
+INFO:     216.147.17.117:0 - "POST /conversation_events HTTP/1.1" 200 OK
+EVENT URL REQ: 
+{
+  "start_time": null,
+  "headers": {},
+  "rate": null,
+  "from": "18334295295",
+  "to": "917999435373",
+  "uuid": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+  "conversation_uuid": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "status": "answered",
+  "direction": "outbound",
+  "network": null,
+  "timestamp": "2024-03-31T09:45:16.628Z"
+}
+INFO:     216.147.4.105:0 - "POST /event HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "body": {
+    "leg_id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+    "type": "phone",
+    "direction": "outbound",
+    "status": "answered",
+    "state": {
+      "status": "answered"
+    },
+    "statusHistory": [
+      {
+        "status": "started",
+        "date": "2024-03-31T09:45:11.117Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "started"
+        }
+      },
+      {
+        "status": "ringing",
+        "date": "2024-03-31T09:45:14.129Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "ringing"
+        }
+      },
+      {
+        "status": "answered",
+        "date": "2024-03-31T09:45:16.621Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "answered"
+        }
+      }
+    ]
+  },
+  "id": 7,
+  "timestamp": "2024-03-31T09:45:16.659Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "leg:status:update"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "level": 0,
+    "loop": 1,
+    "stream_url": [
+      "https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3"
+    ],
+    "queue": true,
+    "play_id": "e6753857-bcf9-4777-8b53-dc1da958b720"
+  },
+  "id": 8,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:16.736Z",
+  "type": "audio:play"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "channel": {
+      "type": "phone",
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "legs": [
+        {
+          "leg_id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+          "status": "answered",
+          "state": {
+            "status": "answered"
+          }
+        }
+      ],
+      "headers": {},
+      "cpa": false,
+      "preanswer": false,
+      "ring_timeout": 60000,
+      "cpa_time": 5000,
+      "amd_timeout": -1,
+      "max_length": 7200000,
+      "leg_ids": [
+        "2ac8c381-eaf0-448b-af86-878ea6163afa"
+      ]
+    },
+    "direction": "outbound"
+  },
+  "id": 4,
+  "timestamp": "2024-03-31T09:45:16.628Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "sip:answered"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+    "user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "user_id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698",
+      "properties": {
+        "custom_data": {}
+      }
+    },
+    "channel": {
+      "type": "phone",
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "legs": [
+        {
+          "leg_id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+          "status": "answered",
+          "state": {
+            "status": "answered"
+          }
+        }
+      ],
+      "headers": {},
+      "cpa": false,
+      "preanswer": false,
+      "ring_timeout": 60000,
+      "cpa_time": 5000,
+      "amd_timeout": -1,
+      "max_length": 7200000,
+      "leg_ids": [
+        "2ac8c381-eaf0-448b-af86-878ea6163afa"
+      ]
+    },
+    "timestamp": {
+      "invited": "2024-03-31T09:45:11.102Z",
+      "joined": "2024-03-31T09:45:16.629Z"
+    },
+    "initiator": {
+      "invited": {
+        "isSystem": true
+      }
+    }
+  },
+  "id": 5,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:16.636Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "member:joined"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "audio": true,
+    "media": {
+      "audio": true,
+      "audio_settings": {
+        "enabled": true,
+        "earmuffed": false,
+        "muted": false
+      }
+    },
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    }
+  },
+  "id": 6,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:16.636Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "member:media"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "play_id": "e6753857-bcf9-4777-8b53-dc1da958b720"
+  },
+  "id": 9,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:21.580Z",
+  "type": "audio:play:done"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "premium": false,
+    "level": 0,
+    "loop": 1,
+    "language": "en-US",
+    "text": "Press 1 to start and press 3 to exit",
+    "queue": true,
+    "say_id": "207a5d24-3e4c-4ee6-a863-c0b35a88e0ca"
+  },
+  "id": 10,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:21.627Z",
+  "type": "audio:say"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "digit": "1",
+    "duration": 1120,
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    },
+    "dtmf_seq": 0
+  },
+  "id": 11,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:24.162Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "audio:dtmf"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "say_id": "207a5d24-3e4c-4ee6-a863-c0b35a88e0ca"
+  },
+  "id": 12,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:24.959Z",
+  "type": "audio:say:done"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+Received request body: dtmf=DTMFDetails(digits='1', timed_out=False) to='917999435373'
+DIGITS 1
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "digit": "1",
+    "duration": 1120,
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    },
+    "dtmf_seq": 1
+  },
+  "id": 13,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:28.207Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "audio:dtmf"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+Document with _id: 917999435373 replaced.
+NCCO [
+  {
+    "action": "talk",
+    "text": "For cats press 1",
+    "loop": 1,
+    "bargeIn": false,
+    "level": 0,
+    "language": "en-US"
+  },
+  {
+    "action": "talk",
+    "text": "For lion press 2",
+    "loop": 1,
+    "bargeIn": false,
+    "level": 0,
+    "language": "en-US"
+  },
+  {
+    "type": [
+      "dtmf"
+    ],
+    "action": "input",
+    "eventUrl": [
+      "https://184b-49-207-207-122.ngrok-free.app/input"
+    ],
+    "dtmf": {
+      "maxDigits": 1,
+      "submitOnHash": false,
+      "timeOut": 10
+    }
+  }
+]
+INFO:     216.147.4.38:0 - "POST /input HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "premium": false,
+    "level": 0,
+    "loop": 1,
+    "language": "en-US",
+    "text": "For cats press 1",
+    "queue": true,
+    "say_id": "ea402a0d-06ab-4b5f-8e4f-e2314e6a88f6"
+  },
+  "id": 14,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:28.572Z",
+  "type": "audio:say"
+}
+INFO:     216.147.17.117:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "say_id": "ea402a0d-06ab-4b5f-8e4f-e2314e6a88f6"
+  },
+  "id": 15,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:30.167Z",
+  "type": "audio:say:done"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "premium": false,
+    "level": 0,
+    "loop": 1,
+    "language": "en-US",
+    "text": "For lion press 2",
+    "queue": true,
+    "say_id": "64a3bbf2-8669-4b9d-971e-a4b6bcc93e8d"
+  },
+  "id": 16,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:30.212Z",
+  "type": "audio:say"
+}
+INFO:     216.147.17.11:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "say_id": "64a3bbf2-8669-4b9d-971e-a4b6bcc93e8d"
+  },
+  "id": 17,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:31.955Z",
+  "type": "audio:say:done"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+Received request body: dtmf=DTMFDetails(digits='2', timed_out=False) to='917999435373'
+DIGITS 2
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "digit": "2",
+    "duration": 1280,
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    },
+    "dtmf_seq": 2
+  },
+  "id": 18,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:35.464Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "audio:dtmf"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+Document with _id: 917999435373 replaced.
+NCCO [
+  {
+    "action": "talk",
+    "text": "You selected lion",
+    "loop": 1,
+    "bargeIn": false,
+    "level": 0,
+    "language": "en-US"
+  },
+  {
+    "action": "stream",
+    "streamUrl": [
+      "https://contentmenu.blob.core.windows.net/animalsounds/lion.mp3"
+    ],
+    "loop": 1,
+    "bargeIn": false,
+    "level": 0
+  },
+  {
+    "action": "talk",
+    "text": "Press 1 for main menu, press 2 for previous menu, press 3 to exit",
+    "loop": 1,
+    "bargeIn": false,
+    "level": 0,
+    "language": "en-US"
+  },
+  {
+    "type": [
+      "dtmf"
+    ],
+    "action": "input",
+    "eventUrl": [
+      "https://184b-49-207-207-122.ngrok-free.app/input"
+    ],
+    "dtmf": {
+      "maxDigits": 1,
+      "submitOnHash": false,
+      "timeOut": 10
+    }
+  }
+]
+INFO:     216.147.4.38:0 - "POST /input HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "premium": false,
+    "level": 0,
+    "loop": 1,
+    "language": "en-US",
+    "text": "You selected lion",
+    "queue": true,
+    "say_id": "8122170f-773e-4b86-93c0-50b043f5da66"
+  },
+  "id": 19,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:35.844Z",
+  "type": "audio:say"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "say_id": "8122170f-773e-4b86-93c0-50b043f5da66"
+  },
+  "id": 20,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:37.364Z",
+  "type": "audio:say:done"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "level": 0,
+    "loop": 1,
+    "stream_url": [
+      "https://contentmenu.blob.core.windows.net/animalsounds/lion.mp3"
+    ],
+    "queue": true,
+    "play_id": "6ba9f565-63dc-4864-8994-979adb9a43e6"
+  },
+  "id": 21,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:37.408Z",
+  "type": "audio:play"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "play_id": "6ba9f565-63dc-4864-8994-979adb9a43e6"
+  },
+  "id": 22,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:41.733Z",
+  "type": "audio:play:done"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "premium": false,
+    "level": 0,
+    "loop": 1,
+    "language": "en-US",
+    "text": "Press 1 for main menu, press 2 for previous menu, press 3 to exit",
+    "queue": true,
+    "say_id": "8dea1de7-0629-4ef8-a328-86c5f17261d9"
+  },
+  "id": 23,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:41.776Z",
+  "type": "audio:say"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "say_id": "8dea1de7-0629-4ef8-a328-86c5f17261d9"
+  },
+  "id": 24,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:47.561Z",
+  "type": "audio:say:done"
+}
+INFO:     216.147.17.117:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "audio": false,
+    "media": {
+      "audio_settings": {
+        "enabled": false,
+        "earmuffed": false,
+        "muted": false
+      },
+      "audio": false
+    },
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    }
+  },
+  "id": 26,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:50.299Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "member:media"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "body": {
+    "timestamp": {
+      "invited": "2024-03-31T09:45:11.102Z",
+      "joined": "2024-03-31T09:45:16.629Z",
+      "left": "2024-03-31T09:45:50.295Z"
+    },
+    "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+    "user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698",
+      "properties": {
+        "custom_data": {}
+      }
+    },
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    },
+    "initiator": {
+      "invited": {
+        "isSystem": true
+      }
+    }
+  },
+  "id": 25,
+  "timestamp": "2024-03-31T09:45:50.299Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "member:left"
+}
+INFO:     216.147.17.11:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "body": {
+    "leg_id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+    "type": "phone",
+    "direction": "outbound",
+    "status": "completed",
+    "state": {
+      "status": "completed",
+      "reason": "ok",
+      "successful": true
+    },
+    "statusHistory": [
+      {
+        "status": "started",
+        "date": "2024-03-31T09:45:11.117Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "started"
+        }
+      },
+      {
+        "status": "ringing",
+        "date": "2024-03-31T09:45:14.129Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "ringing"
+        }
+      },
+      {
+        "status": "answered",
+        "date": "2024-03-31T09:45:16.621Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "answered"
+        }
+      },
+      {
+        "status": "completed",
+        "date": "2024-03-31T09:45:50.508Z",
+        "member_id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+        "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+        "state": {
+          "status": "completed",
+          "reason": "ok",
+          "successful": true
+        }
+      }
+    ]
+  },
+  "id": 28,
+  "timestamp": "2024-03-31T09:45:50.546Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "leg:status:update"
+}
+INFO:     216.147.16.160:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "body": {
+    "direction": "outbound",
+    "quality": {
+      "mos_score": 4.489999771118164,
+      "quality_percentage": 99,
+      "jitter_min_var": 39.5099983215332,
+      "jitter_max_var": 83.62000274658203,
+      "jitter_loss_rate": 0,
+      "jitter_burst_rate": 0,
+      "flaw_total": 3,
+      "packet_cnt": 1804,
+      "packet_loss_perc": 0.16602102933038185
+    },
+    "bandwidth": {
+      "bytes_in": 305920,
+      "bytes_out": 310460
+    },
+    "reason": {
+      "text": "Call answered, terminated remotely, [\"Hangup-Cause\"=NORMAL_CLEARING]",
+      "code": "REMOTE_HANGUP",
+      "sip_code": 200
+    },
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    }
+  },
+  "id": 27,
+  "timestamp": "2024-03-31T09:45:50.522Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "sip:hangup"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+CONV URL REQ:
+{
+  "from": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37",
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "body": {
+    "status": "completed",
+    "state": {
+      "status": "completed",
+      "reason": "ok",
+      "successful": true
+    },
+    "direction": "out",
+    "price": "0.01926667",
+    "rate": "0.03400000",
+    "duration": "34",
+    "to": "917999435373",
+    "from": "18334295295",
+    "network_code": "405865",
+    "channel": {
+      "id": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+      "type": "phone",
+      "to": {
+        "number": "917999435373",
+        "headers": {},
+        "type": "phone"
+      },
+      "from": {
+        "number": "18334295295",
+        "headers": {},
+        "type": "phone"
+      },
+      "headers": {}
+    },
+    "request_time": "2024-03-31T09:45:16.000Z",
+    "start_time": "2024-03-31T09:45:16.000Z",
+    "end_time": "2024-03-31T09:45:50.000Z"
+  },
+  "id": 29,
+  "timestamp": "2024-03-31T09:45:51.238Z",
+  "_embedded": {
+    "from_user": {
+      "id": "USR-faecfb79-d71a-4590-83b2-d5ecb133a31a",
+      "name": "vapi-user-b9642f7c1ad44abbaa40ddae6761e698"
+    },
+    "from_member": {
+      "id": "MEM-f381a4bc-77e1-44b0-b19b-e3af59828b37"
+    }
+  },
+  "type": "sip:status"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK
+EVENT URL REQ: 
+{
+  "headers": {},
+  "end_time": "2024-03-31T09:45:50.000Z",
+  "uuid": "2ac8c381-eaf0-448b-af86-878ea6163afa",
+  "network": "405865",
+  "duration": "34",
+  "start_time": "2024-03-31T09:45:16.000Z",
+  "rate": "0.03400000",
+  "price": "0.01926667",
+  "from": "18334295295",
+  "to": "917999435373",
+  "conversation_uuid": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "status": "completed",
+  "direction": "outbound",
+  "timestamp": "2024-03-31T09:45:51.238Z"
+}
+INFO:     216.147.4.105:0 - "POST /event HTTP/1.1" 200 OK
+INFO:     216.147.4.105:0 - "POST /input HTTP/1.1" 422 Unprocessable Entity
+CONV URL REQ:
+{
+  "conversation_id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+  "body": {
+    "id": "CON-222cd50d-4130-4d1b-8b78-c1da6d4a0da7",
+    "name": "NAM-18a67f99-70e3-47b5-9f49-7cc83234c687",
+    "timestamp": {
+      "created": "2024-03-31T09:45:11.040Z",
+      "updated": "2024-03-31T09:45:57.624Z"
+    },
+    "state": "INACTIVE"
+  },
+  "id": 30,
+  "application_id": "0e74ada7-c783-488b-a2d8-16700fc60a29",
+  "timestamp": "2024-03-31T09:45:57.628Z",
+  "type": "conversation:updated"
+}
+INFO:     216.147.16.171:0 - "POST /conversation_events HTTP/1.1" 200 OK

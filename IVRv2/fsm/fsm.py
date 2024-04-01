@@ -22,7 +22,7 @@ class FSM:
         self.init_state_id = state_id
     
     def add_transition(self, transition: Transition):
-        if transition.source_state_id not in self.states:
+        if transition.source_state_id not in self.states or transition.dest_state_id not in self.states:
             raise ValueError(f"Cannot add Transition for State with id {transition.source_state_id}, as it does not exist")
         self.states[transition.source_state_id].add_transition(transition)
         
@@ -42,5 +42,22 @@ class FSM:
         transition_actions = self.states[current_state_id].transition_map[input_].actions
                 
         return transition_actions + self.states[dest_state_id].actions, dest_state_id
+
+    def print_states(self):
+        for state_id, state in self.states.items():
+            print(f"State {state_id}")
+            print("Actions:")
+            for action in state.actions:
+                print(action)
+                
+    def print_transitions(self):
+        for state_id, state in self.states.items():
+            # print(f"State {state_id}")
+            # print("Transitions:")
+            for transition in state.transition_map.values():
+                print(f"From {state_id} to {transition.dest_state_id} on {transition.input}")
+            
+            # print("\n\n")
+        print("#################")
     
     
