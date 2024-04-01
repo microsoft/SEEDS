@@ -1,14 +1,6 @@
-import json
-from fastapi import FastAPI, Request, Response
-import vonage
-from pydantic import BaseModel
-from typing import Optional
-from fastapi.responses import JSONResponse
-
 from actions.base_actions.talk_action import TalkAction
 from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.input_action import InputAction
-from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 
 from fsm.state import State
 from fsm.transition import Transition
@@ -195,7 +187,6 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         
 fsm = FSM(fsm_id="fsm1")
 generate_states(fsm, content_list, content_attributes, 0)
-fsm.print_transitions()
-fsm.print_states()
+print(fsm.visualize_fsm())
 
 
