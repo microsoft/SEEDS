@@ -197,5 +197,6 @@ fsm = FSM(fsm_id="fsm1")
 generate_states(fsm, content_list, content_attributes, 0)
 fsm.print_transitions()
 fsm.print_states()
+fsm.visualize_fsm()
 
 
