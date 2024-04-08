@@ -8,7 +8,7 @@ class FSM:
     def __init__(self, fsm_id: str):
         self.fsm_id = fsm_id
         self.states: dict[str, State] = {}
-        self.init_state_id = "0"
+        self.init_state_id = "LA0"
         self.on_error_actions = [TalkAction("Invalid Input")]
     
     def add_state(self, state: State):
@@ -32,6 +32,10 @@ class FSM:
         return self.states[self.init_state_id].actions
     
     def get_next_actions(self, input_: str, current_state_id: str) -> Tuple[List[Action], str]:
+        print("Input", input_)
+        print("Current State", current_state_id)
+        self.print_state_transitions(current_state_id)
+        
         if current_state_id not in self.states:
             raise ValueError(f"Current State with id {current_state_id} does not exist")
         
@@ -59,6 +63,14 @@ class FSM:
             
             # print("\n\n")
         print("#################")
+    
+    def print_state_transitions(self, state_id):
+        state = self.states[state_id]
+        print(f"State {state_id}")
+        print("Transitions:")
+        for transition in state.transition_map.values():
+            print(f"From {state_id} to {transition.dest_state_id} on {transition.input}")
+        print("\n\n")
     
     def visualize_fsm(self, current_state_id=None, depth=0, visited=None, parent_prefix=''):
         # Initialize the recursion

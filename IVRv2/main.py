@@ -77,7 +77,7 @@ async def start_ivr(request: StartIVRRequest, response: Response):
         
         ivr_call_state = IVRCallStateMongoDoc(_id=phone_number, 
                                     createdAt=datetime.now(), 
-                                    current_state_id="1")
+                                    current_state_id=fsm.init_state_id)
         await ongoing_fsm_mongo.insert(ivr_call_state.dict())
         
         response.status_code = 200
@@ -132,6 +132,7 @@ async def get_conv_event(req: Request):
     # print(json.dumps(req_json, indent=2))
     return {"hello": "world"}
 
+
 @app.post("/input")
 async def dtmf(input: DTMFInput):
     print(f"Received request body: {input}")
@@ -140,6 +141,7 @@ async def dtmf(input: DTMFInput):
     phone_number = input.to
     doc = await ongoing_fsm_mongo.find_by_id(phone_number)
     if doc == None:
+        print("ERROR: NO ONGOING IVR STATE FOUND FOR PHONE NUMBER", phone_number)
         ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.on_error_actions])
         return JSONResponse(ncco)
     

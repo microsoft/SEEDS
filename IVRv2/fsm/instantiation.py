@@ -7,11 +7,94 @@ from fsm.transition import Transition
 from fsm.fsm import FSM
 import os
 from dotenv import load_dotenv
+import json
+import re
+import requests
+
+from utils.sas_gen import SASGen
 
 load_dotenv()
 
-fsm = FSM(fsm_id="fsm1")
-input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
+# pullMenuMainUrl = ""
+pullMenuMainUrl = "https://seedsblob.blob.core.windows.net/pull-model-menus/"
+content_url = "https://seedsblob.blob.core.windows.net/output-container/"
+url = 'https://seeds-teacherapp.azurewebsites.net/content'
+headers = {
+    'authToken': 'postman'
+}
+
+languageDialogUrls = {
+  'english':'languageDialog/english/For%20English/{speechRate}.mp3',
+  'kannada':'languageDialog/kannada/For%20Kannada/{speechRate}.mp3',
+  'bengali':'languageDialog/bengali/For%20Bengali/{speechRate}.mp3'
+}
+
+speechRate = "1.0"
+
+readingContentTitlesDialogUrl = {
+  'story':'readingContentTitlesDialog/{language}/story/{speechRate}.mp3',
+  'poem':'readingContentTitlesDialog/{language}/poetry/{speechRate}.mp3',
+  'song':'readingContentTitlesDialog/{language}/music/{speechRate}.mp3',
+  'snippet':'readingContentTitlesDialog/{language}/snippet/{speechRate}.mp3',
+  'riddle':'readingContentTitlesDialog/{language}/riddle/{speechRate}.mp3',
+  'quiz':'readingContentTitlesDialog/{language}/quiz/{speechRate}.mp3',
+  'scramble':'readingContentTitlesDialog/{language}/scramble/{speechRate}.mp3',
+  'theme':'readingContentTitlesDialog/{language}/theme/{speechRate}.mp3'
+}
+
+next4MessageUrls = {
+  'story':'next4Dialog/{language}/story/{speechRate}.mp3',
+  'poem':'next4Dialog/{language}/poetry/{speechRate}.mp3',
+  'song':'next4Dialog/{language}/music/{speechRate}.mp3',
+  'scramble':'next4Dialog/{language}/scramble/{speechRate}.mp3',
+  'quiz':'next4Dialog/{language}/quiz/{speechRate}.mp3',
+  'snippet':'next4Dialog/{language}/snippet/{speechRate}.mp3',
+  'riddle':'next4Dialog/{language}/riddle/{speechRate}.mp3',
+  'experience':'next4Dialog/{language}/experience/{speechRate}.mp3',
+  'theme':'next4Dialog/{language}/theme/{speechRate}.mp3'
+}
+
+prev4MessageUrls = {
+  'story':'prev4Dialog/{language}/story/{speechRate}.mp3',
+  'poem':'prev4Dialog/{language}/poetry/{speechRate}.mp3',
+  'song':'prev4Dialog/{language}/music/{speechRate}.mp3',
+  'scramble':'prev4Dialog/{language}/scramble/{speechRate}.mp3',
+  'quiz':'prev4Dialog/{language}/quiz/{speechRate}.mp3',
+  'snippet':'prev4Dialog/{language}/snippet/{speechRate}.mp3',
+  'riddle':'prev4Dialog/{language}/riddle/{speechRate}.mp3',
+  'experience':'prev4Dialog/{language}/experience/{speechRate}.mp3',
+  'theme':'prev4Dialog/{language}/theme/{speechRate}.mp3'
+}
+
+experienceNames = {
+  'english':[
+    'story',
+    'poem',
+    'song',
+    'snippet',
+    'riddle'
+  ]
+}
+
+experienceDialogAudioUrls = {
+  'story':pullMenuMainUrl + 'experiencesDialog/{language}/story/For%20Stories/{speechRate}.mp3',
+  'poem':pullMenuMainUrl + 'experiencesDialog/{language}/poetry/For%20Rhymes/{speechRate}.mp3',
+  'song':pullMenuMainUrl + 'experiencesDialog/{language}/music/For%20Songs/{speechRate}.mp3',
+  'keyLearning':pullMenuMainUrl + 'experiencesDialog/{language}/keyLearning/to%20learn%20phone%20keys/{speechRate}.mp3',
+  'scramble':pullMenuMainUrl + 'experiencesDialog/{language}/scramble/to%20play%20Scramble%20Game/{speechRate}.mp3',
+  'quiz':pullMenuMainUrl + 'experiencesDialog/{language}/quiz/to%20play%20quiz/{speechRate}.mp3',
+  'snippet': pullMenuMainUrl + 'experiencesDialog/{language}/snippet/For%20Snippets/{speechRate}.mp3',
+  'riddle': pullMenuMainUrl + 'experiencesDialog/{language}/riddle/For%20Riddles/{speechRate}.mp3'
+}
+
+repeatCurrentMenuUrl = 'repeatMenuDialog/{language}/To%20repeat%20Current%20Menu/{speechRate}.mp3'
+goToPreviousMenuMessageUrl = 'previousMenuDialog/{language}/To%20go%20to%20Previous%20Menu/{speechRate}.mp3'
+
+
+pressKeyMessageUrl = 'pressKeysDialog/{language}/{key}/{speechRate}.mp3'
+
+audioGoingTobePlayedDialogUrl = 'audioDialogs/{language}/audioGoingToBePlayedDialog/{speechRate}.mp3'
+audioFinishedMessageUrl = 'audioDialogs/{language}/audioFinishedDialog/{speechRate}.mp3'
 
 number_of_categories_listed_in_one_state = 4
 next_n_categories_key = "5"
@@ -26,141 +109,206 @@ content_attributes = [
     {'category': 'title', 'level': 3, 'id': 'TI'}
 ]
 
-content_list = [
-    {"language": "English", "theme": "Nature", "type": "Story", "title": "The Forest Adventure"},
-    {"language": "English", "theme": "Nature", "type": "Poem", "title": "The Mighty Oak"},
-    {"language": "English", "theme": "Adventure", "type": "Story", "title": "Pirate's Treasure"},
-    {"language": "English", "theme": "Adventure", "type": "Game", "title": "Escape Island"},
-    {"language": "English", "theme": "Family", "type": "Story", "title": "Grandma's Tales"},
-    {"language": "English", "theme": "Family", "type": "Song", "title": "Together Forever"},
-    {"language": "English", "theme": "Space", "type": "Story", "title": "Moon Landing"},
-    {"language": "English", "theme": "Space", "type": "Quiz", "title": "Astronomy Quiz"},
-    {"language": "Spanish", "theme": "Nature", "type": "Story", "title": "La Aventura del Bosque"},
-    {"language": "Spanish", "theme": "Nature", "type": "Poem", "title": "El Roble Poderoso"},
-    {"language": "Spanish", "theme": "Adventure", "type": "Story", "title": "El Tesoro del Pirata"},
-    {"language": "Spanish", "theme": "Adventure", "type": "Game", "title": "Isla de Escape"},
-    {"language": "Spanish", "theme": "Family", "type": "Story", "title": "Cuentos de la Abuela"},
-    {"language": "Spanish", "theme": "Family", "type": "Song", "title": "Juntos Para Siempre"},
-    {"language": "Spanish", "theme": "Space", "type": "Story", "title": "Aterrizaje en la Luna"},
-    {"language": "Spanish", "theme": "Space", "type": "Quiz", "title": "Cuestionario de Astronomía"},
-    {"language": "French", "theme": "Nature", "type": "Story", "title": "L'Aventure de la Forêt"},
-    {"language": "French", "theme": "Nature", "type": "Poem", "title": "Le Chêne Puissant"},
-    {"language": "French", "theme": "Adventure", "type": "Story", "title": "Le Trésor du Pirate"},
-    {"language": "French", "theme": "Adventure", "type": "Game", "title": "Île Évasion"},
-    {"language": "French", "theme": "Family", "type": "Story", "title": "Contes de Grand-mère"},
-    {"language": "French", "theme": "Family", "type": "Song", "title": "Ensemble Pour Toujours"},
-    {"language": "French", "theme": "Space", "type": "Story", "title": "Alunissage"},
-    {"language": "French", "theme": "Space", "type": "Quiz", "title": "Quiz d'Astronomie"},
-    {"language": "German", "theme": "Nature", "type": "Story", "title": "Das Waldabenteuer"},
-    {"language": "German", "theme": "Nature", "type": "Poem", "title": "Die Mächtige Eiche"},
-    {"language": "German", "theme": "Adventure", "type": "Story", "title": "Der Piratenschatz"},
-    {"language": "German", "theme": "Adventure", "type": "Game", "title": "Insel Flucht"},
-    {"language": "German", "theme": "Family", "type": "Story", "title": "Großmutters Geschichten"},
-    {"language": "German", "theme": "Family", "type": "Song", "title": "Für Immer Zusammen"},
-    {"language": "German", "theme": "Space", "type": "Story", "title": "Mondlandung"},
-    {"language": "German", "theme": "Space", "type": "Quiz", "title": "Astronomie Quiz"},
-    {"language": "English", "theme": "Science", "type": "Documentary", "title": "The Wonders of Photosynthesis"},
-    {"language": "Spanish", "theme": "History", "type": "Documentary", "title": "The Ancient Civilizations"},
-    {"language": "French", "theme": "Technology", "type": "Documentary", "title": "The Future of AI"},
-    {"language": "German", "theme": "Art", "type": "Documentary", "title": "The Evolution of European Art"},
-    {"language": "Hindi", "theme": "Art", "type": "Documentary", "title": "Munna Bhai MBBS"},
-    {"language": "Kannada", "theme": "Art", "type": "Documentary", "title": "Yella waste"},
-    {"language": "Tamil", "theme": "Art", "type": "Documentary", "title": "Yella waste"},
-    {"language": "Odiya", "theme": "Art", "type": "Documentary", "title": "Yella waste"},
-    
-    {"language": "Bengali", "theme": "Art", "type": "Documentary", "title": "Yella waste 1"},
-    {"language": "Bengali", "theme": "Art", "type": "Documentary", "title": "Yella waste 2"},
-    {"language": "Bengali", "theme": "Art", "type": "Documentary", "title": "Yella waste 3"},
-    {"language": "Bengali", "theme": "Art", "type": "Documentary", "title": "Yella waste 4"},
-    {"language": "Bengali", "theme": "Art", "type": "Documentary", "title": "Yella waste 5"},
-    
-    {"language": "Bengali", "theme": "Dance", "type": "Documentary", "title": "Yella waste"},
-    {"language": "Bengali", "theme": "Fun", "type": "Documentary", "title": "Yella waste"},
-    {"language": "German", "theme": "Art", "type": "Documentary", "title": "Yella waste"},
-    {"language": "Telugu", "theme": "Art", "type": "Documentary", "title": "Yella waste"}
-]
+url = 'https://seeds-teacherapp.azurewebsites.net/content'
+
+headers = {
+    'authToken': 'postman'
+}
 
 
+# sas_test = 'https://seedsblob.blob.core.windows.net/output-container/1dfe33fd-7fb7-4adb-9d60-2d9ae3c44910/1.0.wav'
+# sas_gen_obj = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
+# sas_url = sas_gen_obj.get_url_with_sas(sas_test)
+# print("SAS", sas_url)
+
+
+def getStreamActions(items_list, level, state, parent_selections = {}):
+    
+    category = content_attributes[level]['category']
+    
+    number_of_states_in_same_level = len(items_list) // number_of_categories_listed_in_one_state
+    if len(items_list) % number_of_categories_listed_in_one_state != 0:
+        number_of_states_in_same_level += 1
+        
+    actions = []
+    
+    if category == 'language':
+        for key, language in enumerate(items_list[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(items_list))]):
+            language = language.lower()
+            actions.append(StreamAction(pullMenuMainUrl + languageDialogUrls[language].replace('{speechRate}', str(speechRate))))
+            replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+            replaced_url = re.sub(r'\{key\}', str(key+1), replaced_url)  # Using regex for global replacement
+            actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+    
+    if category == "theme":
+        language = parent_selections['language']
+        if state == 0: 
+            actions.append(StreamAction(pullMenuMainUrl + readingContentTitlesDialogUrl["theme"].replace('{language}',language).replace('{speechRate}',speechRate)))
+        for key, theme_url in enumerate(items_list[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(items_list))]):
+            actions.append(StreamAction(theme_url))
+            replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+            replaced_url = re.sub(r'\{key\}', str(key+1), replaced_url)  # Using regex for global replacement
+            actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+    
+    if category == "type":
+        for key, experience_url in enumerate(items_list[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(items_list))]):
+            language = parent_selections['language']
+            experience_url = experience_url.replace('{language}',language).replace('{speechRate}',speechRate)
+            # print("DOES EXPERIENCE URL NEEDS FIXING", experience_url)
+            actions.append(StreamAction(experience_url))
+            replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+            replaced_url = re.sub(r'\{key\}', str(key+1), replaced_url)  # Using regex for global replacement
+            actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+    
+    if category == "title":
+        if state == 0:
+            language = parent_selections['language']
+            experience = parent_selections['type'].lower()
+            actions.append(StreamAction(pullMenuMainUrl + readingContentTitlesDialogUrl[experience].replace('{language}',language).replace('{speechRate}',speechRate)))
+            
+        for key, titleUrl in enumerate(items_list[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(items_list))]):
+            # title = content.title
+            # audioUrl = content.titleAudio + + '/{speechRate}.mp3'
+            language = parent_selections['language']
+            actions.append(StreamAction(titleUrl))
+            replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+            replaced_url = re.sub(r'\{key\}', str(key+1), replaced_url)  # Using regex for global replacement
+            actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+            
+    if category == "title":
+        category = parent_selections['type'].lower()
+        
+    if state != number_of_states_in_same_level-1 and number_of_states_in_same_level > 1:
+        next4MessageUrl = next4MessageUrls[category].replace('{language}',language).replace('{speechRate}',speechRate)
+        actions.append(StreamAction(pullMenuMainUrl + next4MessageUrl))
+        replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+        replaced_url = re.sub(r'\{key\}', '5', replaced_url)  # Using regex for global replacement
+        actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+    
+    elif state != 0 and number_of_states_in_same_level > 1:
+        prev4MessageUrl = prev4MessageUrls[category].replace('{language}',language).replace('{speechRate}',speechRate)
+        actions.append(StreamAction(pullMenuMainUrl + prev4MessageUrl))
+        replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+        replaced_url = re.sub(r'\{key\}', '7', replaced_url)  # Using regex for global replacement
+        actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+        
+    repeatMenuUrl = repeatCurrentMenuUrl.replace('{language}',language).replace('{speechRate}',speechRate)
+    actions.append(StreamAction(pullMenuMainUrl + repeatMenuUrl))
+    replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+    replaced_url = re.sub(r'\{key\}', '8', replaced_url)  # Using regex for global replacement
+    actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+    
+    
+    if level != 0 and len(content_attributes) > 1:
+        previousMenuMessageUrl = goToPreviousMenuMessageUrl.replace('{language}',language).replace('{speechRate}',speechRate)
+        actions.append(StreamAction(pullMenuMainUrl + previousMenuMessageUrl))
+        replaced_url = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+        replaced_url = re.sub(r'\{key\}', '9', replaced_url)  # Using regex for global replacement
+        actions.append(StreamAction(pullMenuMainUrl + replaced_url))
+
+    return actions
+    
+    
 
 def generate_states(fsm, content_list, content_attributes, level, parent_state_id='', parent_selections={}):
-    # Define the input action
     
     if level == len(content_attributes):
         filtered_content = []
         for item in content_list:
-            if all(item[k] == v for k, v in parent_selections.items()):
+            if all(item[k].lower() == v.lower() for k, v in parent_selections.items()):
                 filtered_content.append(item)
-    
+            
         state_id = parent_state_id
         actions = []
-        actions.append(TalkAction("After choosing" + str(parent_selections) + " you got title: " + filtered_content[0]['title']))
-        state_id = state_id[:-1]
+        language = parent_selections['language']
+        audioGoingTobePlayedUrl = audioGoingTobePlayedDialogUrl.replace('{language}', language).replace('{speechRate}', speechRate)
+        actions.append(StreamAction(pullMenuMainUrl + audioGoingTobePlayedUrl))
+        # https://seedsblob.blob.core.windows.net/output-container/23_1/1.0.wav
+        music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
+        
+        actions.append(StreamAction(music_url))
+        state_id = state_id[:-1] # to remove '-' at the end
+        print("STATE ID", state_id)
         fsm.add_state(State(state_id=state_id, actions=actions))
         indexOfLastOp = parent_state_id.rfind('Op')
         parent_block_state_id = parent_state_id[:(indexOfLastOp-1)]
         option_chosen = parent_state_id[indexOfLastOp+2:][:-1]
-        key_for_option_chosen = int(option_chosen) + 1
-        fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=key_for_option_chosen, actions=[]))
+        indexOfDigit = option_chosen.find('(')
+        key_for_option_chosen = int(option_chosen[0:indexOfDigit]) + 1
+        fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=str(key_for_option_chosen), actions=[]))
         return
+
+    filtered_content = []
+    for item in content_list:
+        if all(item[k].lower() == v.lower() for k, v in parent_selections.items()):
+            filtered_content.append(item)      
         
     input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
-
-    # Extract category at the current level
     
     category = content_attributes[level]['category']
     category_id_prefix = content_attributes[level]['id']
 
-    # Filter content based on selections made in previous levels
-    filtered_content = []
-    for item in content_list:
-        if all(item[k] == v for k, v in parent_selections.items()):
-            filtered_content.append(item)
     
-
-    # Group content by category
-    grouped_content = {}
-    for item in filtered_content:
-        key = item[category]
-        if key not in grouped_content:
-            grouped_content[key] = []
-        grouped_content[key].append(item)
+    sorted_categories = []
+    themes = []
+    experiences_list = []
+    titles = []
+    
+    if category == "language":
+        sorted_categories = sorted(set([item[category] for item in filtered_content]))
+    elif category == "theme":
         
-    sorted_categories = sorted(grouped_content.keys())  # ['English', 'French', 'German', 'Spanish']
+        language = parent_selections['language']
+        response = requests.get(f'{url}/themes?language={language}', headers={'authToken': 'postman'})
+        # print("THEMES ARE HERE", response.json())
+        if response.status_code == 200:
+            themes_data = response.json()
+            titleToAudioUrl = {}
+            for theme_obj in themes_data:
+                if theme_obj['name'].lower() not in themes:
+                    titleToAudioUrl[theme_obj['name']] = f"{theme_obj['audioUrl']}/{speechRate}.mp3"
+            sorted_titleToAudioUrl = {key: titleToAudioUrl[key] for key in sorted(titleToAudioUrl)}
+            sorted_categories = list(sorted_titleToAudioUrl.values())
+            themes = list(sorted_titleToAudioUrl.keys())
+           
+    elif category == "type":
+        experiences_list = sorted(set(item['type'].lower() for item in filtered_content))
+        sorted_categories = [experienceDialogAudioUrls[experience] for experience in experiences_list]
+        
+    elif category == "title":
+        titles = sorted(set(item['title'] for item in filtered_content))
+        sorted_categories = []
+        for title in titles:
+            titleAudio = [x for x in filtered_content if x['title'] == title][0]['titleAudio'] + f'/{speechRate}.mp3'
+            sorted_categories.append(titleAudio)
+
 
     number_of_states_in_same_level = len(sorted_categories) // number_of_categories_listed_in_one_state
     if len(sorted_categories) % number_of_categories_listed_in_one_state != 0:
         number_of_states_in_same_level += 1
     
+    # print("NUMBER OF CATEGORIES FOR", category, ":", len(sorted_categories), "NUMBER OF STATES", number_of_states_in_same_level)
     for state in range(number_of_states_in_same_level):
         state_id = f"{parent_state_id}{category_id_prefix}{state}"
+        print("STATE ID", state_id)
         actions = []
         if level == 0 and state == 0:
             fsm.init_state_id = state_id
-            actions.append(StreamAction(url = 'https://contentmenu.blob.core.windows.net/menu/WelcomeToSeedsNinad.mp3'))
-        for keys, category in enumerate(sorted_categories[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(sorted_categories))]):
-            actions.append(TalkAction("For " + category + " press " + str(keys+1)))
-            # dest_state_id = str(category_level) + str(state) + str(keys+1)    
-        if state == 0 and number_of_states_in_same_level > 1:
-            actions.append(TalkAction("For next " + str(number_of_categories_listed_in_one_state) + " categories press " + next_n_categories_key))
-        elif state == number_of_states_in_same_level-1 and number_of_states_in_same_level > 1:
-            actions.append(TalkAction("For previous " + str(number_of_categories_listed_in_one_state) + " categories press " + previous_n_categories_key))
-        elif number_of_states_in_same_level > 1:
-            actions.append(TalkAction("For next " + str(number_of_categories_listed_in_one_state) + " categories press " + next_n_categories_key))
-            actions.append(TalkAction("For previous " + str(number_of_categories_listed_in_one_state) + " categories press " + previous_n_categories_key))
+            actions.append(StreamAction(url = 'https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.0.mp3'))
         
-        actions.append(TalkAction("To repeat the current categories press " + repeat_current_categories_key))
-        if level != 0 and len(content_attributes) > 1:
-            actions.append(TalkAction("To go back to previous level press " + previous_category_level_key))
-        if level < len(content_attributes) - 1:
+        actions += getStreamActions(sorted_categories, level, state, parent_selections)
+
+        if level < len(content_attributes):
             actions.append(input_action)
          
         fsm.add_state(State(state_id=state_id, actions=actions))
-        if level > 0 and state == 0:
+        if level > 0 and state == 0: # Add transition to the parent state
             indexOfLastOp = parent_state_id.rfind('Op')
             parent_block_state_id = parent_state_id[:(indexOfLastOp-1)]
             option_chosen = parent_state_id[indexOfLastOp+2:][:-1]
-            key_for_option_chosen = int(option_chosen) + 1
-            fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=key_for_option_chosen, actions=[]))
+            indexOfDigit = option_chosen.find('(')
+            key_for_option_chosen = int(option_chosen[0:indexOfDigit]) + 1
+            fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=str(key_for_option_chosen), actions=[]))
         
     
     for state in range(number_of_states_in_same_level):
@@ -179,14 +327,79 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         indexes_possible = min((state+1)*number_of_categories_listed_in_one_state, len(sorted_categories)) - state*number_of_categories_listed_in_one_state
         
         for index_of_category in range(indexes_possible):
-            new_state_id = f"{state_id}-Op{index_of_category}-"
+            new_state_id = f"{state_id}-Op{index_of_category}"
+            index_of_item = state*number_of_categories_listed_in_one_state + index_of_category
             new_selections = parent_selections.copy()
-            new_selections[content_attributes[level]['category']] = sorted_categories[index_of_category]
+            if category == "language":
+                new_selections[content_attributes[level]['category']] = sorted_categories[index_of_item]
+                new_state_id = f"{new_state_id}({sorted_categories[index_of_category]})-"
+            elif category == "theme":
+                new_selections['theme'] = themes[index_of_item]
+                new_state_id = f"{new_state_id}({themes[index_of_item]})-"
+            elif category == "type":
+                new_selections['type'] = experiences_list[index_of_item]
+                new_state_id = f"{new_state_id}({experiences_list[index_of_item]})-"
+            elif category == "title":
+                new_selections['title'] = titles[index_of_item]
+                new_state_id = f"{new_state_id}({titles[index_of_item]})-"
             if level + 1 <= len(content_attributes):
                 generate_states(fsm, content_list, content_attributes, level + 1, new_state_id, new_selections)
         
-fsm = FSM(fsm_id="fsm1")
-generate_states(fsm, content_list, content_attributes, 0)
-print(fsm.visualize_fsm())
+def format_data(data, level=0):
+    output = ""
+    for key, value in data.items():
+        output += "     " * level + "- " + key + ":\n"
+        if isinstance(value, dict):
+            output += format_data(value, level + 1)
+        elif isinstance(value, set):
+            for item in value:
+                output += "     " * (level + 1) + "- " + item + "\n"
+    return output
+
+def count_last_level_content(data):
+    if isinstance(data, set):
+        return len(data)
+    elif isinstance(data, dict):
+        return sum(count_last_level_content(value) for value in data.values())
+    return 0
+
+
+# with open('contents.json', 'r', encoding='utf-8') as file:
+file = open('contents.json', 'r', encoding='utf-8')
+contents = json.load(file)
+content = [x for x in contents if x['language'].lower() == 'kannada']
+
+themes = []
+response = requests.get(f'{url}/themes?language=kannada', headers={'authToken': 'postman'})
+if response.status_code == 200:
+    themes_data = response.json()
+    for theme_obj in themes_data:
+        if theme_obj['name'].lower() not in themes:
+            themes.append(theme_obj['name'].lower())
+
+sorted_themes = sorted(themes)
+theme_to_experience = {}
+for theme in sorted_themes:
+    theme_content = [x for x in content if x['theme'].lower() == theme]
+    experiences = set([x['type'].lower() for x in theme_content])
+    experience_to_title = {}
+    for experience in experiences:
+        experience_content = [x for x in theme_content if x['type'].lower() == experience.lower()]
+        titles = set([x['title'] for x in experience_content])
+        experience_to_title[experience] = titles
+    theme_to_experience[theme] = experience_to_title
+    
+total_content = count_last_level_content(theme_to_experience)
+# with open("output.txt", "w") as file:
+#     file.write(f"Total content at the last level: {total_content}\n")
+#     file.write(format_data(theme_to_experience))
+
+fsm = FSM(fsm_id="fsm2")
+generate_states(fsm, content, content_attributes, 0)
+
+# with open("output-fsm-vis.txt", "w", encoding='utf-8') as file:
+#     file.write(fsm.visualize_fsm())
+    
+file.close()
 
 

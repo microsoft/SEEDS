@@ -1,7 +1,12 @@
 from actions.base_actions.stream_action import StreamAction
+from utils.sas_gen import SASGen
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class VonageStreamAction(StreamAction):
-    default_level = 0
+    default_level = 1
     default_bargeIn = False
     default_loop = 1
     """This class is designed to handle Vonage Stream Actions.
@@ -37,9 +42,10 @@ class VonageStreamAction(StreamAction):
         self.loop = loop
     
     def get(self):
+        sas_gen_obj = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
         return {
             'action': "stream",
-            'streamUrl': [self.streamUrl],
+            'streamUrl': [sas_gen_obj.get_url_with_sas(self.streamUrl)],
             'loop': self.loop,
             'bargeIn': self.bargeIn,
             'level': self.level
