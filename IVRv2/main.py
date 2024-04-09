@@ -9,7 +9,7 @@ import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import fsm
-from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest
+from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest, VonageCallStartResponse
 from utils.mongodb import MongoDB
 
 load_dotenv()
@@ -48,7 +48,7 @@ async def start_ivr(request: StartIVRRequest, response: Response):
         print(f"Received request body: {json.dumps(request.dict(), indent=2)}")
         print("PHONE NUMBER", phone_number)
         
-        doc = await ongoing_fsm_mongo.find_by_id(phone_number)
+        doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
         if doc != None:
             ivr_state = IVRCallStateMongoDoc(**doc)
             # CHECK IF LAST CALL HAPPENEDSTALE_WAIT_IN_SECONDS SECONDS BEFORE, 
@@ -72,12 +72,14 @@ async def start_ivr(request: StartIVRRequest, response: Response):
             'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
             'ncco': ncco_actions
         })
-        
+        vonage_resp = VonageCallStartResponse(**vonage_resp)
         print("VONAGE RESPONSE", vonage_resp)
         
-        ivr_call_state = IVRCallStateMongoDoc(_id=phone_number, 
-                                    createdAt=datetime.now(), 
-                                    current_state_id=fsm.init_state_id)
+        ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
+                                              phone_number = phone_number,
+                                              created_at = datetime.now(), 
+                                              current_state_id = fsm.init_state_id)
+        
         await ongoing_fsm_mongo.insert(ivr_call_state.dict())
         
         response.status_code = 200
@@ -112,7 +114,7 @@ def get_answer():
 async def get_event(req: EventWebhookRequest, response: Response):
     try:
         if req.status in CallStatus.get_end_call_enums():
-            await ongoing_fsm_mongo.delete(doc_id=req.to)
+            await ongoing_fsm_mongo.delete(doc_id=req.conversation_uuid)
         
         response.status_code = 200
         return {"message": "event received"}
@@ -141,17 +143,19 @@ async def dtmf(input: Request):
     print(f"Received request body: {input}")
     digits = input.dtmf.digits
     print("DIGITS", digits)
-    phone_number = input.to
-    doc = await ongoing_fsm_mongo.find_by_id(phone_number)
+    conv_id = input.conversation_uuid
+    doc = await ongoing_fsm_mongo.find_by_id(conv_id)
     if doc == None:
-        print("ERROR: NO ONGOING IVR STATE FOUND FOR PHONE NUMBER", phone_number)
+        print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", conv_id)
         ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.on_error_actions])
         return JSONResponse(ncco)
     
-    current_user_state_id = doc["current_state_id"]
+    ivr_state = IVRCallStateMongoDoc(**doc)
+    current_user_state_id = ivr_state.current_state_id
     next_actions, next_state_id = fsm.get_next_actions(digits, current_user_state_id)
-    doc["current_state_id"] = next_state_id
-    await ongoing_fsm_mongo.update_document(doc["_id"], doc)
+    
+    ivr_state.current_state_id = next_state_id
+    await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
     
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
     print("NCCO", json.dumps(ncco, indent=2))

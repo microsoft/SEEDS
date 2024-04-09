@@ -36,7 +36,8 @@ class CallStatus(Enum):
 
 class IVRCallStateMongoDoc(BaseModel):
     id: str = Field(..., alias="_id")
-    createdAt: datetime
+    phone_number: str
+    created_at: datetime
     current_state_id: str
     
     def dict(self, **kwargs):
@@ -46,6 +47,13 @@ class IVRCallStateMongoDoc(BaseModel):
     class Config:
         # This will allow the model to be instantiated with 'id' instead of '_id'
         populate_by_name = True
+
+class VonageCallStartResponse(BaseModel):
+    uuid: str = ""
+    status: str = ""
+    direction: str = ""
+    conversation_uuid: str = ""
+
     
 
 class EventWebhookRequest(BaseModel):
@@ -76,7 +84,7 @@ class DTMFDetails(BaseModel):
 
 class DTMFInput(BaseModel):
     dtmf: DTMFDetails
-    to: str
+    conversation_uuid: str
     
 class StartIVRRequest(BaseModel):
     phone_number: str
