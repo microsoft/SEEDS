@@ -1,8 +1,8 @@
 from actions.base_actions.talk_action import TalkAction
 
 class VonageTalkAction(TalkAction):
-    default_bargeIn = False
-    default_level = 0
+    default_bargeIn = True
+    default_level = 1
     default_loop = 1
     default_language = "en-US"
     

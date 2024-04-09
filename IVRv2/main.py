@@ -134,7 +134,10 @@ async def get_conv_event(req: Request):
 
 
 @app.post("/input")
-async def dtmf(input: DTMFInput):
+async def dtmf(input: Request):
+    input_data = await input.json()
+    print("INPUT DATA", input_data)
+    input = DTMFInput(**input_data)
     print(f"Received request body: {input}")
     digits = input.dtmf.digits
     print("DIGITS", digits)

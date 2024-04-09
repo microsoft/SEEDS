@@ -40,6 +40,7 @@ class FSM:
             raise ValueError(f"Current State with id {current_state_id} does not exist")
         
         if input_ not in self.states[current_state_id].transition_map:
+            print("Invalid Input", input_)
             return self.on_error_actions + self.states[current_state_id].actions, current_state_id
         
         dest_state_id = self.states[current_state_id].transition_map[input_].dest_state_id
