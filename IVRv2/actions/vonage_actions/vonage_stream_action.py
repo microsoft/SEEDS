@@ -7,7 +7,7 @@ load_dotenv()
 
 class VonageStreamAction(StreamAction):
     default_level = 1
-    default_bargeIn = False
+    default_bargeIn = True
     default_loop = 1
     """This class is designed to handle Vonage Stream Actions.
 

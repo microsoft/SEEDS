@@ -132,6 +132,9 @@ def getStreamActions(items_list, level, state, parent_selections = {}):
         
     actions = []
     
+    if level == 0 and state == 0:
+        actions.append(StreamAction('https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.0.mp3'))
+    
     if category == 'language':
         for key, language in enumerate(items_list[state*number_of_categories_listed_in_one_state: min((state+1)*number_of_categories_listed_in_one_state, len(items_list))]):
             language = language.lower()
@@ -221,12 +224,23 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         state_id = parent_state_id
         actions = []
         language = parent_selections['language']
+        actions.append(TalkAction(text = "To exit the content. Press 9"))
+        actions.append(TalkAction(text = "To repeat the content. Press 2"))
         audioGoingTobePlayedUrl = audioGoingTobePlayedDialogUrl.replace('{language}', language).replace('{speechRate}', speechRate)
+        # actions.append(TalkAction(text = "To exit the content. Press 9"))
         actions.append(StreamAction(pullMenuMainUrl + audioGoingTobePlayedUrl))
         # https://seedsblob.blob.core.windows.net/output-container/23_1/1.0.wav
         music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
         
         actions.append(StreamAction(music_url))
+        audioFinishedUrl = audioFinishedMessageUrl.replace('{language}', language).replace('{speechRate}', speechRate)
+        
+        actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
+        actions.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input', timeOut=1))
+        
+        # actions.append(TalkAction(text = "To exit the content. Press 9"))
+        # actions.append(TalkAction(text = "To repeat the content. Press 2"))
+        
         state_id = state_id[:-1] # to remove '-' at the end
         print("STATE ID", state_id)
         fsm.add_state(State(state_id=state_id, actions=actions))
@@ -236,6 +250,8 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         indexOfDigit = option_chosen.find('(')
         key_for_option_chosen = int(option_chosen[0:indexOfDigit]) + 1
         fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=str(key_for_option_chosen), actions=[]))
+        fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=parent_block_state_id, input=previous_category_level_key, actions=[]))
+        fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id, input=str(2), actions=[]))
         return
 
     filtered_content = []
@@ -294,7 +310,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         actions = []
         if level == 0 and state == 0:
             fsm.init_state_id = state_id
-            actions.append(StreamAction(url = 'https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.0.mp3'))
+            # actions.append(StreamAction(url = 'https://seedsblob.blob.core.windows.net/pull-model-menus/welcomeDialog/kannada/welcome%20to%20SEEDS/1.0.mp3'))
         
         actions += getStreamActions(sorted_categories, level, state, parent_selections)
 
