@@ -14,8 +14,9 @@ const ContentSchema = new mongoose.Schema({
   localTitle: { type: String, default: ""},
   theme: { type: String, default: ""},
   localTheme: { type: String, default: ""},
-  themeAudio: { type: String, default: ""}
-});
+  themeAudio: { type: String, default: ""},
+  creation_time: { type: Number, default: -1 }
+}, { collection: 'contentsV2' });
 
 var Content = (module.exports = mongoose.model("Content", ContentSchema));
 
