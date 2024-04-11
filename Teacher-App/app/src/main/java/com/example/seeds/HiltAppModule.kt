@@ -35,9 +35,9 @@ object HiltAppModule {
     @Singleton
     @Provides
     fun provideNetworkService(
-        authenticator: TokenAuthenticator,
+//        authenticator: TokenAuthenticator,
         @ApplicationContext context: Context
-    ) = provideService(authenticator, context)
+    ) = provideService(context)
 
     @Singleton
     @Provides
