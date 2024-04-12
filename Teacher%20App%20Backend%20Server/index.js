@@ -26,10 +26,8 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiter middleware to all requests
-morgan.format('custom', '[:date[iso]] :method :url :status :response-time ms - :res[content-length]');
-app.use(morgan('custom'));
-// app.use(morgan('dev'))
-app.use(limiter);
+app.use(morgan('dev'))
+// app.use(limiter);
 app.use(cors())
 app.use("/call", verifyToken, bodyParser.json(), callRouter);
 app.use("/teacher", verifyToken, bodyParser.json(), teacherRouter);
