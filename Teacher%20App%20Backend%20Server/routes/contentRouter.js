@@ -2,6 +2,7 @@
 const express = require("express");
 const path = require("path");
 const Content = require("../models/Content.js");
+const SASGen = require('../models/sasGen.js');
 const { tryCatchWrapper } = require(path.join("..", "util.js"))
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { 
@@ -10,6 +11,8 @@ const {
     StorageSharedKeyCredential,
     BlobServiceClient,
 } = require('@azure/storage-blob');
+
+const sasGenerator = new SASGen(process.env.AZURE_STORAGE_CONNECTION_STRING);
 
 const constants = {
     accountName: process.env.AZURE_STORAGE_ACCOUNT_NAME,
@@ -25,6 +28,16 @@ const containerName = "input-container"
 const containerClient = blobServiceClient.getContainerClient(containerName)
 
 const router = express.Router();
+
+router.get("/sasUrl", tryCatchWrapper(async (req, res)=>{
+    const url = req.query.url;  // URL is now obtained from query string
+    if (!url) {
+        return res.status(400).json({ error: "URL parameter is required." });
+    }
+
+    const urlWithSAS = await sasGenerator.getURLWithSAS(url);
+    return res.json({ url: urlWithSAS });
+}))
 
 router.get("/themes",tryCatchWrapper(async (req, res) => {
     const language = req.query.language
@@ -181,7 +194,8 @@ router.delete("/:contentId", tryCatchWrapper(async (req, res) => {
 }))
 
 router.post("/", tryCatchWrapper(async (req, res) => {
-    const content = new Content(req.body);
+    let content = new Content(req.body);
+    content.creation_time = Math.floor(Date.now() / 1000);
     await content.save();
     return res.json(content);
 }))
