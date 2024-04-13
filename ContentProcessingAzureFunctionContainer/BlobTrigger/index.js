@@ -225,9 +225,9 @@ module.exports = async function (context, myBlob) {
 
     // Temporary Code until we get public access enabled for SEEDS-MSRI subscription based account blobs
     // converting input file to mp3 into Roshni output-original container
-    console.log(`Started Copying blob ${inputBlobName} to Roshni original container...`)
-    await copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,inputBlobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata)
-    console.log(`Finished Copying blob ${inputBlobName} to Roshni original container`)
+    // console.log(`Started Copying blob ${inputBlobName} to Roshni original container...`)
+    // await copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,inputBlobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata)
+    // console.log(`Finished Copying blob ${inputBlobName} to Roshni original container`)
 
     // tell SEEDS server that audio is processed successfully if that is final audio with that content id
     try{

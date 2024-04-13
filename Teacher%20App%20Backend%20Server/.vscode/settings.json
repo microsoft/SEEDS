@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/fdbd72d6-2f17-439d-a262-9fc781a3b515/resourceGroups/seeds/providers/Microsoft.Web/sites/seeds-teacherapp",
+    "appService.deploySubpath": "."
 }
