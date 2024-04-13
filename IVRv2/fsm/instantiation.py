@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import json
 import re
 import requests
+import aiohttp
 
 from utils.sas_gen import SASGen
 
@@ -108,13 +109,6 @@ content_attributes = [
     {'category': 'type', 'level': 2, 'id': 'EX'},
     {'category': 'title', 'level': 3, 'id': 'TI'}
 ]
-
-url = 'https://seeds-teacherapp.azurewebsites.net/content'
-
-headers = {
-    'authToken': 'postman'
-}
-
 
 # sas_test = 'https://seedsblob.blob.core.windows.net/output-container/1dfe33fd-7fb7-4adb-9d60-2d9ae3c44910/1.0.wav'
 # sas_gen_obj = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
@@ -380,42 +374,68 @@ def count_last_level_content(data):
     return 0
 
 
-# with open('contents.json', 'r', encoding='utf-8') as file:
-file = open('contents.json', 'r', encoding='utf-8')
-contents = json.load(file)
-content = [x for x in contents if x['language'].lower() == 'kannada']
-
-themes = []
-response = requests.get(f'{url}/themes?language=kannada', headers={'authToken': 'postman'})
-if response.status_code == 200:
-    themes_data = response.json()
-    for theme_obj in themes_data:
-        if theme_obj['name'].lower() not in themes:
-            themes.append(theme_obj['name'].lower())
-
-sorted_themes = sorted(themes)
-theme_to_experience = {}
-for theme in sorted_themes:
-    theme_content = [x for x in content if x['theme'].lower() == theme]
-    experiences = set([x['type'].lower() for x in theme_content])
-    experience_to_title = {}
-    for experience in experiences:
-        experience_content = [x for x in theme_content if x['type'].lower() == experience.lower()]
-        titles = set([x['title'] for x in experience_content])
-        experience_to_title[experience] = titles
-    theme_to_experience[theme] = experience_to_title
+async def instantiate_from_latest_content():
+    api_url = os.environ.get("SEEDS_SERVER_BASE_URL", "") + "content"
+    headers = {
+        'authToken': 'postman'
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(api_url, headers=headers) as response:
+            response_data = await response.text()  # get response text
+            # Parse text to JSON
+            contents = json.loads(response_data)
+            
+    # FILTER ISPULLMODEL AND ISDELETED CONTENT
+    content = [
+        x for x in contents
+        if all(key in x for key in ["isPullModel", "isDeleted", "isProcessed"]) and
+        x["isPullModel"] and x["isProcessed"] and not x["isDeleted"]
+    ]
+    print('FECTHED LATEST CONTENT: ', \
+                json.dumps(contents, indent=2, ensure_ascii=False))
     
-total_content = count_last_level_content(theme_to_experience)
-# with open("output.txt", "w") as file:
-#     file.write(f"Total content at the last level: {total_content}\n")
-#     file.write(format_data(theme_to_experience))
+    fsm = FSM(fsm_id="SEEDS-IVR")
+    generate_states(fsm, content, content_attributes, 0)
+    return fsm
+    
 
-fsm = FSM(fsm_id="fsm2")
-generate_states(fsm, content, content_attributes, 0)
+# with open('contents.json', 'r', encoding='utf-8') as file:
+# file = open('contents.json', 'r', encoding='utf-8')
+# contents = json.load(file)
+# content = [x for x in contents if x['language'].lower() == 'kannada']
+
+
+# themes = []
+# response = requests.get(f'{url}/themes?language=kannada', headers={'authToken': 'postman'})
+# if response.status_code == 200:
+#     themes_data = response.json()
+#     for theme_obj in themes_data:
+#         if theme_obj['name'].lower() not in themes:
+#             themes.append(theme_obj['name'].lower())
+
+# sorted_themes = sorted(themes)
+# theme_to_experience = {}
+# for theme in sorted_themes:
+#     theme_content = [x for x in content if x['theme'].lower() == theme]
+#     experiences = set([x['type'].lower() for x in theme_content])
+#     experience_to_title = {}
+#     for experience in experiences:
+#         experience_content = [x for x in theme_content if x['type'].lower() == experience.lower()]
+#         titles = set([x['title'] for x in experience_content])
+#         experience_to_title[experience] = titles
+#     theme_to_experience[theme] = experience_to_title
+    
+# total_content = count_last_level_content(theme_to_experience)
+# # with open("output.txt", "w") as file:
+# #     file.write(f"Total content at the last level: {total_content}\n")
+# #     file.write(format_data(theme_to_experience))
+
+
+
 
 # with open("output-fsm-vis.txt", "w", encoding='utf-8') as file:
 #     file.write(fsm.visualize_fsm())
     
-file.close()
+# file.close()
 
 

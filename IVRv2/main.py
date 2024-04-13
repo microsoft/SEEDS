@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
-from fsm.instantiation import fsm
+from fsm.instantiation import instantiate_from_latest_content
 from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest, VonageCallStartResponse
 from utils.mongodb import MongoDB
 
@@ -27,6 +27,7 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
 
 # from vonage.voice import Ncco
 
+fsm = None
 app = FastAPI()
 mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
                          password=os.environ.get("MONGO_PASSWORD"),
@@ -40,6 +41,28 @@ ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds,
 action_factory = VonageActionFactory()
 
 accumulator = action_factory.get_action_accumulator_implmentation()
+
+@app.on_event("startup")
+async def startup_event():
+    resp = await update_ivr(None, Response())
+    if resp["status_code"] != 200:
+        raise ValueError("CANNOT INIT IVR FSM")
+
+@app.post("/updateivr")
+async def update_ivr(request: Request, response: Response):
+    global fsm
+    
+    # FIND ONGOING FSM COUNT
+    docs = await ongoing_fsm_mongo.find_all()
+    if len(docs) > 0:
+        response.status_code = 409
+        return {"message": f"Cannot Update IVR right now. {len(docs)} users are currently using it. Please try again after an hour.", \
+            "status_code": response.status_code}
+        
+    fsm = await instantiate_from_latest_content()
+    # print(fsm.visualize_fsm())
+    response.status_code = 200
+    return {"message": "SUCCESS", "status_code": response.status_code}
 
 @app.post("/startivr")
 async def start_ivr(request: StartIVRRequest, response: Response):
@@ -137,6 +160,8 @@ async def get_conv_event(req: Request):
 
 @app.post("/input")
 async def dtmf(input: Request):
+    global fsm
+    
     input_data = await input.json()
     print("INPUT DATA", input_data)
     input = DTMFInput(**input_data)

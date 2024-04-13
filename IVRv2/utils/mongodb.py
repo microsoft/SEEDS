@@ -23,6 +23,13 @@ class MongoDB:
         doc = await self.collection.find_one({"_id": id})
         return doc
 
+    async def find_all(self) -> list:
+        cursor = self.collection.find({})
+        documents = []
+        async for document in cursor:
+            documents.append(document)
+        return documents
+
     async def find(self, query: dict) -> dict | None:
         doc = await self.collection.find_one(query)
         return doc
