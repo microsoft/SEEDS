@@ -11,6 +11,7 @@ const ContentSchema = new mongoose.Schema({
   isPullModel: {type: Boolean, default:false },
   isTeacherApp: {type: Boolean, default:false },
   isProcessed: {type: Boolean, default:false },
+  isDeleted: {type: Boolean, default:false },
   titleAudio: { type: String, default: "" },
   localTitle: { type: String, default: ""},
   theme: { type: String, default: ""},

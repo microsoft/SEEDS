@@ -179,18 +179,19 @@ router.get("/:contentId/processed", tryCatchWrapper(async (req, res) => {
 }))
 
 router.delete("/:contentId", tryCatchWrapper(async (req, res) => {
-    const response =  await fetch(
-        'https://seedscontent.azurewebsites.net/api/acs',
-        {
-            method: 'POST',
-            body: JSON.stringify({
-                type:"delete-blob",
-                id: req.params.contentId
-            }),
-            headers: { 'Content-Type': 'application/json' }
-        }
-    )
-    return res.json(await Content.deleteOne({ id: req.params.contentId }));
+    // const response =  await fetch(
+    //     'https://seedscontent.azurewebsites.net/api/acs',
+    //     {
+    //         method: 'POST',
+    //         body: JSON.stringify({
+    //             type:"delete-blob",
+    //             id: req.params.contentId
+    //         }),
+    //         headers: { 'Content-Type': 'application/json' }
+    //     }
+    // )
+    const result = await Content.updateOne({ id: req.params.contentId }, { $set: { isDeleted: true } });
+    return res.json(result);
 }))
 
 router.post("/", tryCatchWrapper(async (req, res) => {
