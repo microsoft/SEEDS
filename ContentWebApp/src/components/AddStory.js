@@ -19,11 +19,108 @@ const AddStory = ({ content, contentType }) => {
     isProcessed: false,
   });
 
+  const [titlesUnderTheme, setTitlesUnderTheme] = useState([]);
   const [audioSrc, setAudioSrc] = useState();
   const [answerAudioSrc, setAnswerAudioSrc] = useState();
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
+  const [allContent, setAllContent] = useState([]);
+  const [themes, setThemes] = useState({});
+  const [newTheme, setNewTheme] = useState(false);
+
+
+  const getAllContent = async () => {
+    const seedsRes = await fetch(
+      `${SEEDS_URL}/content`,
+      {
+        method: "GET",
+        headers: {
+          authToken: "postman",
+        },
+      }
+    );
+    const seedsData = await seedsRes.json();
+    return seedsData;
+  };
+
+  const populateThemes = (content) => {
+    const newThemes = {};
+    content.forEach(item => {
+      if (item.language && item.theme && item.localTheme) {
+        const lang = item.language.toLowerCase();
+        newThemes[lang] = newThemes[lang] || {};
+        newThemes[lang][item.theme.toLowerCase()] = item.localTheme.toLowerCase();
+      }
+    });
+    setThemes(newThemes);
+  };
+
+  const handleThemeChange = (event) => {
+    const { value } = event.target;
+    if (value === "new-theme") {
+      setNewTheme(true);
+      setTitlesUnderTheme([]);
+      setMetadata(prev => ({
+        ...prev,
+        theme: "new-theme",
+        localTheme: "new-theme",
+        title: "", // Reset title
+        localTitle: "" // Reset local title
+      }));
+    } else {
+      setNewTheme(false);
+      const englishTheme = Object.keys(themes[metadata.language]).find(key => themes[metadata.language][key] === value || key === value);
+      const localTheme = themes[metadata.language][englishTheme];
+      setMetadata(prev => ({
+        ...prev,
+        theme: englishTheme,
+        localTheme: localTheme,
+        title: "", // Reset title
+        localTitle: "" // Reset local title
+      }));
+      fetchTitlesUnderTheme(metadata.language, englishTheme);
+    }
+  };
+
+  const fetchTitlesUnderTheme = (language, theme) => {
+    const filteredContent = allContent.filter(item =>
+      item.language.toLowerCase() === language && item.theme.toLowerCase() === theme
+    );
+    const titleMap = {};
+    filteredContent.forEach(item => {
+      titleMap[item.title.toLowerCase()] = item.localTitle;
+    });
+    setTitlesUnderTheme(titleMap);
+  };
+
+  const handleLanguageChange = (event) => {
+    const newLanguage = event.target.value;
+    setMetadata(prev => ({
+      ...prev,
+      language: newLanguage,
+      theme: "", // Reset theme on language change
+      localTheme: "", // Also reset the local theme,
+      title: "", // Reset title
+      localTitle: "" // Reset local title
+    }));
+    setNewTheme(false);
+    setTitlesUnderTheme([]); // Clear titles under theme when language changes
+  };
 
   useEffect(() => {
+    const getContent = async () => {
+      console.log("FUNCTION CALLED");
+      const contentFromServer = await getAllContent();
+      setAllContent(contentFromServer);
+      populateThemes(contentFromServer);
+      console.log("contentFromServer", contentFromServer.length);
+
+      // filterContent();
+    };
+    getContent();
+  }, []);
+
+  useEffect(() => {
+
     if (content) {
       const quizMetadata = {
         title: content.title,
@@ -50,7 +147,7 @@ const AddStory = ({ content, contentType }) => {
           `https://seedsblob.blob.core.windows.net/output-original/${content.id}/answer.mp3`
         );
       }
-      // var a = []
+      fetchTitlesUnderTheme(quizMetadata.language, quizMetadata.theme);
     }
   }, [content]);
 
@@ -60,21 +157,60 @@ const AddStory = ({ content, contentType }) => {
 
   const isValid = () => {
     var valid = true;
-    if (metadata.title.length == 0) {
-      valid = false;
+
+    // Convert user input title to lowercase for case-insensitive comparison
+    const inputTitleLower = metadata.title.toLowerCase();
+    const inputLocalTitleLower = metadata.localTitle.toLowerCase();
+
+    // Check if title is empty
+    if (!metadata.title) {
       alert("Title cannot be empty");
-    } else if (metadata.language.length == 0) {
       valid = false;
-      alert("Language cannot be empty");
-    } else if (metadata.theme.length == 0) {
-      valid = false;
-      alert("Theme cannot be empty");
-    } else if (!audioSrc && metadata.audioFile.length == 0) {
-      valid = false;
-      alert("Audio file cannot be empty");
     }
+
+    // Check if language is empty
+    else if (!metadata.language) {
+      alert("Language cannot be empty");
+      valid = false;
+    }
+
+    // Check if theme or localTheme is empty or if new theme is being created
+    else if (!metadata.theme || metadata.theme === "new-theme" || !metadata.localTheme || metadata.localTheme === "new-theme") {
+      alert("Theme and local theme cannot be empty");
+      valid = false;
+    }
+
+    // Check for title duplication under the same theme and language, case insensitively
+    else if (Object.keys(titlesUnderTheme).includes(inputTitleLower)){
+      alert("Title already exists under this theme and language");
+      valid = false;
+
+    } else if (Object.values(titlesUnderTheme).includes(inputLocalTitleLower)) {
+      alert("Local title already exists under this theme and language");
+      valid = false;
+    }
+
+    //Check that localTitle is not empty if language is not english
+    else if (metadata.language != "english" && !metadata.localTitle) {
+      alert("Local Title cannot be empty");
+      valid = false;
+    }
+
+    // Check if audio file is provided when it is supposed to be uploaded
+    else if (!audioSrc && !metadata.audioFile) {
+      alert("Audio file cannot be empty");
+      valid = false;
+    }
+
+    // Check if answer audio file is provided when it is supposed to be uploaded
+    else if (contentType == "Riddle" && !answerAudioSrc && !metadata.answerAudioFile) {
+      alert("Answer audio file cannot be empty");
+      valid = false;
+    }
+
     return valid;
   };
+
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -131,9 +267,9 @@ const AddStory = ({ content, contentType }) => {
       }
       const res = await fetch(
         `${SEEDS_URL}/content/sasToken?` +
-          new URLSearchParams({
-            blobName: filename,
-          }),
+        new URLSearchParams({
+          blobName: filename,
+        }),
         {
           method: "GET",
           headers: {
@@ -173,9 +309,9 @@ const AddStory = ({ content, contentType }) => {
 
       const resAnswer = await fetch(
         `${SEEDS_URL}/content/sasToken?` +
-          new URLSearchParams({
-            blobName: answerFilename,
-          }),
+        new URLSearchParams({
+          blobName: answerFilename,
+        }),
         {
           method: "GET",
           headers: {
@@ -220,37 +356,6 @@ const AddStory = ({ content, contentType }) => {
   return (
     <form className="add-form" onSubmit={onSubmit}>
       <div className="metadataGrid" style={{ paddingBottom: "20px" }}>
-        <div>
-          <label>English Title </label>
-          <br />
-          <input
-            type="text"
-            name="title"
-            className="mintgreen"
-            placeholder="Add Title"
-            value={metadata.title || ""}
-            onChange={(event) =>
-              setMetadata({ ...metadata, title: event.target.value })
-            }
-          />
-        </div>
-
-        {metadata.language != "english" && (
-          <div>
-            <label>{metadata.language} Title </label>
-            <br />
-            <input
-              type="text"
-              name="localTitle"
-              className="mintgreen"
-              placeholder="Add Title"
-              value={metadata.localTitle || ""}
-              onChange={(event) =>
-                setMetadata({ ...metadata, localTitle: event.target.value })
-              }
-            />
-          </div>
-        )}
 
         <div>
           <label>
@@ -258,9 +363,7 @@ const AddStory = ({ content, contentType }) => {
             <br />
             <select
               value={metadata.language || ""}
-              onChange={(event) =>
-                setMetadata({ ...metadata, language: event.target.value })
-              }
+              onChange={handleLanguageChange}
               className="mintgreen"
               style={{ width: "150px" }}
             >
@@ -274,8 +377,9 @@ const AddStory = ({ content, contentType }) => {
           </label>
         </div>
       </div>
+
       <div className="metadataGrid">
-        <div>
+        {/* <div>
           <label>Description </label>
           <br />
           <textarea
@@ -290,9 +394,9 @@ const AddStory = ({ content, contentType }) => {
               setMetadata({ ...metadata, description: event.target.value })
             }
           />
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <label>English Theme </label>
           <br />
           <input
@@ -305,9 +409,33 @@ const AddStory = ({ content, contentType }) => {
               setMetadata({ ...metadata, theme: event.target.value })
             }
           />
+        </div> */}
+        <div>
+          <label>English Theme</label>
+          <select name="theme" value={metadata.theme} onChange={handleThemeChange} className="mintgreen">
+            <option value="">Choose Theme</option> {/* Default option added */}
+            {themes[metadata.language] && Object.keys(themes[metadata.language]).map(theme => (
+              <option key={theme} value={theme}>{theme}</option>
+            ))}
+            <option value="new-theme" selected={metadata.theme === "new-theme"}>Choose New Theme</option>
+          </select>
         </div>
-
         {metadata.language != "english" && (
+          <div>
+            <label>{metadata.language} Theme</label>
+            <select name="localTheme" value={metadata.localTheme} onChange={handleThemeChange} className="mintgreen">
+              <option value="">Choose Theme</option> {/* Default option added */}
+              {themes[metadata.language] && Object.values(themes[metadata.language]).map(localTheme => (
+                <option key={localTheme} value={localTheme}>{localTheme}</option>
+              ))}
+              <option value="new-theme" selected={metadata.localTheme === "new-theme"}>Choose New Theme</option>
+            </select>
+          </div>
+        )}
+
+
+
+        {/* {metadata.language != "english" && (
           <div>
             <label>{metadata.language} Theme </label>
             <br />
@@ -322,8 +450,76 @@ const AddStory = ({ content, contentType }) => {
               }
             />
           </div>
-        )}
+        )} */}
       </div>
+
+      {newTheme && (
+        <>
+          <div>
+            <label>Add New English Theme</label>
+            <input type="text" onChange={(event) => setMetadata({ ...metadata, theme: event.target.value })} className="mintgreen" placeholder="Enter new theme" />
+          </div>
+          {metadata.language != "english" && (
+            <div>
+              <label>Add New {metadata.language} Theme</label>
+              <input type="text" onChange={(event) => setMetadata({ ...metadata, localTheme: event.target.value })} className="mintgreen" placeholder={`Enter new theme in ${metadata.language}`} />
+            </div>)}
+        </>
+      )}
+
+      <div>
+        <label>English Title </label>
+        <br />
+        <input
+          type="text"
+          name="title"
+          className="mintgreen"
+          placeholder="Add Title"
+          value={metadata.title || ""}
+          onChange={(event) =>
+            setMetadata({ ...metadata, title: event.target.value })
+          }
+        />
+      </div>
+
+      {metadata.language != "english" && (
+        <div>
+          <label>{metadata.language} Title </label>
+          <br />
+          <input
+            type="text"
+            name="localTitle"
+            className="mintgreen"
+            placeholder="Add Title"
+            value={metadata.localTitle || ""}
+            onChange={(event) =>
+              setMetadata({ ...metadata, localTitle: event.target.value })
+            }
+          />
+        </div>
+      )}
+
+      {Object.keys(titlesUnderTheme).length > 0 && !newTheme && (
+        <div>
+          <label>Existing Titles under "{metadata.theme}" in {metadata.language}:</label>
+          <ul>
+            {Object.entries(titlesUnderTheme).map(([englishTitle, localTitle], index) => (
+              <li key={index}>{`${englishTitle} - ${localTitle}`}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* {themes.length > 0 && (
+          <div>
+            <label>Available {metadata.language} Themes:</label>
+            <ul>
+              {themes.map((theme, index) => (
+                <li key={index}>{theme}</li>
+              ))}
+            </ul>
+          </div>
+        )} */}
 
       {metadata.isProcessed && audioSrc && (
         <label>

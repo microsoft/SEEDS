@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Multiselect from "multiselect-react-dropdown";
 import { SEEDS_URL } from "../Constants";
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import LogoutButton from "./LogoutButton";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
@@ -12,6 +12,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const AllContent = () => {
   const [content, setContent] = useState([]);
   const [allContent, setAllContent] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [updateIVRStatus, setUpdateIVRStatus] = useState('');
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState("");
@@ -25,80 +27,101 @@ const AllContent = () => {
     return () => unsubscribe(); // Clean up the listener when the component unmounts
   }, []);
 
-  const st = {
-    options: [
-      { category: "Language", name: "Kannada", id: 1 },
-      { category: "Language", name: "Hindi", id: 2 },
-      { category: "Language", name: "English", id: 3 },
-      { category: "Language", name: "Marathi", id: 4 },
-      { category: "Language", name: "Tamil", id: 5 },
-      { category: "Experience", name: "Story", id: 6 },
-      { category: "Experience", name: "Poem", id: 7 },
-      { category: "Experience", name: "Song", id: 8 },
-      { category: "Experience", name: "Quiz", id: 9 },
-      {category: "Language", name: "Bengali", id: 10},
-    ],
+  const onUpdateIVR = async () => {
+    try {
+      const response = await fetch(`https://ivrv2.azurewebsites.net/updateivr`, {
+        method: "POST",
+        headers: {
+          authToken: "postman",
+        },
+      });
+      const data = await response.json();
+      setUpdateIVRStatus(data.message);
+      console.log(data);
+      // if (data.status_code == 200) {
+      //   // throw new Error(data.message || "Failed to update IVR");
+      // } 
+      // setUpdateStatus(`Success: ${data.message}`);
+    } catch (error) {
+      // setUpdateStatus(`Error: ${error.message}`);
+    }
   };
 
+  const sortContentByCreationTime = (contentArray) => {
+    return contentArray.sort((a, b) => b.creation_time - a.creation_time);
+  };
+
+  const generateOptions = (contentList) => {
+    const languageSet = new Set();
+    const experienceSet = new Set();
+
+    contentList.forEach((contentItem) => {
+      if (contentItem.language) {
+        languageSet.add(contentItem.language.charAt(0).toUpperCase() + contentItem.language.slice(1)); // Capitalize the first letter
+      }
+      if (contentItem.type) {
+        experienceSet.add(contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)); // Capitalize the first letter
+      }
+    });
+
+    const languageOptions = Array.from(languageSet).map((language, index) => ({
+      category: "Language",
+      name: language,
+      id: index + 1
+    }));
+
+    const experienceOptions = Array.from(experienceSet).map((experience, index) => ({
+      category: "Experience",
+      name: experience,
+      id: index + 1 + languageSet.size
+    }));
+
+    return [...languageOptions, ...experienceOptions];
+  };
+
+
   const setFilteredList = (selectedList) => {
-    var langs = selectedList
-      .filter((option) => option.category == "Language")
-      .map((option) => option.name.toLowerCase());
-    var exps = selectedList
-      .filter((option) => option.category == "Experience")
-      .map((option) => option.name.toLowerCase());
+    let langs = selectedList
+      .filter((option) => option.category === "Language")
+      .map((option) => option.name.toLowerCase()); // Convert to lowercase for case-insensitive comparison
 
-    console.log("SELECTED CONTENT", langs, exps);
+    let exps = selectedList
+      .filter((option) => option.category === "Experience")
+      .map((option) => option.name.toLowerCase()); // Convert to lowercase for case-insensitive comparison
 
-    if (exps.length == 0) {
-      exps = st.options
-        .filter((value) => value.category == "Experience")
+    if (exps.length === 0) {
+      exps = options // Use dynamic options
+        .filter((value) => value.category === "Experience")
         .map((value) => value.name.toLowerCase());
     }
 
-    if (langs.length == 0) {
-      langs = st.options
-        .filter((value) => value.category == "Language")
+    if (langs.length === 0) {
+      langs = options // Use dynamic options
+        .filter((value) => value.category === "Language")
         .map((value) => value.name.toLowerCase());
     }
 
     const filteredList = allContent.filter(
       (content) =>
-        langs.includes(content.language) &&
-        exps.includes(content.type.toLowerCase())
+        langs.includes(content.language.toLowerCase()) && // Convert to lowercase for case-insensitive comparison
+        exps.includes(content.type.toLowerCase()) // Convert to lowercase for case-insensitive comparison
     );
-    setContent(filteredList);
-  };
-
-  const onSelect = (selectedList, selectedItem) => {
-    console.log("ON SELECT SELECTED LIST", selectedList);
-    setFilteredList(selectedList);
-  };
-
-  const onRemove = (selectedList, removedItem) => {
-    setFilteredList(selectedList);
-    console.log("ON REMOVE SELECTED LIST", selectedList);
+    setContent(sortContentByCreationTime(filteredList));
   };
 
   useEffect(() => {
     const getContent = async () => {
       const contentFromServer = await getAllContent();
-      setAllContent(contentFromServer);
-      setContent(contentFromServer);
+      // filter by isDeleted is False
+      const contentFromServerNotDeleted = contentFromServer.filter((content) => !content.isDeleted);
+      setAllContent(sortContentByCreationTime(contentFromServerNotDeleted));
+      setContent(sortContentByCreationTime(contentFromServerNotDeleted));
+      setOptions(generateOptions(sortContentByCreationTime(contentFromServerNotDeleted)));
     };
     getContent();
   }, []);
 
   const getAllContent = async () => {
-    // const seedsRes = await fetch(
-    //   "https://seeds-teacherapp.azurewebsites.net/content",
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       authToken: "postman",
-    //     },
-    //   }
-    // );
 
     const seedsRes = await fetch(
       `${SEEDS_URL}/content`,
@@ -111,26 +134,26 @@ const AllContent = () => {
     );
     const seedsData = await seedsRes.json();
 
-    const res = await fetch(
-      "https://place-seeds.azurewebsites.net/getAllQuizzes"
-    );
-    const data = await res.json();
-    let quizData = data["quizzes"];
-    quizData = quizData.map((quiz) => ({ ...quiz, type: "quiz" }));
-    seedsData.push(...quizData);
+    // const res = await fetch(
+    //   "https://place-seeds.azurewebsites.net/getAllQuizzes"
+    // );
+    // const data = await res.json();
+    // let quizData = data["quizzes"];
+    // quizData = quizData.map((quiz) => ({ ...quiz, type: "quiz" }));
+    // seedsData.push(...quizData);
     return seedsData;
   };
 
   const onDelete = async (type, id) => {
     console.log(id);
-    if (window.confirm("Do you want to remove?")) {
+    if (window.confirm("Are you sure?")) {
       if (type == "quiz") {
         await fetch(
           "https://place-seeds.azurewebsites.net/byId?" +
-            new URLSearchParams({
-              id: id,
-              type: "quiz",
-            }),
+          new URLSearchParams({
+            id: id,
+            type: "quiz",
+          }),
           {
             method: "DELETE",
           }
@@ -146,7 +169,7 @@ const AllContent = () => {
           }
         );
       }
-      setContent(content.filter((content) => content.id != id));
+      setContent(sortContentByCreationTime(content.filter((content) => content.id != id)));
     }
   };
 
@@ -161,8 +184,8 @@ const AllContent = () => {
     <div style={{ margin: "30px" }}>
       <h2 style={{ color: "#28574F" }}>Hi {currentUser}!</h2>
       <h4 style={{ color: "#28574F" }}>Here is the SEEDS content dashboard</h4>
-      <br/>
-      <LogoutButton/>
+      <br />
+      <LogoutButton />
       <div>
         <Link to="/ivr">
           <button
@@ -174,15 +197,14 @@ const AllContent = () => {
           </button>
         </Link>
       </div>
-      
-      <br/>
+
+      <br />
 
       <Multiselect
-        options={st.options} // Options to display in the dropdown
-        selectedValues={st.selectedValue} // Preselected value to persist in dropdown
-        onSelect={onSelect} // Function will trigger on select event
-        onRemove={onRemove} // Function will trigger on remove event
-        displayValue="name" // Property name to display in the dropdown options
+        options={options} // Use dynamic options
+        onSelect={(selectedList) => setFilteredList(selectedList)}
+        onRemove={(selectedList) => setFilteredList(selectedList)}
+        displayValue="name"
         groupBy="category"
         style={{
           chips: {
@@ -194,7 +216,7 @@ const AllContent = () => {
         }}
       />
 
-      <br/>
+      <br />
 
       <div className="align-items-end">
         <Link to="/content/create">
@@ -208,6 +230,18 @@ const AllContent = () => {
         </Link>
       </div>
       <br></br>
+
+      <button
+        className="btn"
+        style={{ backgroundColor: "#28574F", color: "white" }}
+        onClick={onUpdateIVR}
+      >
+        Update IVR
+      </button>
+      <span>{updateIVRStatus}</span>
+
+      <br>
+      </br>
       {content.length == 0 && <h3>No content found :( </h3>}
       <div className="row">
         {content.length > 0 && <table className="table table-striped table-bordered">
@@ -224,8 +258,8 @@ const AllContent = () => {
           <tbody>
             {content.map((content) => (
               <tr key={content.id}>
-                <td> {content.title} <br/> {content.localTitle} </td>
-                <td> {content.theme} <br/> {content.localTheme} </td>
+                <td> {content.title} <br /> {content.localTitle} </td>
+                <td> {content.theme} <br /> {content.localTheme} </td>
                 <td>{content.isTeacherApp && 'TA'}{content.isPullModel && ', IVR'} {content.type == 'quiz' && 'IVR'}</td>
                 <td> {content.language}</td>
                 <td> {content.type}</td>
