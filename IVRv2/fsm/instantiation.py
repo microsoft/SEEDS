@@ -94,7 +94,8 @@ goToPreviousMenuMessageUrl = 'previousMenuDialog/{language}/To%20go%20to%20Previ
 pressKeyMessageUrl = 'pressKeysDialog/{language}/{key}/{speechRate}.mp3'
 
 audioGoingTobePlayedDialogUrl = 'audioDialogs/{language}/audioGoingToBePlayedDialog/{speechRate}.mp3'
-audioFinishedMessageUrl = 'audioDialogs/{language}/audioFinishedDialog/{speechRate}.mp3'
+audioFinishedMessageUrl = 'audioDialogs/{language}/audioFinishedDialog/{speechRate}.mp3' #includes 'to repeat, press 8 and to go back press 9'
+
 
 number_of_categories_listed_in_one_state = 4
 next_n_categories_key = "5"
@@ -225,7 +226,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         actions = []
         language = parent_selections['language']
         actions.append(TalkAction(text = "To exit the content. Press 9"))
-        actions.append(TalkAction(text = "To repeat the content. Press 2"))
+        actions.append(TalkAction(text = "To repeat the content. Press 8"))
         audioGoingTobePlayedUrl = audioGoingTobePlayedDialogUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         # actions.append(TalkAction(text = "To exit the content. Press 9"))
         actions.append(StreamAction(pullMenuMainUrl + audioGoingTobePlayedUrl))
@@ -237,21 +238,34 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         
         actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
         actions.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input', timeOut=1))
-        
-        # actions.append(TalkAction(text = "To exit the content. Press 9"))
-        # actions.append(TalkAction(text = "To repeat the content. Press 2"))
-        
+
         state_id = state_id[:-1] # to remove '-' at the end
         print("STATE ID", state_id)
         fsm.add_state(State(state_id=state_id, actions=actions))
+        
         indexOfLastOp = parent_state_id.rfind('Op')
         parent_block_state_id = parent_state_id[:(indexOfLastOp-1)]
         option_chosen = parent_state_id[indexOfLastOp+2:][:-1]
         indexOfDigit = option_chosen.find('(')
         key_for_option_chosen = int(option_chosen[0:indexOfDigit]) + 1
+        
         fsm.add_transition(Transition(source_state_id=parent_block_state_id, dest_state_id=state_id, input=str(key_for_option_chosen), actions=[]))
+        
         fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=parent_block_state_id, input=previous_category_level_key, actions=[]))
-        fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id, input=str(2), actions=[]))
+        fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id, input=str(repeat_current_categories_key), actions=[]))
+        
+        state_id_final_state = f"{state_id}-LastMenu"
+        actions_final = []
+        actions_final.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
+        actions_final.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input'))
+        fsm.add_state(State(state_id=state_id_final_state, actions=actions_final))
+         
+        fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id_final_state, input="empty", actions=[]))
+        
+        fsm.add_transition(Transition(source_state_id=state_id_final_state, dest_state_id=fsm.end_state.id, input="empty", actions=[]))
+        fsm.add_transition(Transition(source_state_id=state_id_final_state, dest_state_id=parent_block_state_id, input=previous_category_level_key, actions=[]))
+        fsm.add_transition(Transition(source_state_id=state_id_final_state, dest_state_id=state_id, input=str(repeat_current_categories_key), actions=[]))
+        
         return
 
     filtered_content = []
@@ -411,7 +425,7 @@ total_content = count_last_level_content(theme_to_experience)
 #     file.write(format_data(theme_to_experience))
 
 fsm = FSM(fsm_id="fsm2")
-generate_states(fsm, content, content_attributes, 0)
+generate_states(fsm, contents, content_attributes, 0)
 
 # with open("output-fsm-vis.txt", "w", encoding='utf-8') as file:
 #     file.write(fsm.visualize_fsm())
