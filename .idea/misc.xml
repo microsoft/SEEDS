@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/contact_border.xml" value="0.1805" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/custom_scroll_style.xml" value="0.182" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/ic_crown.xml" value="0.188" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/ic_play.xml" value="0.1" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/primary_btn.xml" value="0.1805" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/rounded_assign_leader.xml" value="0.188" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/drawable/rounded_search_box.xml" value="0.1845" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/font/inter.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/font/inter_medium.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/font/inter_regular.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/font/inter_semibold.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/activity_main.xml" value="0.14402173913043478" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/activity_no_internet.xml" value="0.4203125" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/activity_splash_screen.xml" value="0.165" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/add_leaders.xml" value="0.1796875" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/assign_leader.xml" value="0.165" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/checkbox_name_item_row.xml" value="0.375" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/classroom_item_row.xml" value="0.55" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/contact_item_row.xml" value="0.25" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/content_item_row.xml" value="0.3045356371490281" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/dummy.xml" value="0.2994791666666667" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/filter_content.xml" value="0.2515212981744422" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/filter_content_on_call.xml" value="0.4322916666666667" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/filter_item_row.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_add_content_to_call.xml" value="0.375" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_add_more_content_to_call.xml" value="0.320596458527493" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_add_students.xml" value="0.3022847100175747" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_call.xml" value="0.26957831325301207" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_call_settings.xml" value="0.24203821656050956" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_classroom.xml" value="0.28313253012048195" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_contacts.xml" value="0.335" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_content_details.xml" value="0.165" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_create_classroom.xml" value="0.25" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_filter_content.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_home.xml" value="0.33" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/fragment_my_students.xml" value="0.1796875" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/remove_student_item_row.xml" value="0.335" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/rounded_assign.xml" value="0.1796875" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/select_student_item_row.xml" value="0.67" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/layout/student_call_item_row.xml" value="0.55" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1796875" />
+        <entry key="..\:/Users/t-ropoddar/Desktop/seeds/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+</project>

@@ -22,7 +22,7 @@ const app = express();
 // Define the rate limiter options
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes - The time window for which requests are counted.
-  max: 100, // 100 requests - The maximum number of requests per IP within the time window.
+  max: 5000, // 5000 requests - The maximum number of requests per IP within the time window.
 });
 
 // Apply the rate limiter middleware to all requests

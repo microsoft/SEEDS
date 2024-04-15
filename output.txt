@@ -1,0 +1,34 @@
+diff --git a/app/src/main/java/com/example/seeds/ui/call/CallViewModel.kt b/app/src/main/java/com/example/seeds/ui/call/CallViewModel.kt
+index e4e9276..0101132 100644
+--- a/app/src/main/java/com/example/seeds/ui/call/CallViewModel.kt
++++ b/app/src/main/java/com/example/seeds/ui/call/CallViewModel.kt
+@@ -154,7 +154,6 @@ class CallViewModel @Inject constructor(
+             }
+         }
+ 
+-        Log.d("LEADERISHERE", leader)
+         Log.d("CONTENTCALL", args.classroom.contents!!.map{
+             content -> content.title
+         }.toString())
+@@ -213,7 +212,7 @@ class CallViewModel @Inject constructor(
+             _audioPlaying.value = callStatus.audio.state == "play"
+             Log.d("AUDIOCONTROLNETWORK", callStatus.audio.toString())
+             _callState.postValue(networkCallState.sortedByDescending { it.raiseHand })
+-            Log.d("MOMENTISHERE", networkCallState.toString())
++            Log.d("REFRESHED NETWORK CALL STATE", networkCallState.toString())
+             _teacherCallStatus.postValue(networkCallState.find {
+                 it.phoneNumber == teacherPhoneNumber
+             })
+diff --git a/app/src/main/java/com/example/seeds/ui/contentDetails/ContentDetailsFragment.kt b/app/src/main/java/com/example/seeds/ui/contentDetails/ContentDetailsFragment.kt
+index 0707c5c..424c8cc 100644
+--- a/app/src/main/java/com/example/seeds/ui/contentDetails/ContentDetailsFragment.kt
++++ b/app/src/main/java/com/example/seeds/ui/contentDetails/ContentDetailsFragment.kt
+@@ -29,7 +29,7 @@ class ContentDetailsFragment : BaseFragment() {
+         binding = FragmentContentDetailsBinding.inflate(inflater)
+         binding.content = args.content
+         binding.contentAudio.player = ExoPlayer.Builder(requireContext()).build()
+-        val videoUri = Uri.parse("https://seedsblob.blob.core.windows.net/output-original/${args.content.id}.mp3")
++        val videoUri = Uri.parse("https://seedscontent.blob.core.windows.net/output-original/${args.content.id}.mp3")
+         val mediaItem: MediaItem = MediaItem.fromUri(videoUri)
+         binding.contentAudio.player?.setMediaItem(mediaItem)
+         binding.contentAudio.player?.prepare()

@@ -93,7 +93,8 @@ async def start_ivr(request: StartIVRRequest, response: Response):
         vonage_resp = client.voice.create_call({
             'to': [{'type': 'phone', 'number': phone_number}],
             'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
-            'ncco': ncco_actions
+            'ncco': ncco_actions,
+            'length_timer': os.getenv("CALL_DURATION_LIMIT")
         })
         vonage_resp = VonageCallStartResponse(**vonage_resp)
         print("VONAGE RESPONSE", vonage_resp)

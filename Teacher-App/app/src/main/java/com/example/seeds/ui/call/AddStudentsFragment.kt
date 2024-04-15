@@ -31,7 +31,7 @@ class AddStudentsFragment : BaseFragment() {
         (binding.myStudentsList.adapter as CheckboxNameListAdapter).submitList(viewModel.studentsNotOnCall)
         binding.viewModel = viewModel
 
-        binding.startCallBtn.setOnClickListener {
+        binding.addStudentsBtn.setOnClickListener {
             logMessage("Students added to call: ${(binding.myStudentsList.adapter as CheckboxNameListAdapter).usersInGroup}")
 
             (binding.myStudentsList.adapter as CheckboxNameListAdapter).usersInGroup.map { phoneNumber ->

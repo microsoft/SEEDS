@@ -1,6 +1,6 @@
 const { parse } = require("url");
 
-// require("dotenv").config({ path: ".env" });
+require("dotenv").config({ path: ".env" });
 
 require("./globalVariables/Conference/conferenceCall")
 require("./globalVariables/monoCall/monoCall")
@@ -91,6 +91,8 @@ process.on('uncaughtException', async (err, origin) => {
   await unhandledExceptionModel.create({error:JSON.stringify(err,replaceErrors), origin: origin})
   process.exit(1);
 });
+
+// server crash -- do the same thing as uncaught exception.
 
 // All the warnings raised in this server will land here and will be populated in MongoDB
 process.on('warning', async (warning) => {

@@ -25,12 +25,13 @@ app.get("/healthCheck",(req,res) => {
 })
 
 // Define the rate limiter options
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes - The time window for which requests are counted.
-  max: 2000, // 100 requests - The maximum number of requests per IP within the time window.
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes - The time window for which requests are counted.
+//   max: 2000, // 100 requests - The maximum number of requests per IP within the time window.
+// });
 
-app.use(limiter);
+// app.use(limiter);
+
 app.use("/azurepubsubhook", handler.getMiddleware());
 
 app.use("/vonage",morgan("tiny"),express.json(),global.communicationApi.router)

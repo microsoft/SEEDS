@@ -1,6 +1,11 @@
 package com.example.seeds.ui.call
 
+import NetworkConnectivityLiveData
+import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.seeds.model.*
@@ -13,6 +18,7 @@ import com.example.seeds.utils.ContactUtils
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,14 +30,18 @@ import javax.inject.Inject
 class CallViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val network: SeedsService,
-    context: Context,
+    private val context: Context,
+//    @ApplicationContext private val context: Context,
     private val teacherRepository: TeacherRepository,
     private val contentRepository: ContentRepository,
-    private val classroomRepository: ClassroomRepository
+    private val classroomRepository: ClassroomRepository,
+//    val networkConnectivityLiveData: NetworkConnectivityLiveData
     ) : ViewModel(){
 
     private val contactUtils = ContactUtils(context)
     val args = CallFragmentArgs.fromSavedStateHandle(savedStateHandle)
+
+
 
     val leader = args.leader.toString()
 
@@ -41,7 +51,7 @@ class CallViewModel @Inject constructor(
     private lateinit var token: AccessToken
     private var cancelCallOnFailure: Job? = null
 
-    val teacherPhoneNumber = teacherRepository.getTeacherPhoneNumber()
+    val teacherPhoneNumber = "91${teacherRepository.getTeacherPhoneNumber()}"
     var startedAudio = false
 
     var content: Content? = if (args.classroom.contents!!.isNotEmpty()) args.classroom.contents!![0] else null
@@ -127,6 +137,21 @@ class CallViewModel @Inject constructor(
     val navigateBack: LiveData<Boolean>
         get() = _navigateBack
 
+    private val _networkConnected = MutableLiveData<Boolean>()
+    val networkConnected: LiveData<Boolean>
+        get() = _networkConnected
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            _networkConnected.postValue(true)
+        }
+
+        override fun onLost(network: Network) {
+            _networkConnected.postValue(false)
+        }
+    }
+
+
     init {
         getAccessToken()
         viewModelScope.launch {
@@ -158,6 +183,7 @@ class CallViewModel @Inject constructor(
             content -> content.title
         }.toString())
     }
+
 
     fun updateClassroomContent(classroom: Classroom) {
         viewModelScope.launch {
@@ -197,7 +223,7 @@ class CallViewModel @Inject constructor(
             val names = mutableListOf<String>()
             names.add("Teacher")
             for(num in args.phoneNumbers.copyOfRange(1, args.phoneNumbers.size))
-                names.add(args.classroom.students.filter { it.phoneNumber == num }[0].name)
+                names.add(args.classroom.students.filter { it.phoneNumber == num }[0].name) // this gave index OutOfBound erroor
             if(!callStarted) {
                 network.startCall(CallDetails(_callToken.value!!.confId, phoneNumbers, names))
                 callStarted = true
@@ -209,6 +235,7 @@ class CallViewModel @Inject constructor(
         viewModelScope.launch {
             val callStatus = network.getCallStatus(_callToken.value!!.confId).asDomainModel(contactUtils)
             val networkCallState = callStatus.participants
+            Log.d("STATEOFCALL", callStatus.toString())
             _audioPlaying.value = callStatus.audio.state == "play"
             Log.d("AUDIOCONTROLNETWORK", callStatus.audio.toString())
             _callState.postValue(networkCallState.sortedByDescending { it.raiseHand })
@@ -216,7 +243,7 @@ class CallViewModel @Inject constructor(
             _teacherCallStatus.postValue(networkCallState.find {
                 it.phoneNumber == teacherPhoneNumber
             })
-            Log.d("TEACHERCALLSTATUS", _teacherCallStatus.toString())
+            Log.d("TEACHERCALLSTATUS", _teacherCallStatus.value.toString())
             studentsNotOnCall = allStudents.filter { stu ->
                 networkCallState.find { stu.phoneNumber == it.phoneNumber } == null
                         || when(networkCallState.find { stu.phoneNumber == it.phoneNumber }?.callerState) {
@@ -284,6 +311,7 @@ class CallViewModel @Inject constructor(
             Log.d("MUTEUNMUTEDONEIN4",  _callState.value!![index!!].toString())
         }
         else if (message.contains("vonageWebsocket:disconnected") || message.contains("vonageWebsocket:failed")) {
+            Log.d("VONAGESENDINGWEBSOCCKETDISCONNECTED", message)
             _connectionLost.postValue(true)
         } else if (message.contains("vonageWebsocket:connected")) {
             Log.d("Message", message)
@@ -327,7 +355,7 @@ class CallViewModel @Inject constructor(
     }
 
     fun connectParticipant(name: String, phoneNumber: String) {
-        socket.send("add:$phoneNumber:$name") // put namw  // add:{phoneNumber}:{name}
+        socket.send("add:$phoneNumber:$name") // put name  // add:{phoneNumber}:{name}
     }
 
     fun disconnectParticipant(phoneNumber: String) {
@@ -432,7 +460,7 @@ class CallViewModel @Inject constructor(
             Thread.sleep(4000)
             connectWebSocket()
             cancelCallOnFailure = viewModelScope.launch {
-                delay(180000L)
+                delay(180000L) // 3 minutes
                 _navigateBack.postValue(true)
             }
         }
@@ -440,7 +468,16 @@ class CallViewModel @Inject constructor(
 
     override fun onCleared() {
         endCall()
-        socket.close(1000, "close")
+        if (this::socket.isInitialized) {
+            socket.close(1000, "close")
+        }
+        //socket.close(1000, "close")
+    }
+
+    fun startNetworkCallback() {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkRequest = NetworkRequest.Builder().build()
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
     }
 
     fun connectWebSocket(){

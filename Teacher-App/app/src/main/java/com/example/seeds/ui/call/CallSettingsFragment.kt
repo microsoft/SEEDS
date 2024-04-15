@@ -47,7 +47,7 @@ class CallSettingsFragment : BaseFragment() {
 
         binding.editClassroomButton.setOnClickListener {
             logMessage("Edit classroom button clicked - ${viewModel.classroom}")
-            findNavController().navigate(CallSettingsFragmentDirections.actionCallSettingsFragmentToCreateClassroomFragment(args.classroom))
+            findNavController().navigate(CallSettingsFragmentDirections.actionCallSettingsFragmentToCreateClassroomFragment(viewModel.classroom.value!!))
         }
 
         binding.deleteClassroomButton.setOnClickListener {
@@ -88,6 +88,7 @@ class CallSettingsFragment : BaseFragment() {
                binding.addContentCs.isEnabled = true
                binding.startCallBtn.isEnabled = true
                binding.editClassroomButton.isEnabled = true
+               binding.deleteClassroomButton.isEnabled = true
 
            }
         })
@@ -129,7 +130,8 @@ class CallSettingsFragment : BaseFragment() {
             }
             else{
                 //val teacherPhoneNumber = Firebase.auth.currentUser!!.phoneNumber.toString().replace("+", "")
-                val teacherPhoneNumber = requireActivity().getSharedPreferences("sharedPref", AppCompatActivity.MODE_PRIVATE).getString("phone", null).toString().replace("+", "")
+                var teacherPhoneNumber = requireActivity().getSharedPreferences("sharedPref", AppCompatActivity.MODE_PRIVATE).getString("phone", null).toString().replace("+", "")
+                teacherPhoneNumber = "91$teacherPhoneNumber"
                 val teachList = arrayListOf(teacherPhoneNumber)
                 teachList.addAll(phoneNumbersForCall)
                 var leaderForCall = getLeader()

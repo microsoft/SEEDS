@@ -10,6 +10,8 @@ class FSM:
         self.states: dict[str, State] = {}
         self.init_state_id = "LA0"
         self.on_error_actions = [TalkAction("Invalid Input")]
+        self.end_state = State(state_id="END", actions=[TalkAction("Bye bye")])
+        self.add_state(self.end_state)
     
     def add_state(self, state: State):
         if state.id in self.states:
@@ -39,7 +41,11 @@ class FSM:
         if current_state_id not in self.states:
             raise ValueError(f"Current State with id {current_state_id} does not exist")
         
+        if input_ == '':
+            input_ = "empty"
+        
         if input_ not in self.states[current_state_id].transition_map:
+            
             print("Invalid Input", input_)
             return self.on_error_actions + self.states[current_state_id].actions, current_state_id
         

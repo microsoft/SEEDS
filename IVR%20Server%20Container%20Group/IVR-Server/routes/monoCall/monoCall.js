@@ -10,7 +10,10 @@ router.post("/",tryCatchWrapper1(async (req, res) => {
     await createMonoCallLog(number)
     global.communicationApi.createMonoCall(number)
   }
-  res.send("success.");
+  else{
+    return res.send("Call already in progress.");
+  }
+  return res.send("success.");
 }));
 
 

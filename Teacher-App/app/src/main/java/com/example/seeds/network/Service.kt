@@ -60,7 +60,7 @@ interface SeedsService {
 
 }
 
-fun provideService(authenticator: TokenAuthenticator, @ApplicationContext context: Context):  SeedsService {
+fun provideService(@ApplicationContext context: Context):  SeedsService {
     //reference: https://proandroiddev.com/headers-in-retrofit-a8d71ede2f3e
 
     val httpClientBuilder = OkHttpClient.Builder().apply {
@@ -87,7 +87,7 @@ fun provideService(authenticator: TokenAuthenticator, @ApplicationContext contex
                 return@Interceptor chain.proceed(builder.build())
             }
         )
-        authenticator(authenticator)
+//        authenticator(authenticator)
         readTimeout(60, TimeUnit.SECONDS)
         connectTimeout(60, TimeUnit.SECONDS)
         writeTimeout(60, TimeUnit.SECONDS)

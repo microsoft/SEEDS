@@ -25,6 +25,7 @@ router.post("/",
   removeDuplicateMobileNumbers,
   removeContactsExistInAnotherConference,
   tryCatchWrapperForReqResModel(async (req, res) => {
+  console.log("Conference Call Request: ", req.body);
   const confId = req.body.confId;
   // const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
   // await logClientRequest(confId,indianTime,req.originalUrl,req.method,"HTTP",JSON.stringify(req.body))
@@ -41,6 +42,7 @@ router.get("/accessToken", tryCatchWrapperForReqResModel(async (req, res) => {
   const confId = uuidv4();
   const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
   await logClientRequest(confId,indianTime,req.originalUrl,req.method,"HTTP","")
+  console.log("Access Tokrn: confId", confId);
   const token = await serviceClient.getClientAccessToken({ userId: confId });
   res.json({ confId: confId, accessToken: token.url });
 }));

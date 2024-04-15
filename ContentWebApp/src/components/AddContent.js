@@ -32,8 +32,8 @@ const AddContent = () => {
               <option value="Poem">Poem</option>
               <option value="Song">Song</option>
               <option value="Snippet">Snippet</option>
-              <option value="Riddle">Riddle</option>
-              <option value="quiz">Quiz</option>
+              {/* <option value="Riddle">Riddle</option>
+              <option value="quiz">Quiz</option> */}
             </select>
           </label>
         </form>
