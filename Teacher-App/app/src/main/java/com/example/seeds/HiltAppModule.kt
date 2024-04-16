@@ -64,7 +64,8 @@ object HiltAppModule {
 
 //    @Singleton
 //    @Provides
-//    fun provideConnectivityLiveData(@ApplicationContext context: Context): NetworkConnectivityLiveData {
+//    fun provideNetworkConnectivityLiveData(@ApplicationContext context: Context): NetworkConnectivityLiveData {
 //        return NetworkConnectivityLiveData(context)
 //    }
+
 }

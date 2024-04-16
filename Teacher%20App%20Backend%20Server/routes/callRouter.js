@@ -19,8 +19,8 @@ router.get("/accessToken", tryCatchWrapper(async (req, res) => {
 }))
 
 router.post('/start', tryCatchWrapper(async (req, res) => {
-    console.log("START CALL BODY", req.body)
-    console.log("IVR_SERVER_URL", process.env.IVR_SERVER_URL)
+    console.log("START CALL BOD", req.body)
+    console.log("IVR_SERVER_URL", process.env.IVR_SERVER_URL) 
     const response = await axios.post(`${process.env.IVR_SERVER_URL}conference_call`, req.body)
     console.log("START CALL RESPONSE", response.data)
     return res.json(response.data)

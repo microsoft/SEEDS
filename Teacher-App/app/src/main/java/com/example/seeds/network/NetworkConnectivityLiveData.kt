@@ -22,6 +22,8 @@ class NetworkConnectivityLiveData(private val context: Context) : LiveData<Boole
 
     override fun onActive() {
         super.onActive()
+        val isConnected = checkInitialConnectivity()
+        postValue(isConnected)
         // Directly use networkRequest and networkCallback without reinitializing them
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -33,6 +35,12 @@ class NetworkConnectivityLiveData(private val context: Context) : LiveData<Boole
         super.onInactive()
         // Directly unregister the networkCallback
         connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+    private fun checkInitialConnectivity(): Boolean {
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
     }
 }
 

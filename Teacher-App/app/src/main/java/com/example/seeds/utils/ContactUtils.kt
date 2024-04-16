@@ -61,7 +61,7 @@ class ContactUtils constructor(private val context: Context) {
             val finalPhoneNumbers = phoneNumbers.map{
                 var phone = PhoneNumberUtils.formatNumber(it, Locale.getDefault().country)
                 phone?.let {
-                    phone = phone.replace(" ", "").replace("-", "").replace("+", "")
+                    phone = phone.replace(" ", "").replace("-", "").replace("+", "").replace("(", "").replace(")", "")
                     if (phone[0] == '0') {
                         phone = phone.substring(1)
                     }

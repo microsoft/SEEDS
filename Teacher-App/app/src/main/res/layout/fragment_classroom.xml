@@ -114,6 +114,18 @@
                     android:text="No Groups Found"
                     android:visibility="invisible" />
 
+                <TextView
+                    android:id="@+id/no_internet"
+                    style="@style/AllTitles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text="No Internet available!"
+                    android:visibility="invisible" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
