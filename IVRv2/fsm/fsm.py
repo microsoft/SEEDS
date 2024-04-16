@@ -4,9 +4,6 @@ from fsm.transition import Transition
 from base_classes.action import Action
 from actions.base_actions.talk_action import TalkAction
 
-
-
-
 class FSM:
     def __init__(self, fsm_id: str):
         self.fsm_id = fsm_id

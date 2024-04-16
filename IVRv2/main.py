@@ -78,7 +78,7 @@ async def start_ivr(request: StartIVRRequest, response: Response):
             # IF THIS IS THE CASE IT IS ASSUMED THAT THE DOC FOUND IS STALE
             # - DELETE THE DOC
             # - HANG UP THE CALL IN CASE ITS STILL UP : TODO
-            if (datetime.now() - ivr_state.createdAt).total_seconds() / 60 > \
+            if (datetime.now() - ivr_state.created_at).total_seconds() / 60 > \
                 int(os.environ.get("STALE_WAIT_IN_SECONDS", 60)):
                 await ongoing_fsm_mongo.delete(phone_number)
             
@@ -137,6 +137,7 @@ def get_answer():
 @app.post("/event")
 async def get_event(req: EventWebhookRequest, response: Response):
     try:
+        print("EVENT RECEIVED : ", req)
         if req.status in CallStatus.get_end_call_enums():
             await ongoing_fsm_mongo.delete(doc_id=req.conversation_uuid)
         

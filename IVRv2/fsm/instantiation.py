@@ -11,6 +11,7 @@ import json
 import re
 import requests
 import aiohttp
+import asyncio
 
 from utils.sas_gen import SASGen
 
@@ -279,9 +280,14 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
     titles = []
     
     if category == "language":
-        sorted_categories = sorted(set([item[category] for item in filtered_content]))
-    elif category == "theme":
+        unique_languages = set([item[category] for item in filtered_content])
+        count_languages = dict()
+        for lang in unique_languages:
+            count_languages[lang] = len([item for item in filtered_content if item[category] == lang])
+        sorted_count_languages = sorted(count_languages.items(), key=lambda item: item[1], reverse=True)
+        sorted_categories = [x[0] for x in sorted_count_languages]
         
+    elif category == "theme":
         language = parent_selections['language']
         response = requests.get(f'{url}/themes?language={language}', headers={'authToken': 'postman'})
         # print("THEMES ARE HERE", response.json())
@@ -411,7 +417,9 @@ async def instantiate_from_latest_content():
     fsm = FSM(fsm_id="SEEDS-IVR")
     generate_states(fsm, content, content_attributes, 0)
     return fsm
-    
+
+# if __name__ == "__main__":
+#     asyncio.run(instantiate_from_latest_content())
 
 # with open('contents.json', 'r', encoding='utf-8') as file:
 # file = open('contents.json', 'r', encoding='utf-8')
