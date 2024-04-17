@@ -11,6 +11,8 @@ from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content
 from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest, VonageCallStartResponse
 from utils.mongodb import MongoDB
+from fastapi.responses import HTMLResponse
+from fsm.visualiseIVR import get_latest_content, process_content
 
 load_dotenv()
 
@@ -41,6 +43,32 @@ ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds,
 action_factory = VonageActionFactory()
 
 accumulator = action_factory.get_action_accumulator_implmentation()
+
+@app.get("/ivr_structure", response_class=HTMLResponse)
+async def get_ivr_structure():
+    content = await get_latest_content()
+    structured_content = process_content(content)
+    print(structured_content)
+    html_content = format_data_html(structured_content)
+    return html_content
+
+def format_data_html(data, level=0):
+    if isinstance(data, dict):
+        role = 'group' if level > 0 else 'tree'  # Use 'tree' role for the top level and 'group' for nested lists
+        items = f'<ul role="{role}">'
+        for key, value in data.items():
+            # Using 'treeitem' role for items and specifying 'aria-level' for better depth understanding
+            items += f'<li role="treeitem" aria-level="{level + 1}"><strong>{key}</strong>{format_data_html(value, level + 1)}</li>'
+        items += '</ul>'
+        return items
+    elif isinstance(data, set):
+        # Leaf nodes are simple list items without a specific role needed as they do not expand further
+        items = '<ul>'
+        for item in data:
+            items += f'<li>{item}</li>'
+        items += '</ul>'
+        return items
+    return ''
 
 @app.on_event("startup")
 async def startup_event():
