@@ -13,6 +13,7 @@ const callRouter = require("./routes/callRouter.js")
 const teacherRouter = require("./routes/teacherRouter.js")
 const contentRouter = require("./routes/contentRouter")
 const classRoomRouter = require("./routes/classRouter.js");
+const userRouter = require("./routes/userRouter.js")
 const logRouter = require("./routes/logRouter.js")
 const { constants } = require("zlib");
 
@@ -34,6 +35,7 @@ app.use("/teacher", verifyToken, bodyParser.json(), teacherRouter);
 app.use("/content", verifyToken, bodyParser.json(), contentRouter);
 app.use("/class", verifyToken, bodyParser.json(), classRoomRouter);
 app.use("/log", verifyToken, bodyParser.json(), logRouter)
+app.use("/user", verifyToken, bodyParser.json(), userRouter)
 
 mongoose.connect(process.env.DB_CONNECTION, () => {
     console.log("Connected to DB")
