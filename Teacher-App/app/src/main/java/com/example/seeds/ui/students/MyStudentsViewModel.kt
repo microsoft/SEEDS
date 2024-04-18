@@ -20,13 +20,13 @@ class MyStudentsViewModel @Inject constructor(private val teacherRepository: Tea
 
     fun refreshStudents() {
         viewModelScope.launch {
-            _students.value = teacherRepository.getMyStudents()
+//            _students.value = teacherRepository.getMyStudents()
         }
     }
 
     fun setMyStudents(students: List<String>){
         viewModelScope.launch {
-            teacherRepository.setMyStudents(students)
+//            teacherRepository.setMyStudents(students)
         }
     }
 }

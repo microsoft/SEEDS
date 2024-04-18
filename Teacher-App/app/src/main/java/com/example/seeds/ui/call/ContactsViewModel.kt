@@ -10,17 +10,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ContactsViewModel @Inject constructor(private val teacherRepository: TeacherRepository): ViewModel(){
+class ContactsViewModel @Inject constructor(): ViewModel(){
 
-    private val _navigateBack = MutableLiveData<Boolean>(false)
-    val navigateBack: LiveData<Boolean>
-        get() = _navigateBack
+//    private val _navigateBack = MutableLiveData<Boolean>(false)
+//    val navigateBack: LiveData<Boolean>
+//        get() = _navigateBack
 
-    fun setMyStudents(students: List<String>){
-        viewModelScope.launch {
-            teacherRepository.setMyStudents(students)
-            _navigateBack.value = true
-        }
-    }
+//    fun setMyStudents(students: List<String>){
+//        viewModelScope.launch {
+//            teacherRepository.setMyStudents(students)
+//            _navigateBack.value = true
+//        }
+//    }
 
 }

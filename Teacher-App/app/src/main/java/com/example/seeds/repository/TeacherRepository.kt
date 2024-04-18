@@ -12,29 +12,12 @@ import javax.inject.Inject
 
 
 class TeacherRepository @Inject constructor(
-    context: Context,
     private val network: SeedsService,
     private val sharedPreferences: SharedPreferences
 ) {
-
-    private val contactUtils = ContactUtils(context)
-
-    suspend fun getMyStudents(): List<Student>{
-        return withContext(Dispatchers.IO) {
-            contactUtils.getStudentsFromString(network.getStudents())
-        }
-    }
-
-    suspend fun getMyStudentPhoneNumbers(): List<String>{
-        return withContext(Dispatchers.IO) {
-            network.getStudents()
-        }
-    }
-
-    suspend fun setMyStudents(students: List<String>): List<Student> {
-        return withContext(Dispatchers.IO) {
-            contactUtils.getStudentsFromString(network.setStudents(StudentListContainer(students)))
-        }
+    fun getTeacherPhoneNumber(): String {
+        return sharedPreferences.getString("phone", "") ?: ""
+            .replace("+", "")
     }
 
     suspend fun register() {
@@ -42,9 +25,24 @@ class TeacherRepository @Inject constructor(
             network.registerTeacher()
         }
     }
-
-    fun getTeacherPhoneNumber(): String {
-        return sharedPreferences.getString("phone", "") ?: ""
-            .replace("+", "")
-    }
 }
+
+//private val contactUtils = ContactUtils(context)
+
+//suspend fun getMyStudents(): List<Student>{
+//    return withContext(Dispatchers.IO) {
+//        contactUtils.getStudentsFromString(network.getStudents())
+//    }
+//}
+//
+//suspend fun getMyStudentPhoneNumbers(): List<String>{
+//    return withContext(Dispatchers.IO) {
+//        network.getStudents()
+//    }
+//}
+//
+//suspend fun setMyStudents(students: List<String>): List<Student> {
+//    return withContext(Dispatchers.IO) {
+//        contactUtils.getStudentsFromString(network.setStudents(StudentListContainer(students)))
+//    }
+//}
