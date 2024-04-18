@@ -5,7 +5,8 @@ const Call = require("../models/Call.js");
 const CallLog = require("../models/CallLog.js");
 const FsmContext = require("../models/FsmContext.js");
 const path = require("path");
-const { tryCatchWrapper } = require(path.join("..", "util.js"))
+const { tryCatchWrapper, tryCatchWrapperLog } = require(path.join("..", "util.js"))
+
 const axios = require('axios').default
 
 const router = express.Router()
@@ -18,9 +19,8 @@ router.get("/accessToken", tryCatchWrapper(async (req, res) => {
     return res.json(response.data)
 }))
 
-router.post('/start', tryCatchWrapper(async (req, res) => {
+router.post('/start', tryCatchWrapperLog(async (req, res) => {
     console.log("START CALL BOD", req.body)
-    console.log("IVR_SERVER_URL", process.env.IVR_SERVER_URL) 
     const response = await axios.post(`${process.env.IVR_SERVER_URL}conference_call`, req.body)
     console.log("START CALL RESPONSE", response.data)
     return res.json(response.data)

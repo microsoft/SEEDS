@@ -26,16 +26,18 @@ const limiter = rateLimit({
   max: 5000, // 5000 requests - The maximum number of requests per IP within the time window.
 });
 
-// Apply the rate limiter middleware to all requests
-app.use(morgan('dev'))
-// app.use(limiter);
-app.use(cors())
-app.use("/call", verifyToken, bodyParser.json(), callRouter);
-app.use("/teacher", verifyToken, bodyParser.json(), teacherRouter);
-app.use("/content", verifyToken, bodyParser.json(), contentRouter);
-app.use("/class", verifyToken, bodyParser.json(), classRoomRouter);
-app.use("/log", verifyToken, bodyParser.json(), logRouter)
-app.use("/user", verifyToken, bodyParser.json(), userRouter)
+app.use(bodyParser.json());
+
+// Existing code remains unchanged
+app.use(morgan('dev'));
+app.use(cors());
+app.use("/call", verifyToken, callRouter);
+app.use("/teacher", verifyToken, teacherRouter);
+app.use("/content", verifyToken, contentRouter);
+app.use("/class", verifyToken, classRoomRouter);
+app.use("/log", verifyToken, logRouter);
+app.use("/user", verifyToken, userRouter);
+
 
 mongoose.connect(process.env.DB_CONNECTION, () => {
     console.log("Connected to DB")
