@@ -801,8 +801,10 @@ class VonageAPI {
       if (uuid !== "null") {
         this.updateCallLeg(uuid, "hangup").then(console.log).catch(async (error) => {
           try {
+            var errorWithStackTrace = new Error("Error during updateCallLeg");
+            errorWithStackTrace.details = error;
             const indianTime = new Date().toLocaleString("en-Us", { timeZone: 'Asia/Kolkata' });
-            await logError(confId, indianTime, error)
+            await logError(confId, indianTime, errorWithStackTrace)
           }
           catch (error) {
             console.log(error.message)
