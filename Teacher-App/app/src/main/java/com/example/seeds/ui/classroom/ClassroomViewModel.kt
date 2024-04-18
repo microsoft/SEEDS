@@ -1,6 +1,5 @@
 package com.example.seeds.ui.classroom
 
-import NetworkConnectivityLiveData
 import androidx.lifecycle.*
 import com.example.seeds.model.Classroom
 import com.example.seeds.model.Content
@@ -13,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClassroomViewModel @Inject constructor(
-    private val classroomRepository: ClassroomRepository,
+    private val classroomRepository: ClassroomRepository
 ): ViewModel() {
-    
+
     private val _classrooms = MutableLiveData<List<Classroom>>(null)
     val classrooms: MutableLiveData<List<Classroom>>
         get() = _classrooms

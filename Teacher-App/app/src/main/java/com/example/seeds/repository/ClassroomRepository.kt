@@ -1,7 +1,5 @@
 package com.example.seeds.repository
 
-
-import NetworkConnectivityLiveData
 import android.content.Context
 import com.example.seeds.model.Classroom
 import com.example.seeds.model.asDto
@@ -14,26 +12,15 @@ import javax.inject.Inject
 
 class ClassroomRepository @Inject constructor(
     private val network: SeedsService,
-    private val networkConnectivity: NetworkConnectivityLiveData,
     val context: Context,
 ) {
 
     private val contactUtils = ContactUtils(context)
     suspend fun getAllClassrooms(): List<Classroom> {
         return withContext(Dispatchers.IO) {
-            network.getAllClassrooms().asDomainModel(contactUtils).sortedByDescending { it._id }
-//            try {
-//                if (networkConnectivity.value == true) {
-//
-//                } else {
-//                    // Optionally load from local database or return empty list
-//                    emptyList()
-//                }
-//            } catch (e: Exception) {
-//                // Log the error and handle gracefully
-////                Toast
-//                emptyList() // Return empty list or handle the error as appropriate
-//            }
+            network.getAllClassrooms().asDomainModel(contactUtils).sortedByDescending {
+                it._id
+            }
         }
     }
 

@@ -289,18 +289,13 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         
     elif category == "theme":
         language = parent_selections['language']
-        response = requests.get(f'{url}/themes?language={language}', headers={'authToken': 'postman'})
-        # print("THEMES ARE HERE", response.json())
-        if response.status_code == 200:
-            themes_data = response.json()
-            titleToAudioUrl = {}
-            for theme_obj in themes_data:
-                if theme_obj['name'].lower() not in themes:
-                    titleToAudioUrl[theme_obj['name']] = f"{theme_obj['audioUrl']}/{speechRate}.mp3"
-            sorted_titleToAudioUrl = {key: titleToAudioUrl[key] for key in sorted(titleToAudioUrl)}
-            sorted_categories = list(sorted_titleToAudioUrl.values())
-            themes = list(sorted_titleToAudioUrl.keys())
-           
+        themes = sorted(set([item['theme'] for item in filtered_content]))
+        theme_to_audio_url = {}
+        for theme in themes:
+            theme_content = [x for x in filtered_content if x['theme'] == theme]
+            theme_to_audio_url[theme] = theme_content[0]['themeAudio'] + f'/{speechRate}.mp3'
+        sorted_categories = list(theme_to_audio_url.values())
+          
     elif category == "type":
         experiences_list = sorted(set(item['type'].lower() for item in filtered_content))
         sorted_categories = [experienceDialogAudioUrls[experience] for experience in experiences_list]
@@ -426,31 +421,35 @@ async def instantiate_from_latest_content():
 # contents = json.load(file)
 # content = [x for x in contents if x['language'].lower() == 'kannada']
 
-
-# themes = []
-# response = requests.get(f'{url}/themes?language=kannada', headers={'authToken': 'postman'})
-# if response.status_code == 200:
-#     themes_data = response.json()
-#     for theme_obj in themes_data:
-#         if theme_obj['name'].lower() not in themes:
-#             themes.append(theme_obj['name'].lower())
-
-# sorted_themes = sorted(themes)
-# theme_to_experience = {}
-# for theme in sorted_themes:
-#     theme_content = [x for x in content if x['theme'].lower() == theme]
-#     experiences = set([x['type'].lower() for x in theme_content])
-#     experience_to_title = {}
-#     for experience in experiences:
-#         experience_content = [x for x in theme_content if x['type'].lower() == experience.lower()]
-#         titles = set([x['title'] for x in experience_content])
-#         experience_to_title[experience] = titles
-#     theme_to_experience[theme] = experience_to_title
     
-# total_content = count_last_level_content(theme_to_experience)
-# # with open("output.txt", "w") as file:
-# #     file.write(f"Total content at the last level: {total_content}\n")
-# #     file.write(format_data(theme_to_experience))
+    
+        
+
+
+    # themes = []
+    # response = requests.get(f'{url}/themes?language=kannada', headers={'authToken': 'postman'})
+    # if response.status_code == 200:
+    #     themes_data = response.json()
+    #     for theme_obj in themes_data:
+    #         if theme_obj['name'].lower() not in themes:
+    #             themes.append(theme_obj['name'].lower())
+
+    # sorted_themes = sorted(themes)
+    # theme_to_experience = {}
+    # for theme in sorted_themes:
+    #     theme_content = [x for x in content if x['theme'].lower() == theme]
+    #     experiences = set([x['type'].lower() for x in theme_content])
+    #     experience_to_title = {}
+    #     for experience in experiences:
+    #         experience_content = [x for x in theme_content if x['type'].lower() == experience.lower()]
+    #         titles = set([x['title'] for x in experience_content])
+    #         experience_to_title[experience] = titles
+    #     theme_to_experience[theme] = experience_to_title
+        
+    # total_content = count_last_level_content(theme_to_experience)
+    # with open("output.txt", "w") as file:
+    #     file.write(f"Total content at the last level: {total_content}\n")
+    #     file.write(format_data(theme_to_experience))
 
 
 

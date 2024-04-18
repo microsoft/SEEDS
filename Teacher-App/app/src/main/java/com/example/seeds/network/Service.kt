@@ -6,8 +6,6 @@ import com.example.seeds.ApplicationJsonAdapterFactory
 import com.example.seeds.database.LogEntity
 import com.example.seeds.model.*
 import com.example.seeds.utils.Constants
-import com.example.seeds.utils.FirebaseToken
-import com.example.seeds.utils.TokenAuthenticator
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
@@ -30,6 +28,9 @@ interface SeedsService {
 
     @GET ("teacher/students")
     suspend fun getStudents(): List<String>
+
+    @GET("participants")
+    suspend fun getParticipants(): List<Student>
 
     @POST ("teacher/students")
     suspend fun setStudents(@Body students: StudentListContainer): List<String>

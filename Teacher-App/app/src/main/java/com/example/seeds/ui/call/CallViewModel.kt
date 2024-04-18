@@ -197,7 +197,7 @@ class CallViewModel @Inject constructor(
     }
 
     private fun getAccessToken() {
-        viewModelScope.launch {
+        viewModelScope.launch { // gave some Fatal Exception: java.lang.IndexOutOfBoundsException Index 0 out of bounds for length 0 error
             token = network.getAccessToken()
             allStudents = args.classroom.students //teacherRepository.getMyStudents()
             _callToken.postValue(token)
@@ -225,6 +225,7 @@ class CallViewModel @Inject constructor(
             for(num in args.phoneNumbers.copyOfRange(1, args.phoneNumbers.size))
                 names.add(args.classroom.students.filter { it.phoneNumber == num }[0].name) // this gave index OutOfBound erroor
             if(!callStarted) {
+                Log.d("CALL STARTED PARAMETERS", phoneNumbers.toString() + " " + names.toString() + " " + _callToken.value!!.confId)
                 network.startCall(CallDetails(_callToken.value!!.confId, phoneNumbers, names))
                 callStarted = true
             }
