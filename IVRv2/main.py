@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, HTTPException
 from datetime import datetime
 import vonage
 from fastapi.responses import JSONResponse
@@ -93,10 +93,17 @@ async def update_ivr(request: Request, response: Response):
     return {"message": "SUCCESS", "status_code": response.status_code}
 
 @app.post("/startivr")
-async def start_ivr(request: StartIVRRequest, response: Response):
+async def start_ivr(request: Request, response: Response):
     try:
-        phone_number = request.phone_number
-        print(f"Received request body: {json.dumps(request.dict(), indent=2)}")
+        form_data = await request.form()
+        data = dict(form_data)
+        
+        # Extract the 'sender' value from the form data
+        phone_number = data.get('sender', None)
+        if phone_number is None:
+            response.status_code = 400
+            return {"detail": "Sender value is required"}
+        
         print("PHONE NUMBER", phone_number)
         
         doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})

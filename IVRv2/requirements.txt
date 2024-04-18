@@ -7,3 +7,4 @@ pymongo
 motor
 requests
 aiohttp
+python-multipart
