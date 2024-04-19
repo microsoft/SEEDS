@@ -167,8 +167,10 @@ async function endAllConferencesInThisServer(){
 async function saveErrorAndSendToAndroidClient(confId,error){
   //log error message and send error message to Android.
   console.log(error)
+  var errorWithStackTrace = new Error("Executing saveErrorAndSendToAndroidClient");
+  errorWithStackTrace.details = error;
   const indianTime = new Date().toLocaleString("en-Us", {timeZone: 'Asia/Kolkata'});
-  await logError(confId,indianTime,error)
+  await logError(confId, indianTime, errorWithStackTrace)
   const jsonErrorMessage = JSON.stringify({error:500,message:error.message})
   await serviceClient.sendToUser(confId,jsonErrorMessage, {
     contentType: "text/plain",
