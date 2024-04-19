@@ -41,8 +41,6 @@ class CallViewModel @Inject constructor(
     private val contactUtils = ContactUtils(context)
     val args = CallFragmentArgs.fromSavedStateHandle(savedStateHandle)
 
-
-
     val leader = args.leader.toString()
 
     private var callStarted = false
@@ -449,7 +447,7 @@ class CallViewModel @Inject constructor(
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            Log.d("SOCKETCLOSED", "")
+            Log.d("SOCKETCLOSED", reason)
             super.onClosed(webSocket, code, reason)
         }
 

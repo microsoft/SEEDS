@@ -7,6 +7,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import androidx.work.*
 import com.example.seeds.dao.LogDao
+import com.example.seeds.utils.CustomExceptionHandler
 import com.example.seeds.utils.TimberRemoteTree
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,18 +32,23 @@ class SeedsApplication: Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-//        val sharedPreferences = context.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-//        var phoneNumber = sharedPreferences.getString("phone", null) // Default value as an example
-//        if (phoneNumber != null) phoneNumber = "+91$phoneNumber"
-//        Log.d("PHONEAUTH", "Phone number is $phoneNumber")
-
-//        val sharedPreferences = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-//        val teacherPhoneNumber = sharedPreferences.getString("phone", "unknown") ?: "unknown"
-//            .replace("+", "")
-//        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
-//        Timber.plant(remoteTree)
-        //delayedInit()
+        Thread.setDefaultUncaughtExceptionHandler(CustomExceptionHandler(this))
     }
+
+//    override fun onCreate() {
+//        super.onCreate()
+////        val sharedPreferences = context.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+////        var phoneNumber = sharedPreferences.getString("phone", null) // Default value as an example
+////        if (phoneNumber != null) phoneNumber = "+91$phoneNumber"
+////        Log.d("PHONEAUTH", "Phone number is $phoneNumber")
+//
+////        val sharedPreferences = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+////        val teacherPhoneNumber = sharedPreferences.getString("phone", "unknown") ?: "unknown"
+////            .replace("+", "")
+////        val remoteTree = TimberRemoteTree(logDatabase, teacherPhoneNumber)
+////        Timber.plant(remoteTree)
+//        //delayedInit()
+//    }
 
     //private fun delayedInit() = applicationScope.launch { setupWorker() }
 }

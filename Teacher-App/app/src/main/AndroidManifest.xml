@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Seeds"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".ErrorActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.Login.SplashScreenActivity"
             android:exported="true"
@@ -26,16 +28,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-<!--        <activity-->
-<!--            android:name=".ui.Login.LoginActivity"-->
-<!--            android:exported="false" />-->
+        </activity> <!-- <activity -->
+        <!-- android:name=".ui.Login.LoginActivity" -->
+        <!-- android:exported="false" /> -->
         <activity
             android:name=".ui.Login.LoginCodeActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
