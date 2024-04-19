@@ -93,13 +93,14 @@ async def update_ivr(request: Request, response: Response):
     return {"message": "SUCCESS", "status_code": response.status_code}
 
 @app.post("/startivr")
-async def start_ivr(request: Request, response: Response):
+async def start_ivr(request: StartIVRRequest, response: Response):
     try:
-        form_data = await request.form()
-        data = dict(form_data)
+        # form_data = await request.form()
+        # data = dict(form_data)
         
-        # Extract the 'sender' value from the form data
-        phone_number = data.get('sender', None)
+        # # Extract the 'sender' value from the form data
+        # phone_number = data.get('sender', None)
+        phone_number = request.phone_number
         if phone_number is None:
             response.status_code = 400
             return {"detail": "Sender value is required"}
