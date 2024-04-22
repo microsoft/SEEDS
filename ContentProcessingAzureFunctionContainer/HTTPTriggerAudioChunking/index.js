@@ -64,6 +64,7 @@ module.exports = async function (context, req) {
     }
   }
   catch(error){
-    sendResponse(context,error.statusCode?error.statusCode:500,`Error Occurred. Message = ${error.message}`)
+    console.log(error.stack)
+    sendResponse(context,error.statusCode?error.statusCode:500,`Error Occurred. Message = ${error.message} ${error.stack}`)
   }
 }

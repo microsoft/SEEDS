@@ -1,5 +1,15 @@
 const pullModelDialogData = [
     {
+        "baseFolder": "contentPlayingDialogs",
+        "folder": "toExitContent",
+        "text": "To exit content"
+    },
+    {
+        "baseFolder": "contentPlayingDialogs",
+        "folder": "toRepeatContent",
+        "text": "To repeat content"
+    },
+    {
         "baseFolder":"audioDialogs",
         "folder":"audioControlDialog",
         "text":"Playing Audio Controls. To replay the Audio, press 8. To pause or resume, press 2. To increase the speech rate, press pound. To decrease the speech rate, press asterisk. To exit from this section, press 9."
