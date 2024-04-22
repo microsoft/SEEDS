@@ -28,8 +28,39 @@ class FSM:
         self.init_state_id = "LA0"
         self.invalid_input_error_actions = [StreamAction(self.WRONG_INPUT_AUDIO_URL)]
         self.empty_input_error_actions = [StreamAction(self.NO_OPTION_CHOSEN_AUDIO_URL)]
-        self.end_state = State(state_id="END", actions=[TalkAction("Bye bye")])
-        self.add_state(self.end_state)
+        # self.end_state = State(state_id="END", actions=[TalkAction("Bye bye")])
+        # self.add_state(self.end_state)
+    
+    def serialize(self):
+        states = [state.serialize() for state in self.states.values()]
+        transitions = []
+        for state in self.states.values():
+            print(state.serialize_transitions(), type(state.serialize_transitions()))
+            transitions.extend(state.serialize_transitions())
+        
+        return {
+            "fsm_id": self.fsm_id,
+            "init_state_id": self.init_state_id,
+            "states": states,
+            "transitions": transitions
+        }
+    
+    @staticmethod
+    def deserialize(data: dict):
+        fsm = FSM(data["fsm_id"])
+        for state_json in data["states"]:
+            state_obj = State.from_json(state_json)
+            fsm.add_state(state_obj)
+        fsm.set_init_state_id(data["init_state_id"])
+        for transition_json in data["transitions"]:
+            transition_obj = Transition.from_json(transition_json)
+            fsm.add_transition(transition_obj)
+        
+        return fsm
+        
+    def set_end_state(self, state: State):
+        self.end_state = state
+        self.add_state(state)
     
     def add_state(self, state: State):
         """

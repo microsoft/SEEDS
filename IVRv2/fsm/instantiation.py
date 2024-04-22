@@ -425,8 +425,17 @@ async def instantiate_from_latest_content():
                 json.dumps(contents, indent=2, ensure_ascii=False))
     
     fsm = FSM(fsm_id="SEEDS-IVR")
+    fsm.set_end_state(State(state_id="END", actions=[TalkAction("Bye bye")]))
     generate_states(fsm, content, content_attributes, 0)
+    # with open('/home/kavyansh/SEEDS/IVRv2/fsm.json', 'w', encoding='utf-8') as file:
+    #     json.dump(fsm.serialize(), file, indent=4)
     return fsm
+
+def instantitate_from_json():
+    file_path = 'fsm.json'
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        return FSM.deserialize(data)
 
 # if __name__ == "__main__":
 #     asyncio.run(instantiate_from_latest_content())

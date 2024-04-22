@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
-from fsm.instantiation import instantiate_from_latest_content
+from fsm.instantiation import instantiate_from_latest_content, instantitate_from_json
 from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRFormData, VonageCallStartResponse
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
@@ -90,6 +90,7 @@ async def update_ivr(request: Request, response: Response):
             "status_code": response.status_code}
         
     fsm = await instantiate_from_latest_content()
+    # fsm = instantitate_from_json()
     # print(fsm.visualize_fsm())
     response.status_code = 200
     return {"message": "SUCCESS", "status_code": response.status_code}
