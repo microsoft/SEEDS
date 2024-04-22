@@ -16,31 +16,32 @@ var baseUrl = 'https://api.cognitive.microsofttranslator.com/';
 var region = process.env.TRANSLATOR_REGION;
 
 function createOptions(url,text,toLangs){
-    let options = {
-        method: 'POST',
-        baseURL: baseUrl,
-        url: url,
-        params: {
-          'api-version': '3.0',
-          'to': toLangs
-        },
-        headers: {
-          'Ocp-Apim-Subscription-Key': subscriptionKey,
-          'Ocp-Apim-Subscription-Region': region,
-          'Content-type': 'application/json',
-          'X-ClientTraceId': uuidv4()
-        },
-        data: [{
-              'text': text
-        }],
-    };
-    return options
+  const params = new URLSearchParams();
+  params.append('api-version', '3.0');
+  toLangs.forEach(lang => params.append('to', lang));
+  let options = {
+      method: 'post',
+      baseURL: baseUrl,
+      url: url,
+      params: params,
+      headers: {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Ocp-Apim-Subscription-Region': region,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': uuidv4()
+      },
+      data: [{
+            'text': text
+      }],
+  };
+  return options
 }
 
 /* If you encounter any issues with the base_url or path, make sure that you are
 using the latest endpoint: https://docs.microsoft.com/azure/cognitive-services/translator/reference/v3-0-translate */
 async function translateTextIntoMultipleLanguages(url,textToConvert,toLangs){
     const options = createOptions(url,textToConvert,toLangs)
+    console.log(options)
 
     const resp = await axios(options)
     
