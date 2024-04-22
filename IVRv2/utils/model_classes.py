@@ -53,8 +53,9 @@ class VonageCallStartResponse(BaseModel):
     status: str = ""
     direction: str = ""
     conversation_uuid: str = ""
-
     
+class StartIVRFormData(BaseModel):
+    sender: str
 
 class EventWebhookRequest(BaseModel):
     end_time: str | None = ""

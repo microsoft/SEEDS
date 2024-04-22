@@ -10,7 +10,7 @@ import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content
-from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRRequest, VonageCallStartResponse
+from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRFormData, VonageCallStartResponse
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
@@ -93,9 +93,6 @@ async def update_ivr(request: Request, response: Response):
     # print(fsm.visualize_fsm())
     response.status_code = 200
     return {"message": "SUCCESS", "status_code": response.status_code}
-
-class SenderFormData(BaseModel):
-    sender: str
     
 @app.post("/startivr")
 async def start_ivr(response: Response, sender: str = Form(...)):
@@ -104,7 +101,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         # data = dict(form_data)
         # phone_number = data.get('sender', None)
 
-        sender_data = SenderFormData(sender=sender)
+        sender_data = StartIVRFormData(sender=sender)
         phone_number = sender_data.sender
         
         # Extract the 'sender' value from the form data
@@ -112,7 +109,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         #     response.status_code = 400
         #     return {"detail": "Sender value is required"}
         
-        print("PHONE NUMBER", phone_number)
+        print("RECIEVED START IVR CALL FOR PHONE NUMBER", phone_number)
         
         doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
         if doc != None:
@@ -191,9 +188,6 @@ async def get_event(req: EventWebhookRequest, response: Response):
             print(error_traceback)  # Log the traceback for debugging purposes
             response.status_code = 500
             return {"error": "An error occurred while processing the request.", "details": error_traceback}
-
-
-
 
 @app.post("/conversation_events")
 async def get_conv_event(req: Request):
