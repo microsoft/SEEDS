@@ -1,5 +1,6 @@
 import json
-from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException, Form
+from pydantic import BaseModel
 from datetime import datetime
 import vonage
 from fastapi.responses import JSONResponse
@@ -17,6 +18,7 @@ from fsm.visualiseIVR import get_latest_content, process_content
 load_dotenv()
 
 application_id = os.getenv("VONAGE_APPLICATION_ID")
+print("APP ID", application_id)
 client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
 
 
@@ -92,18 +94,23 @@ async def update_ivr(request: Request, response: Response):
     response.status_code = 200
     return {"message": "SUCCESS", "status_code": response.status_code}
 
+class SenderFormData(BaseModel):
+    sender: str
+    
 @app.post("/startivr")
-async def start_ivr(request: StartIVRRequest, response: Response):
+async def start_ivr(response: Response, sender: str = Form(...)):
     try:
         # form_data = await request.form()
         # data = dict(form_data)
-        
-        # # Extract the 'sender' value from the form data
         # phone_number = data.get('sender', None)
-        phone_number = request.phone_number
-        if phone_number is None:
-            response.status_code = 400
-            return {"detail": "Sender value is required"}
+
+        sender_data = SenderFormData(sender=sender)
+        phone_number = sender_data.sender
+        
+        # Extract the 'sender' value from the form data
+        # if phone_number is None:
+        #     response.status_code = 400
+        #     return {"detail": "Sender value is required"}
         
         print("PHONE NUMBER", phone_number)
         
