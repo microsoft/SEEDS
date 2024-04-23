@@ -44,6 +44,9 @@ interface SeedsService {
     @GET("content")
     suspend fun getContentsById(@Query("ids[]") ids: List<String>): List<Content>
 
+    @GET("content/sasUrl")
+    suspend fun getSasUrl(@Query("url") url: String): SasUrlResponse
+
     @GET("class")
     suspend fun getAllClassrooms(): List<ClassroomDto>
 

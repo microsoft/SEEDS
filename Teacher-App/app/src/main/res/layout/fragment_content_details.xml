@@ -8,6 +8,9 @@
         <variable
             name="content"
             type="com.example.seeds.model.Content" />
+            <variable
+                name="viewModel"
+                type="com.example.seeds.ui.contentDetails.ContentDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

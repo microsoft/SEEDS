@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.example.seeds.databinding.ActivityErrorBinding
 import com.example.seeds.databinding.ActivityLoginCodeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ErrorActivity : AppCompatActivity() {
@@ -16,6 +17,8 @@ class ErrorActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val error = intent.getStringExtra("error")
+        Timber.tag("Error").d("Error: $error")
+
         binding.errorMessage.text = error
 
         // Example: Add a button to restart the app or exit

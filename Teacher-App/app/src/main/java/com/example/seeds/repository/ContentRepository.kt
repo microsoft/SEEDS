@@ -2,6 +2,7 @@ package com.example.seeds.repository
 
 import android.content.Context
 import com.example.seeds.model.Content
+import com.example.seeds.model.SasUrlResponse
 import com.example.seeds.model.Student
 import com.example.seeds.model.StudentListContainer
 import com.example.seeds.network.SeedsService
@@ -23,6 +24,12 @@ class ContentRepository @Inject constructor(
     suspend fun getContentsById(contentIds: List<String>): List<Content> {
         return withContext(Dispatchers.IO) {
             network.getContentsById(contentIds)
+        }
+    }
+
+    suspend fun getContentSas(contentUrl: String): String {
+        return withContext(Dispatchers.IO) {
+            network.getSasUrl(contentUrl).url
         }
     }
 }
