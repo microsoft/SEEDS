@@ -90,6 +90,8 @@ experienceDialogAudioUrls = {
 }
 
 repeatCurrentMenuUrl = 'repeatMenuDialog/{language}/To%20repeat%20Current%20Menu/{speechRate}.mp3'
+repeatContentUrl = 'contentPlayingDialogs/{language}/toRepeatContent/{speechRate}.mp3'
+exitContentUrl = 'contentPlayingDialogs/{language}/toExitContent/{speechRate}.mp3'
 goToPreviousMenuMessageUrl = 'previousMenuDialog/{language}/To%20go%20to%20Previous%20Menu/{speechRate}.mp3'
 
 
@@ -220,8 +222,21 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         state_id = parent_state_id
         actions = []
         language = parent_selections['language']
-        actions.append(TalkAction(text = "To exit the content. Press 9"))
-        actions.append(TalkAction(text = "To repeat the content. Press 8"))
+        
+        replacedRepeatContentUrl = repeatContentUrl.replace('{language}', language).replace('{speechRate}', speechRate)
+        repeatContentPressKey = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+        repeatContentPressKey = re.sub(r'\{key\}', str(8), repeatContentPressKey)
+        
+        actions.append(StreamAction(pullMenuMainUrl + replacedRepeatContentUrl))
+        actions.append(StreamAction(pullMenuMainUrl + repeatContentPressKey))
+        
+        replacedExitContentUrl = exitContentUrl.replace('{language}', language).replace('{speechRate}', speechRate)
+        exitContentPressKey = pressKeyMessageUrl.replace('{language}', language).replace('{speechRate}', str(speechRate))
+        exitContentPressKey = re.sub(r'\{key\}', str(9), exitContentPressKey)
+        
+        actions.append(StreamAction(pullMenuMainUrl + replacedExitContentUrl))
+        actions.append(StreamAction(pullMenuMainUrl + exitContentPressKey))
+        
         audioGoingTobePlayedUrl = audioGoingTobePlayedDialogUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         # actions.append(TalkAction(text = "To exit the content. Press 9"))
         actions.append(StreamAction(pullMenuMainUrl + audioGoingTobePlayedUrl))
@@ -410,8 +425,17 @@ async def instantiate_from_latest_content():
                 json.dumps(contents, indent=2, ensure_ascii=False))
     
     fsm = FSM(fsm_id="SEEDS-IVR")
+    fsm.set_end_state(State(state_id="END", actions=[TalkAction("Bye bye")]))
     generate_states(fsm, content, content_attributes, 0)
+    # with open('/home/kavyansh/SEEDS/IVRv2/fsm.json', 'w', encoding='utf-8') as file:
+    #     json.dump(fsm.serialize(), file, indent=4)
     return fsm
+
+def instantitate_from_json():
+    file_path = 'fsm.json'
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        return FSM.deserialize(data)
 
 # if __name__ == "__main__":
 #     asyncio.run(instantiate_from_latest_content())
