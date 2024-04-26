@@ -1,3 +1,4 @@
+import uuid
 from actions.base_actions.talk_action import TalkAction
 from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.input_action import InputAction
@@ -13,6 +14,7 @@ import requests
 import aiohttp
 import asyncio
 
+from utils.model_classes import IVRfsmDoc
 from utils.sas_gen import SASGen
 
 load_dotenv()
@@ -424,19 +426,16 @@ async def instantiate_from_latest_content():
     print('FECTHED LATEST CONTENT: ', \
                 json.dumps(contents, indent=2, ensure_ascii=False))
     
-    fsm = FSM(fsm_id="SEEDS-IVR")
+    fsm = FSM(fsm_id=str(uuid.uuid4()))
     fsm.set_end_state(State(state_id="END", actions=[TalkAction("Bye bye")]))
     generate_states(fsm, content, content_attributes, 0)
     # with open('/home/kavyansh/SEEDS/IVRv2/fsm.json', 'w', encoding='utf-8') as file:
-    #     json.dump(fsm.serialize(), file, indent=4)
+    #     json.dump(fsm.serialize().dict(), file, indent=4)
     return fsm
 
-def instantitate_from_json():
-    file_path = 'fsm.json'
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-        return FSM.deserialize(data)
-
+def instantitate_from_doc(data: IVRfsmDoc):
+    return FSM.deserialize(data)
+        
 # if __name__ == "__main__":
 #     asyncio.run(instantiate_from_latest_content())
 

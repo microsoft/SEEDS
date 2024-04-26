@@ -1,6 +1,6 @@
 {
-    "fsm_id": "SEEDS-IVR",
-    "init_state_id": "LA0",
+    "_id": "bafcfdce-5f59-4bdf-be63-63e2cca3e384",
+    "created_at": 1714154440,
     "states": [
         {
             "id": "END",
@@ -13695,5 +13695,6 @@
             "dest_state_id": "LA0-Op2(english)-TH0-Op0(Getting to know each other)-EX0-Op0(song)-TI0-Op0(My Name is Madhavi)",
             "actions": []
         }
-    ]
+    ],
+    "init_state_id": "LA0"
 }

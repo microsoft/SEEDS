@@ -1,4 +1,5 @@
 import json
+import uuid
 from fastapi import FastAPI, Request, Response, HTTPException, Form
 from pydantic import BaseModel
 from datetime import datetime
@@ -9,8 +10,8 @@ from dotenv import load_dotenv
 import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
-from fsm.instantiation import instantiate_from_latest_content, instantitate_from_json
-from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, MongoCreds, StartIVRFormData, VonageCallStartResponse
+from fsm.instantiation import instantiate_from_latest_content, instantitate_from_doc
+from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, MongoCreds, StartIVRFormData, VonageCallStartResponse
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
@@ -41,6 +42,10 @@ mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
 ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
                             db_name="ivr", 
                             collection_name="ongoingIVRState")
+
+fsm_json_mongo = MongoDB(conn_creds=mongo_creds, 
+                         db_name="ivr",
+                         collection_name="fsm")
 
 action_factory = VonageActionFactory()
 
@@ -74,9 +79,14 @@ def format_data_html(data, level=0):
 
 @app.on_event("startup")
 async def startup_event():
-    resp = await update_ivr(None, Response())
-    if resp["status_code"] != 200:
-        raise ValueError("CANNOT INIT IVR FSM")
+    global fsm
+    
+    latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
+    if latest_doc != None: 
+        fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+        print("Instantiated FSM with id: ", fsm.fsm_id)
+    else:
+        print("No FSM found in MongoDB, please call `updateivr` API to create a new FSM object from latest content before calling any APIs")
 
 @app.post("/updateivr")
 async def update_ivr(request: Request, response: Response):
@@ -90,10 +100,28 @@ async def update_ivr(request: Request, response: Response):
             "status_code": response.status_code}
         
     fsm = await instantiate_from_latest_content()
-    # fsm = instantitate_from_json()
-    # print(fsm.visualize_fsm())
+    current_fsm_doc = fsm.serialize()
+    
+    response_message = "Successfully created FSM. "
+    
+    # CHECK IF THE LATEST CONTENT FSM IS SAME AS THE LATEST FSM STORED IN MONGO
+    latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
+    if latest_doc != None:
+        latest_doc_fsm = IVRfsmDoc(**latest_doc)
+        
+        if current_fsm_doc != latest_doc_fsm:
+            # CURRENT FSM IS DIFFERENT, SAVE IT IN MONGO
+            await fsm_json_mongo.insert(current_fsm_doc.dict())
+            response_message += "Current FSM is different from previous FSM. Added a new FSM in mongo."
+        else:
+            response_message += "Current FSM and FSM in mongo are same, skipping addition of new FSM to mongo."
+    else:
+        await fsm_json_mongo.insert(current_fsm_doc.dict())
+        response_message += "FSM collection was empty. Added a new FSM in mongo."
+    
     response.status_code = 200
-    return {"message": "SUCCESS", "status_code": response.status_code}
+    return {"message": response_message, 
+            "status_code": response.status_code}
     
 @app.post("/startivr")
 async def start_ivr(response: Response, sender: str = Form(...)):

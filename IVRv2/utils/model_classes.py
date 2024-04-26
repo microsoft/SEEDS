@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Dict, List
 from pydantic import BaseModel, Field
 from enum import Enum
 
@@ -47,6 +48,30 @@ class IVRCallStateMongoDoc(BaseModel):
     class Config:
         # This will allow the model to be instantiated with 'id' instead of '_id'
         populate_by_name = True
+
+class IVRfsmDoc(BaseModel):
+    id: str = Field(..., alias="_id")
+    created_at: int
+    states: List[Dict]
+    transitions: List[Dict]
+    init_state_id: str
+    
+    def dict(self, **kwargs):
+        # Use the super().dict() method with by_alias=True to use aliases in the output dictionary
+        return super().dict(by_alias=True, **kwargs)
+
+    class Config:
+        # This will allow the model to be instantiated with 'id' instead of '_id'
+        populate_by_name = True
+    
+    def __eq__(self, other):
+        if not isinstance(other, IVRfsmDoc):
+            return NotImplemented
+        
+        return (self.states == other.states and 
+                self.transitions == other.transitions and 
+                self.init_state_id == other.init_state_id)
+    
 
 class VonageCallStartResponse(BaseModel):
     uuid: str = ""
