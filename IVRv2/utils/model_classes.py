@@ -1,8 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 from enum import Enum
+
+class UserAction(BaseModel):
+    key_pressed: str
+    timestamp: datetime
 
 class CallStatus(Enum):
     STARTED = "started"
@@ -38,8 +42,11 @@ class CallStatus(Enum):
 class IVRCallStateMongoDoc(BaseModel):
     id: str = Field(..., alias="_id")
     phone_number: str
-    created_at: datetime
+    fsm_id: str
     current_state_id: str
+    created_at: datetime
+    stopped_at: Optional[datetime] = None
+    user_actions: List[UserAction] = []
     
     def dict(self, **kwargs):
         # Use the super().dict() method with by_alias=True to use aliases in the output dictionary

@@ -249,7 +249,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         audioFinishedUrl = audioFinishedMessageUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         
         actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
-        actions.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input', timeOut=1))
+        actions.append(InputAction(type_=["dtmf"], eventApi='/input', timeOut=1))
 
         state_id = state_id[:-1] # to remove '-' at the end
         print("STATE ID", state_id)
@@ -269,7 +269,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         state_id_final_state = f"{state_id}-LastMenu"
         actions_final = []
         actions_final.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
-        actions_final.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input'))
+        actions_final.append(InputAction(type_=["dtmf"], eventApi='/input'))
         fsm.add_state(State(state_id=state_id_final_state, actions=actions_final))
          
         fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id_final_state, input="empty", actions=[]))
@@ -285,7 +285,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         if all(item[k].lower() == v.lower() for k, v in parent_selections.items()):
             filtered_content.append(item)      
         
-    input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
+    input_action = InputAction(type_=["dtmf"], eventApi='/input')
     
     category = content_attributes[level]['category']
     category_id_prefix = content_attributes[level]['id']

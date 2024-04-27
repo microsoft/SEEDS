@@ -3,6 +3,7 @@ import uuid
 from fastapi import FastAPI, Request, Response, HTTPException, Form
 from pydantic import BaseModel
 from datetime import datetime
+from utils.functions import format_data_html
 import vonage
 from fastapi.responses import JSONResponse
 import traceback  
@@ -11,7 +12,7 @@ import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content, instantitate_from_doc
-from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, MongoCreds, StartIVRFormData, VonageCallStartResponse
+from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, MongoCreds, StartIVRFormData, UserAction, VonageCallStartResponse
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
@@ -19,18 +20,7 @@ from fsm.visualiseIVR import get_latest_content, process_content
 load_dotenv()
 
 application_id = os.getenv("VONAGE_APPLICATION_ID")
-print("APP ID", application_id)
 client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
-
-
-# state actions and menu actions (so that cat sound is not repeated on invalid input)- Roshni
-# replicate Mani's IVR using FSM - Roshni
-# SAS - vonage stream action - Roshni 
-
-# JSON representation of FSM
-# Web app to create FSM
-
-# from vonage.voice import Ncco
 
 fsm = None
 app = FastAPI()
@@ -42,6 +32,9 @@ mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
 ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
                             db_name="ivr", 
                             collection_name="ongoingIVRState")
+ivrv2_logs_mongo = MongoDB(conn_creds=mongo_creds, 
+                            db_name="ivr", 
+                            collection_name="ivrV2Logs")
 
 fsm_json_mongo = MongoDB(conn_creds=mongo_creds, 
                          db_name="ivr",
@@ -58,24 +51,6 @@ async def get_ivr_structure():
     print(structured_content)
     html_content = format_data_html(structured_content)
     return html_content
-
-def format_data_html(data, level=0):
-    if isinstance(data, dict):
-        role = 'group' if level > 0 else 'tree'  # Use 'tree' role for the top level and 'group' for nested lists
-        items = f'<ul role="{role}">'
-        for key, value in data.items():
-            # Using 'treeitem' role for items and specifying 'aria-level' for better depth understanding
-            items += f'<li role="treeitem" aria-level="{level + 1}"><strong>{key}</strong>{format_data_html(value, level + 1)}</li>'
-        items += '</ul>'
-        return items
-    elif isinstance(data, set):
-        # Leaf nodes are simple list items without a specific role needed as they do not expand further
-        items = '<ul>'
-        for item in data:
-            items += f'<li>{item}</li>'
-        items += '</ul>'
-        return items
-    return ''
 
 @app.on_event("startup")
 async def startup_event():
@@ -107,13 +82,15 @@ async def update_ivr(request: Request, response: Response):
     # CHECK IF THE LATEST CONTENT FSM IS SAME AS THE LATEST FSM STORED IN MONGO
     latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
     if latest_doc != None:
-        latest_doc_fsm = IVRfsmDoc(**latest_doc)
+        latest_fsm_doc = IVRfsmDoc(**latest_doc)
         
-        if current_fsm_doc != latest_doc_fsm:
+        if current_fsm_doc != latest_fsm_doc:
             # CURRENT FSM IS DIFFERENT, SAVE IT IN MONGO
             await fsm_json_mongo.insert(current_fsm_doc.dict())
             response_message += "Current FSM is different from previous FSM. Added a new FSM in mongo."
         else:
+            # USE SAME FSM ID AS IN LATEST FSM DOC FROM MONGO
+            fsm.fsm_id = latest_fsm_doc.id
             response_message += "Current FSM and FSM in mongo are same, skipping addition of new FSM to mongo."
     else:
         await fsm_json_mongo.insert(current_fsm_doc.dict())
@@ -143,7 +120,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
         if doc != None:
             ivr_state = IVRCallStateMongoDoc(**doc)
-            # CHECK IF LAST CALL HAPPENEDSTALE_WAIT_IN_SECONDS SECONDS BEFORE, 
+            # CHECK IF LAST CALL HAPPENED STALE_WAIT_IN_SECONDS SECONDS BEFORE, 
             # IF THIS IS THE CASE IT IS ASSUMED THAT THE DOC FOUND IS STALE
             # - DELETE THE DOC
             # - HANG UP THE CALL IN CASE ITS STILL UP : TODO
@@ -170,8 +147,9 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         
         ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
                                               phone_number = phone_number,
-                                              created_at = datetime.now(), 
-                                              current_state_id = fsm.init_state_id)
+                                              fsm_id=fsm.fsm_id,
+                                              current_state_id = fsm.init_state_id,
+                                              created_at = datetime.now())
         
         await ongoing_fsm_mongo.insert(ivr_call_state.dict())
         
@@ -208,6 +186,16 @@ async def get_event(req: EventWebhookRequest, response: Response):
     try:
         print("EVENT RECEIVED : ", req)
         if req.status in CallStatus.get_end_call_enums():
+            doc = await ongoing_fsm_mongo.find_by_id(req.conversation_uuid)
+            if doc == None:
+                print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", req.conversation_uuid)
+                response.status_code = 400
+                return {"message": f"event received, no onging fsm found with id {req.conversation_uuid}"}
+            
+            ivr_state = IVRCallStateMongoDoc(**doc)
+            ivr_state.stopped_at = datetime.now()
+            print(ivr_state)
+            await ivrv2_logs_mongo.insert(ivr_state.dict())
             await ongoing_fsm_mongo.delete(doc_id=req.conversation_uuid)
         
         response.status_code = 200
@@ -231,11 +219,10 @@ async def dtmf(input: Request):
     global fsm
     
     input_data = await input.json()
-    print("INPUT DATA", input_data)
+    print("INPUT DATA RAW", input_data)
     input = DTMFInput(**input_data)
     print(f"Received request body: {input}")
     digits = input.dtmf.digits
-    print("DIGITS", digits)
     conv_id = input.conversation_uuid
     doc = await ongoing_fsm_mongo.find_by_id(conv_id)
     if doc == None:
@@ -244,10 +231,12 @@ async def dtmf(input: Request):
         return JSONResponse(ncco)
     
     ivr_state = IVRCallStateMongoDoc(**doc)
+    
     current_user_state_id = ivr_state.current_state_id
     next_actions, next_state_id = fsm.get_next_actions(digits, current_user_state_id)
     
     ivr_state.current_state_id = next_state_id
+    ivr_state.user_actions.append(UserAction(key_pressed=digits, timestamp=datetime.now()))
     await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
     
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
