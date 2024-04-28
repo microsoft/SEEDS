@@ -185,7 +185,7 @@ def get_answer():
 @app.post("/event")
 async def get_event(req: EventWebhookRequest, response: Response):
     try:
-        print("EVENT RECEIVED : ", req)
+        print("EVENT RECEIVED : ", json.dumps(req.dict(), cls=CustomJSONEncoder, indent=2))
         if req.status in CallStatus.get_end_call_enums():
             doc = await ongoing_fsm_mongo.find_by_id(req.conversation_uuid)
             if doc == None:
@@ -195,7 +195,7 @@ async def get_event(req: EventWebhookRequest, response: Response):
             
             ivr_state = IVRCallStateMongoDoc(**doc)
             ivr_state.stopped_at = datetime.now()
-            print(ivr_state)
+            ivr_state.duration = req.duration
             await ivrv2_logs_mongo.insert(ivr_state.dict())
             await ongoing_fsm_mongo.delete(doc_id=req.conversation_uuid)
         
@@ -230,14 +230,15 @@ async def get_conv_event(req: ConversationRTCWebhookRequest):
         if doc is not None:
             ivr_state = IVRCallStateMongoDoc(**doc)
             current_state = fsm.get_state(ivr_state.current_state_id)
+            req_stream_url = req.body["stream_url"][0]
             if current_state is not None:
                 stream_actions = current_state.get_stream_action_with_record_playback_option()
                 for action in stream_actions:
-                    if req.body["stream_url"][0].startswith(action.url): # IGNORE THE SAS PART OF THE stream URL
+                    if req_stream_url.startswith(action.url): # IGNORE THE SAS PART OF THE stream URL
                         print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
                         ivr_state.stream_playback.append(StreamPlaybackInfo(
                             play_id=req.body["play_id"],
-                            stream_url=req.body["stream_url"][0],
+                            stream_url=action.url,
                             started_at=req.timestamp
                         ))
                         await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
@@ -287,7 +288,7 @@ async def dtmf(input: Request):
     doc = await ongoing_fsm_mongo.find_by_id(conv_id)
     if doc == None:
         print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", conv_id)
-        ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.on_error_actions])
+        ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.invalid_input_error_actions])
         return JSONResponse(ncco)
     
     ivr_state = IVRCallStateMongoDoc(**doc)

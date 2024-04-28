@@ -23,6 +23,7 @@ class IVRCallStateMongoDoc(BaseModel):
     current_state_id: str
     created_at: datetime
     stopped_at: Optional[datetime] = None
+    duration: str | None = ""
     user_actions: List[UserAction] = []
     stream_playback: List[StreamPlaybackInfo] = []
     
