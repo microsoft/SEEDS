@@ -3,7 +3,8 @@ import uuid
 from fastapi import FastAPI, Request, Response, HTTPException, Form
 from pydantic import BaseModel
 from datetime import datetime
-from utils.functions import format_data_html
+from utils.enums import CallStatus, ConversationRTCEventType
+from utils.functions import CustomJSONEncoder, format_data_html
 import vonage
 from fastapi.responses import JSONResponse
 import traceback  
@@ -12,7 +13,7 @@ import os
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content, instantitate_from_doc
-from utils.model_classes import CallStatus, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, MongoCreds, StartIVRFormData, UserAction, VonageCallStartResponse
+from utils.model_classes import ConversationRTCWebhookRequest, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
@@ -207,11 +208,70 @@ async def get_event(req: EventWebhookRequest, response: Response):
             return {"error": "An error occurred while processing the request.", "details": error_traceback}
 
 @app.post("/conversation_events")
-async def get_conv_event(req: Request):
-    # req_json = await req.json()
-    # print("CONV URL RECEIVED REQ")
-    # print(json.dumps(req_json, indent=2))
-    return {"hello": "world"}
+async def get_conv_event(req: ConversationRTCWebhookRequest):
+    """
+    Handles incoming RTC webhook requests related to conversation events, specifically audio play events.
+    It updates IVR state documents in mongo, based on the type of audio event received.
+
+    For an 'audio:play' event:
+    - Checks if the current state of the conversation in the database, has a stream action configured
+      with record playback set to true and a stream URL that matches the one received in the event payload.
+    - If a match is found, a new entry of type `StreamPlaybackInfo` is appended in the `stream_playback` 
+      attribute of IVR state document
+
+    For 'audio:play:stop' and 'audio:play:done' events:
+    - Checks the play ID provided in the event against the IVR state document.
+    - Updates the corresponding 'stoppedAt' and 'doneAt' timestamps for the playback information in the document.
+    """
+    if req.type == ConversationRTCEventType.AUDIO_PLAY and \
+        "stream_url" in req.body and \
+            "play_id" in req.body:
+        doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
+        if doc is not None:
+            ivr_state = IVRCallStateMongoDoc(**doc)
+            current_state = fsm.get_state(ivr_state.current_state_id)
+            if current_state is not None:
+                stream_actions = current_state.get_stream_action_with_record_playback_option()
+                for action in stream_actions:
+                    if req.body["stream_url"][0].startswith(action.url): # IGNORE THE SAS PART OF THE stream URL
+                        print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                        ivr_state.stream_playback.append(StreamPlaybackInfo(
+                            play_id=req.body["play_id"],
+                            stream_url=req.body["stream_url"][0],
+                            started_at=req.timestamp
+                        ))
+                        await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+    elif req.type == ConversationRTCEventType.AUDIO_PLAY_STOP and \
+        "play_id" in req.body:
+        doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
+        if doc is not None:
+            ivr_state = IVRCallStateMongoDoc(**doc)
+            req_play_id = req.body["play_id"]
+            should_update = False
+            for playback_info in ivr_state.stream_playback:
+                if playback_info.play_id == req_play_id:
+                    print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                    playback_info.stopped_at = req.timestamp
+                    should_update = True
+                    break
+            if should_update:
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+    elif req.type == ConversationRTCEventType.AUDIO_PLAY_DONE and \
+        "play_id" in req.body:
+        doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
+        if doc is not None:
+            ivr_state = IVRCallStateMongoDoc(**doc)
+            req_play_id = req.body["play_id"]
+            should_update = False
+            for playback_info in ivr_state.stream_playback:
+                if playback_info.play_id == req_play_id:
+                    print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                    playback_info.done_at = req.timestamp
+                    should_update = True
+                    break
+            if should_update:
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+    return {"message": "recorded"}
 
 
 @app.post("/input")
@@ -219,9 +279,9 @@ async def dtmf(input: Request):
     global fsm
     
     input_data = await input.json()
-    print("INPUT DATA RAW", input_data)
+    # print("INPUT DATA RAW", input_data)
     input = DTMFInput(**input_data)
-    print(f"Received request body: {input}")
+    # print(f"Received request body: {input}")
     digits = input.dtmf.digits
     conv_id = input.conversation_uuid
     doc = await ongoing_fsm_mongo.find_by_id(conv_id)
@@ -240,7 +300,7 @@ async def dtmf(input: Request):
     await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
     
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
-    print("NCCO", json.dumps(ncco, indent=2))
+    # print("NCCO", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
     
 @app.get("/fallback")

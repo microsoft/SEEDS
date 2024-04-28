@@ -61,6 +61,11 @@ class FSM:
             fsm.add_transition(transition_obj)
         
         return fsm
+
+    def get_state(self, state_id: str):
+        if state_id in self.states:
+            return self.states[state_id]
+        return None
         
     def set_end_state(self, state: State):
         self.end_state = state

@@ -245,7 +245,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         # https://seedsblob.blob.core.windows.net/output-container/23_1/1.0.wav
         music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
         
-        actions.append(StreamAction(music_url))
+        actions.append(StreamAction(music_url, record_playback_time=True))
         audioFinishedUrl = audioFinishedMessageUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         
         actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))

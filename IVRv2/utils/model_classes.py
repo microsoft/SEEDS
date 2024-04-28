@@ -1,44 +1,21 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
-from enum import Enum
+
+from utils.enums import CallStatus, ConversationRTCEventType
 
 class UserAction(BaseModel):
     key_pressed: str
     timestamp: datetime
 
-class CallStatus(Enum):
-    STARTED = "started"
-    RINGING = "ringing"
-    ANSWERED = "answered"
-    BUSY = "busy"
-    CANCELLED = "cancelled"
-    UNANSWERED = "unanswered"
-    DISCONNECTED = "disconnected"
-    REJECTED = "rejected"
-    FAILED = "failed"
-    HUMAN = "human" 
-    MACHINE = "machine"
-    TIMEOUT = "timeout"
-    COMPLETED = "completed"
-    RECORD = "record"
-    INPUT = "input"
-    TRANSFER = "transfer"
+class StreamPlaybackInfo(BaseModel):
+    play_id: str
+    stream_url: str
+    started_at: datetime
+    stopped_at: Optional[datetime] = None
+    done_at: Optional[datetime] = None
     
-    @staticmethod
-    def get_end_call_enums():
-        return [
-            CallStatus.BUSY,
-            CallStatus.CANCELLED,
-            CallStatus.UNANSWERED,
-            CallStatus.DISCONNECTED,
-            CallStatus.REJECTED,
-            CallStatus.FAILED,
-            CallStatus.COMPLETED,
-            CallStatus.TIMEOUT
-        ]
-
 class IVRCallStateMongoDoc(BaseModel):
     id: str = Field(..., alias="_id")
     phone_number: str
@@ -47,6 +24,7 @@ class IVRCallStateMongoDoc(BaseModel):
     created_at: datetime
     stopped_at: Optional[datetime] = None
     user_actions: List[UserAction] = []
+    stream_playback: List[StreamPlaybackInfo] = []
     
     def dict(self, **kwargs):
         # Use the super().dict() method with by_alias=True to use aliases in the output dictionary
@@ -110,6 +88,14 @@ class EventWebhookRequest(BaseModel):
         json_encoders = {
             CallStatus: lambda v: v.value,  # Serialize CallStatus to its value
         }
+
+class ConversationRTCWebhookRequest(BaseModel):
+    body: Dict[str, Any]  # Allows any structure
+    application_id: str
+    timestamp: datetime
+    type: ConversationRTCEventType
+    conversation_id: str = "DEFAULT"
+    id: int = -1
 
 class DTMFDetails(BaseModel):
     digits: str

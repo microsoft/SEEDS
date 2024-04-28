@@ -1,3 +1,4 @@
+from actions.base_actions.stream_action import StreamAction
 from base_classes.action import Action
 from fsm.transition import Transition
 
@@ -12,6 +13,13 @@ class State:
             raise ValueError(f"Transition for input {transition.input} already exists")
         self.transition_map[transition.input] = transition
     
+    def get_stream_action_with_record_playback_option(self):
+        return [
+            action
+            for action in self.actions
+            if isinstance(action, StreamAction) and action.record_playback_time
+        ]
+                
     def serialize_transitions(self):
         """Serialize the Transition objects to a list of dictionaries"""
         return [ transition_obj.to_json() for transition_obj in self.transition_map.values() ]
