@@ -212,6 +212,7 @@ async def dtmf(input: Request):
     doc = await ongoing_fsm_mongo.find_by_id(conv_id)
     if doc == None:
         print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", conv_id)
+        #Called even after cutting the call
         ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.on_error_actions])
         return JSONResponse(ncco)
     

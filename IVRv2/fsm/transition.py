@@ -15,6 +15,9 @@ class Transition:
             'dest_state_id': self.dest_state_id,
             'actions': [action.to_json() for action in self.actions]  # Serialize each action individually
         }
+        
+    def __str__(self):
+        return f"Transition: {self.source_state_id} to {self.dest_state_id} on key {self.input}"
 
     @staticmethod
     def from_json(data: dict):

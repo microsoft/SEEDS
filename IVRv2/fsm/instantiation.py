@@ -5,6 +5,7 @@ from actions.base_actions.input_action import InputAction
 from fsm.state import State
 from fsm.transition import Transition
 from fsm.fsm import FSM
+from fsm.quiz import Quiz
 import os
 from dotenv import load_dotenv
 import json
@@ -114,6 +115,61 @@ content_attributes = [
     {'category': 'title', 'level': 3, 'id': 'TI'}
 ]
 
+questions = [
+    {
+        'question': {
+            'text': 'What is the capital of France?',
+            'url': 'https://example.com/question1'
+        },
+        'options': [
+            {'id': 'opt1', 'text': 'Paris', 'url': 'https://example.com/paris'},
+            {'id': 'opt2', 'text': 'Rome', 'url': 'https://example.com/rome'},
+            {'id': 'opt3', 'text': 'Berlin', 'url': 'https://example.com/berlin'},
+            {'id': 'opt4', 'text': 'Madrid', 'url': 'https://example.com/madrid'}
+        ],
+        'correct_option': 'opt1'
+    },
+    {
+        'question': {
+            'text': 'What element has the chemical symbol O?',
+            'url': 'https://example.com/question2'
+        },
+        'options': [
+            {'id': 'opt5', 'text': 'Oxygen', 'url': 'https://example.com/oxygen'},
+            {'id': 'opt6', 'text': 'Gold', 'url': 'https://example.com/gold'},
+            {'id': 'opt7', 'text': 'Silver', 'url': 'https://example.com/silver'},
+            {'id': 'opt8', 'text': 'Iron', 'url': 'https://example.com/iron'}
+        ],
+        'correct_option': 'opt5'
+    },
+    {
+        'question': {
+            'text': 'What is the largest planet in our solar system?',
+            'url': 'https://example.com/question3'
+        },
+        'options': [
+            {'id': 'opt9', 'text': 'Jupiter', 'url': 'https://example.com/jupiter'},
+            {'id': 'opt10', 'text': 'Mars', 'url': 'https://example.com/mars'},
+            {'id': 'opt11', 'text': 'Earth', 'url': 'https://example.com/earth'},
+            {'id': 'opt12', 'text': 'Saturn', 'url': 'https://example.com/saturn'}
+        ],
+        'correct_option': 'opt9'
+    },
+    {
+        'question': {
+            'text': 'What year did the Titanic sink?',
+            'url': 'https://example.com/question4'
+        },
+        'options': [
+            {'id': 'opt13', 'text': '1912', 'url': 'https://example.com/1912'},
+            {'id': 'opt14', 'text': '1905', 'url': 'https://example.com/1905'},
+            {'id': 'opt15', 'text': '1898', 'url': 'https://example.com/1898'},
+            {'id': 'opt16', 'text': '1923', 'url': 'https://example.com/1923'}
+        ],
+        'correct_option': 'opt13'
+    }
+]
+
 # sas_test = 'https://seedsblob.blob.core.windows.net/output-container/1dfe33fd-7fb7-4adb-9d60-2d9ae3c44910/1.0.wav'
 # sas_gen_obj = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
 # sas_url = sas_gen_obj.get_url_with_sas(sas_test)
@@ -121,6 +177,13 @@ content_attributes = [
 
 
 def getStreamActions(items_list, level, state, parent_selections = {}):
+    print("GET STREM PARENT SELECTIONS", parent_selections)
+    
+    if 'type' in parent_selections and parent_selections['type'] == 'quiz':
+        actions = []
+        for item in items_list:
+            actions.append(TalkAction(text=item))
+        return actions
     
     category = content_attributes[level]['category']
     
@@ -219,6 +282,24 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
             if all(item[k].lower() == v.lower() for k, v in parent_selections.items()):
                 filtered_content.append(item)
             
+        
+        if (parent_selections['type'] == 'quiz'):
+            print("PARENT SELECTIONS", parent_selections)
+            print("PARENT STATE ID", parent_state_id)
+            print("QUIZ", filtered_content[0])
+            quiz_obj = Quiz.from_dict(filtered_content[0])
+            
+            indexOfLastOp = parent_state_id.rfind('Op')
+            parent_block_state_id = parent_state_id[:(indexOfLastOp-1)]
+            option_chosen = parent_state_id[indexOfLastOp+2:][:-1]
+            indexOfDigit = option_chosen.find('(')
+            key_for_option_chosen = int(option_chosen[0:indexOfDigit]) + 1
+            quiz_obj.generate_states(fsm=fsm, prefix_state_id=parent_state_id[:-1], parent_block_state_id=parent_block_state_id, key_chosen=key_for_option_chosen)
+            # with open('fsm-visual-quiz-in-ini.txt', 'w', encoding='utf-8') as file:
+            #     file.write(fsm.visualize_fsm())
+            
+            return
+        
         state_id = parent_state_id
         actions = []
         language = parent_selections['language']
@@ -241,16 +322,17 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         # actions.append(TalkAction(text = "To exit the content. Press 9"))
         actions.append(StreamAction(pullMenuMainUrl + audioGoingTobePlayedUrl))
         # https://seedsblob.blob.core.windows.net/output-container/23_1/1.0.wav
-        music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
-        
-        actions.append(StreamAction(music_url))
+        if (parent_selections['type'] != 'quiz'):
+            music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
+            actions.append(StreamAction(music_url))
+            
         audioFinishedUrl = audioFinishedMessageUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         
         actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
         actions.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input', timeOut=1))
 
         state_id = state_id[:-1] # to remove '-' at the end
-        print("STATE ID", state_id)
+        # print("STATE ID", state_id)
         fsm.add_state(State(state_id=state_id, actions=actions))
         
         indexOfLastOp = parent_state_id.rfind('Op')
@@ -316,11 +398,16 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         sorted_categories = [experienceDialogAudioUrls[experience] for experience in experiences_list]
         
     elif category == "title":
-        titles = sorted(set(item['title'] for item in filtered_content))
+        titles = []
         sorted_categories = []
-        for title in titles:
-            titleAudio = [x for x in filtered_content if x['title'] == title][0]['titleAudio'] + f'/{speechRate}.mp3'
-            sorted_categories.append(titleAudio)
+        if (parent_selections['type'] == 'quiz'):
+            titles = [item['title'] for item in filtered_content]
+            sorted_categories = [item['title'] for item in filtered_content]
+        else:
+            titles = sorted(set(item['title'] for item in filtered_content))
+            for title in titles:
+                titleAudio = [x for x in filtered_content if x['title'] == title][0]['titleAudio'] + f'/{speechRate}.mp3'
+                sorted_categories.append(titleAudio)
 
 
     number_of_states_in_same_level = len(sorted_categories) // number_of_categories_listed_in_one_state
@@ -421,12 +508,21 @@ async def instantiate_from_latest_content():
         if all(key in x for key in ["isPullModel", "isDeleted", "isProcessed"]) and
         x["isPullModel"] and x["isProcessed"] and not x["isDeleted"]
     ]
-    print('FECTHED LATEST CONTENT: ', \
-                json.dumps(contents, indent=2, ensure_ascii=False))
+    quiz = Quiz(title='Geography Quiz', quiz_id='GEO123', positive_marks=5, negative_marks=2, questions=questions, language='kannada', theme='My environment')
+    # print(quiz.type)
+    quiz_dict = quiz.to_dict()
+
+    content.append(quiz_dict)
+    # print('FECTHED LATEST CONTENT: ', \
+    #             json.dumps(contents, indent=2, ensure_ascii=False))
     
     fsm = FSM(fsm_id="SEEDS-IVR")
     fsm.set_end_state(State(state_id="END", actions=[TalkAction("Bye bye")]))
     generate_states(fsm, content, content_attributes, 0)
+    
+    # with open('fsm-visual.txt', 'w', encoding='utf-8') as file:
+    #     file.write(fsm.visualize_fsm())
+    # fsm.print_transitions()
     # with open('/home/kavyansh/SEEDS/IVRv2/fsm.json', 'w', encoding='utf-8') as file:
     #     json.dump(fsm.serialize(), file, indent=4)
     return fsm
