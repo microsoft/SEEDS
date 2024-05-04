@@ -292,16 +292,15 @@ async def dtmf(input: Request):
         return JSONResponse(ncco)
     
     ivr_state = IVRCallStateMongoDoc(**doc)
-    
-    current_user_state_id = ivr_state.current_state_id
-    
-    
-    next_actions, next_state_id = fsm.get_next_actions(digits, current_user_state_id)
-    
-    ivr_state.current_state_id = next_state_id
-    ivr_state.user_actions.append(UserAction(key_pressed=digits, timestamp=datetime.now()))
+    # PROCESS MULTIPLE USER INPUTS
+    input_time = datetime.now()
+    next_actions, next_state_id = None, None
+    for digit in digits:
+        next_actions, next_state_id = fsm.get_next_actions(digit, ivr_state)
+        ivr_state.current_state_id = next_state_id
+        ivr_state.user_actions.append(UserAction(key_pressed=digit, timestamp=input_time))
+
     await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
-    
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
     # print("NCCO", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
