@@ -163,11 +163,11 @@ class FSM:
                 error_actions = self.invalid_input_error_actions
             return error_actions + current_state.actions, current_state_id
         
-        await current_state.post_operation.execute(self, ivr_state_doc)
+        current_state.post_operation.execute(self, ivr_state_doc)
         dest_state_id = current_state.transition_map[input_].dest_state_id
         
         dest_state = self.states[dest_state_id]
-        await dest_state.pre_operation.execute(self, ivr_state_doc)
+        dest_state.pre_operation.execute(self, ivr_state_doc)
         
         transition_actions = current_state.transition_map[input_].actions        
         return transition_actions + dest_state.actions, dest_state_id

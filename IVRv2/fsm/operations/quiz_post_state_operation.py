@@ -4,5 +4,11 @@ from fsm.fsm import FSM
 from utils.model_classes import IVRCallStateMongoDoc
 
 class QuizPostStateOperation(FSMOperation):
-    async def execute(self, fsm: FSM, fsm_state_doc: IVRCallStateMongoDoc = None) -> Any:
-        pass
+    def __init__(self, score: int):
+        self.score = score
+        
+    def execute(self, fsm: FSM, fsm_state_doc: IVRCallStateMongoDoc = None) -> Any:
+        current_score = fsm_state_doc.quiz.score
+        updated_score = current_score + self.score
+        fsm_state_doc.quiz.score = updated_score
+        

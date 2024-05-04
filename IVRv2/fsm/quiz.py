@@ -219,7 +219,9 @@ class Quiz:
         actions.append(TalkAction(text=f"Let's get started!"))
         actions.append(TalkAction(text=f"Press 1 to start the quiz."))
         actions.append(self.input_action)
-        initial_state = State(state_id=initial_quiz_state_id, actions=actions)
+        post_operation = QuizInitStateOperation()
+        initial_state = State(state_id=initial_quiz_state_id, actions=actions, post_operation=post_operation)
+        
         return initial_state
     
     def get_final_state(self, prefix_state_id):
@@ -241,7 +243,8 @@ class Quiz:
         actions.append(TalkAction(text="Press 1 to continue to the next question."))
         actions.append(self.input_action)
         state_id = f"{prefix_state_id}_correct_state_{state_id_append}" 
-        return State(state_id=state_id, actions=actions)
+        post_operation = QuizPostStateOperation(score=self.positiveMarks)
+        return State(state_id=state_id, actions=actions, post_operation=post_operation)
     
     def get_incorrect_option_state(self, prefix_state_id, state_id_append, correct_option_text):
         """
@@ -253,7 +256,8 @@ class Quiz:
         actions.append(TalkAction(text="Press 1 to continue to the next question."))
         actions.append(self.input_action)
         state_id = f"{prefix_state_id}_incorrect_state_{state_id_append}" 
-        return State(state_id=state_id, actions=actions)
+        post_operation = QuizPostStateOperation(score=-self.negativeMarks)
+        return State(state_id=state_id, actions=actions, post_operation=post_operation)
         
     
 
