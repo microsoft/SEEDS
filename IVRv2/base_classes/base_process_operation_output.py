@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from base_classes.action import Action
-from fsm.state import State
 from utils.model_classes import IVRCallStateMongoDoc
 
 class ProcessOperationOutput(ABC):
     @abstractmethod
-    def execute(self, state: State, op_output, fsm_state_doc: IVRCallStateMongoDoc = None) -> [Action]:
+    def execute(self, state, op_output, fsm_state_doc: IVRCallStateMongoDoc = None) -> [Action]:
         pass
     
     def __repr__(self):
