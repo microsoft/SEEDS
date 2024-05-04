@@ -51,9 +51,12 @@ class State:
             action = Action.from_json(action_json) 
             state.actions.append(action)
 
-        # Deserialize operations 
-        state.post_operation = FSMOperation.from_json(data['post_operation'])
-        state.pre_operation = FSMOperation.from_json(data['pre_operation'])
-        state.process_operation_output_into_actions = ProcessOperationOutput.from_json(data['process_operation_output_into_actions'])
+        if 'post_operation' in data and \
+            'pre_operation' in data and \
+            'process_operation_output_into_actions' in data:
+            # Deserialize operations 
+            state.post_operation = FSMOperation.from_json(data['post_operation'])
+            state.pre_operation = FSMOperation.from_json(data['pre_operation'])
+            state.process_operation_output_into_actions = ProcessOperationOutput.from_json(data['process_operation_output_into_actions'])
 
         return state
