@@ -35,7 +35,10 @@ class State:
         """Serialize the State object to a dictionary (without transitions)"""
         return {
             'id': self.id,
-            'actions': [action.to_json() for action in self.actions]
+            'actions': [action.to_json() for action in self.actions],
+            'post_operation': self.post_operation.to_json(),
+            'pre_operation': self.pre_operation.to_json(),
+            'process_operation_output_into_actions': self.process_operation_output_into_actions.to_json()
         }
 
     @staticmethod
@@ -47,5 +50,10 @@ class State:
         for action_json in data['actions']:
             action = Action.from_json(action_json) 
             state.actions.append(action)
+
+        # Deserialize operations 
+        state.post_operation = FSMOperation.from_json(data['post_operation'])
+        state.pre_operation = FSMOperation.from_json(data['pre_operation'])
+        state.process_operation_output_into_actions = ProcessOperationOutput.from_json(data['process_operation_output_into_actions'])
 
         return state
