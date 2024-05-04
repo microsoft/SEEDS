@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Tuple
 from actions.base_actions.stream_action import StreamAction
-from fsm.state import State
 from fsm.transition import Transition
 from base_classes.action import Action
 from actions.base_actions.talk_action import TalkAction
@@ -12,6 +11,7 @@ class FSM:
     WRONG_INPUT_AUDIO_URL = "https://seedsblob.blob.core.windows.net/pull-model-menus/chosenWrongOptionDialog/kannada/Sorry,%20you%20have%20chosen%20the%20wrong%20option/1.0.mp3"
     
     def __init__(self, fsm_id: str):
+        from fsm.state import State
         """
         Initializes a new instance of the FSM class.
 
@@ -50,6 +50,7 @@ class FSM:
     
     @staticmethod
     def deserialize(data: IVRfsmDoc):
+        from fsm.state import State
         fsm = FSM(data.id)
         for state_json in data.states:
             state_obj = State.from_json(state_json)
@@ -67,11 +68,11 @@ class FSM:
             return self.states[state_id]
         return None
         
-    def set_end_state(self, state: State):
+    def set_end_state(self, state):
         self.end_state = state
         self.add_state(state)
     
-    def add_state(self, state: State):
+    def add_state(self, state):
         """
         Adds a state to the FSM if it does not already exist.
 
