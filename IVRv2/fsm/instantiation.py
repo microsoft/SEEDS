@@ -1,3 +1,4 @@
+import uuid
 from actions.base_actions.talk_action import TalkAction
 from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.input_action import InputAction
@@ -14,6 +15,7 @@ import requests
 import aiohttp
 import asyncio
 
+from utils.model_classes import IVRfsmDoc
 from utils.sas_gen import SASGen
 
 load_dotenv()
@@ -324,12 +326,12 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         # https://seedsblob.blob.core.windows.net/output-container/23_1/1.0.wav
         if (parent_selections['type'] != 'quiz'):
             music_url = content_url + filtered_content[0]['id'] + '/1.0.wav'
-            actions.append(StreamAction(music_url))
+            actions.append(StreamAction(music_url, record_playback_time=True))
             
         audioFinishedUrl = audioFinishedMessageUrl.replace('{language}', language).replace('{speechRate}', speechRate)
         
         actions.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
-        actions.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input', timeOut=1))
+        actions.append(InputAction(type_=["dtmf"], eventApi='/input', timeOut=1))
 
         state_id = state_id[:-1] # to remove '-' at the end
         # print("STATE ID", state_id)
@@ -349,7 +351,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         state_id_final_state = f"{state_id}-LastMenu"
         actions_final = []
         actions_final.append(StreamAction(pullMenuMainUrl + audioFinishedUrl))
-        actions_final.append(InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input'))
+        actions_final.append(InputAction(type_=["dtmf"], eventApi='/input'))
         fsm.add_state(State(state_id=state_id_final_state, actions=actions_final))
          
         fsm.add_transition(Transition(source_state_id=state_id, dest_state_id=state_id_final_state, input="empty", actions=[]))
@@ -365,7 +367,7 @@ def generate_states(fsm, content_list, content_attributes, level, parent_state_i
         if all(item[k].lower() == v.lower() for k, v in parent_selections.items()):
             filtered_content.append(item)      
         
-    input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
+    input_action = InputAction(type_=["dtmf"], eventApi='/input')
     
     category = content_attributes[level]['category']
     category_id_prefix = content_attributes[level]['id']
@@ -516,7 +518,7 @@ async def instantiate_from_latest_content():
     # print('FECTHED LATEST CONTENT: ', \
     #             json.dumps(contents, indent=2, ensure_ascii=False))
     
-    fsm = FSM(fsm_id="SEEDS-IVR")
+    fsm = FSM(fsm_id=str(uuid.uuid4()))
     fsm.set_end_state(State(state_id="END", actions=[TalkAction("Bye bye")]))
     generate_states(fsm, content, content_attributes, 0)
     
@@ -524,15 +526,12 @@ async def instantiate_from_latest_content():
     #     file.write(fsm.visualize_fsm())
     # fsm.print_transitions()
     # with open('/home/kavyansh/SEEDS/IVRv2/fsm.json', 'w', encoding='utf-8') as file:
-    #     json.dump(fsm.serialize(), file, indent=4)
+    #     json.dump(fsm.serialize().dict(), file, indent=4)
     return fsm
 
-def instantitate_from_json():
-    file_path = 'fsm.json'
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-        return FSM.deserialize(data)
-
+def instantitate_from_doc(data: IVRfsmDoc):
+    return FSM.deserialize(data)
+        
 # if __name__ == "__main__":
 #     asyncio.run(instantiate_from_latest_content())
 

@@ -1,9 +1,11 @@
+from datetime import datetime
 from typing import List, Tuple
 from actions.base_actions.stream_action import StreamAction
 from fsm.state import State
 from fsm.transition import Transition
 from base_classes.action import Action
 from actions.base_actions.talk_action import TalkAction
+from utils.model_classes import IVRfsmDoc
 
 class FSM:
     NO_OPTION_CHOSEN_AUDIO_URL = "https://seedsblob.blob.core.windows.net/pull-model-menus/chosenNoOptionDialog/kannada/Sorry,%20you%20have%20not%20chosen%20any%20option/1.0.mp3"
@@ -31,32 +33,39 @@ class FSM:
         # self.end_state = State(state_id="END", actions=[TalkAction("Bye bye")])
         # self.add_state(self.end_state)
     
-    def serialize(self):
+    def serialize(self) -> IVRfsmDoc:
         states = [state.serialize() for state in self.states.values()]
         transitions = []
         for state in self.states.values():
             print(state.serialize_transitions(), type(state.serialize_transitions()))
             transitions.extend(state.serialize_transitions())
         
-        return {
-            "fsm_id": self.fsm_id,
-            "init_state_id": self.init_state_id,
-            "states": states,
-            "transitions": transitions
-        }
+        return IVRfsmDoc(
+            id=self.fsm_id,
+            init_state_id=self.init_state_id,
+            states=states,
+            transitions=transitions,
+            created_at=int(datetime.now().timestamp())
+        )
     
     @staticmethod
-    def deserialize(data: dict):
-        fsm = FSM(data["fsm_id"])
-        for state_json in data["states"]:
+    def deserialize(data: IVRfsmDoc):
+        fsm = FSM(data.id)
+        for state_json in data.states:
             state_obj = State.from_json(state_json)
             fsm.add_state(state_obj)
-        fsm.set_init_state_id(data["init_state_id"])
-        for transition_json in data["transitions"]:
+        fsm.set_init_state_id(data.init_state_id)
+        
+        for transition_json in data.transitions:
             transition_obj = Transition.from_json(transition_json)
             fsm.add_transition(transition_obj)
         
         return fsm
+
+    def get_state(self, state_id: str):
+        if state_id in self.states:
+            return self.states[state_id]
+        return None
         
     def set_end_state(self, state: State):
         self.end_state = state

@@ -1,3 +1,4 @@
+import os
 from actions.base_actions.input_action import InputAction
 from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.talk_action import TalkAction
@@ -26,7 +27,7 @@ class VonageActionFactory(ActionFactory):
             
         elif isinstance(action, InputAction):
             return VonageInputAction(type_=action.type,
-                                    eventUrl=action.eventUrl,
+                                    eventUrl=os.getenv("NGROK_URL") + action.eventApi,
                                     maxDigits=action.extra_args.get("maxDigits", 1),
                                     timeOut=action.extra_args.get("timeOut", 10),
                                     submitOnHash=action.extra_args.get("submitOnHash", False))
