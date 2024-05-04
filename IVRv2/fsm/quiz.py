@@ -37,7 +37,7 @@ class Quiz:
         self.positiveMarks = positive_marks
         self.negativeMarks = negative_marks
         self.questions = questions
-        self.input_action = InputAction(type_=["dtmf"], eventUrl=os.getenv('NGROK_URL') + '/input')
+        self.input_action = InputAction(type_=["dtmf"], eventApi='/input')
         self.move_forward_key = "1"
         self.type = "quiz"
     
