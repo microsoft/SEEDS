@@ -5,7 +5,7 @@ from fsm.state import State
 from fsm.transition import Transition
 from base_classes.action import Action
 from actions.base_actions.talk_action import TalkAction
-from utils.model_classes import IVRfsmDoc
+from utils.model_classes import IVRCallStateMongoDoc, IVRfsmDoc
 
 class FSM:
     NO_OPTION_CHOSEN_AUDIO_URL = "https://seedsblob.blob.core.windows.net/pull-model-menus/chosenNoOptionDialog/kannada/Sorry,%20you%20have%20not%20chosen%20any%20option/1.0.mp3"
@@ -127,7 +127,7 @@ class FSM:
             raise ValueError(f"Initial State with id {self.init_state_id} does not exist")
         return self.states[self.init_state_id].actions
     
-    def get_next_actions(self, input_: str, current_state_id: str) -> Tuple[List[Action], str]:
+    async def get_next_actions(self, input_: str, ivr_state_doc: IVRCallStateMongoDoc) -> Tuple[List[Action], str]:
         """
         Determines the next actions and state based on the input and current state.
 
@@ -142,16 +142,18 @@ class FSM:
         ValueError: If the current state does not exist.
         """
         print("Input", input_)
+        current_state_id = ivr_state_doc.current_state_id
         print("Current State", current_state_id)
         self.print_state_transitions(current_state_id)
         
         if current_state_id not in self.states:
             raise ValueError(f"Current State with id {current_state_id} does not exist")
         
+        current_state = self.states[current_state_id]
         if input_ == '':
             input_ = "empty"
         
-        if input_ not in self.states[current_state_id].transition_map:
+        if input_ not in current_state.transition_map:
             # SEND APPROPRIATE ERROR MESSAGE WITH CURRENT STATE ACTIONS
             print("Invalid Input", input_)
             error_actions = []
@@ -159,12 +161,16 @@ class FSM:
                 error_actions = self.empty_input_error_actions
             else:
                 error_actions = self.invalid_input_error_actions
-            return error_actions + self.states[current_state_id].actions, current_state_id
+            return error_actions + current_state.actions, current_state_id
         
-        dest_state_id = self.states[current_state_id].transition_map[input_].dest_state_id
-        transition_actions = self.states[current_state_id].transition_map[input_].actions
-                
-        return transition_actions + self.states[dest_state_id].actions, dest_state_id
+        await current_state.post_operation.execute(self, ivr_state_doc)
+        dest_state_id = current_state.transition_map[input_].dest_state_id
+        
+        dest_state = self.states[dest_state_id]
+        await dest_state.pre_operation.execute(self, ivr_state_doc)
+        
+        transition_actions = current_state.transition_map[input_].actions        
+        return transition_actions + dest_state.actions, dest_state_id
 
     def print_states(self):
         for state_id, state in self.states.items():
