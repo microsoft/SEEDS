@@ -296,7 +296,7 @@ async def dtmf(input: Request):
     input_time = datetime.now()
     next_actions, next_state_id = None, None
     for digit in digits:
-        next_actions, next_state_id = fsm.get_next_actions(digit, ivr_state)
+        next_actions, next_state_id = await fsm.get_next_actions(digit, ivr_state)
         ivr_state.current_state_id = next_state_id
         ivr_state.user_actions.append(UserAction(key_pressed=digit, timestamp=input_time))
 
