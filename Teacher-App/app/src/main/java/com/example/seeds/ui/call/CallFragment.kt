@@ -222,6 +222,12 @@ class CallFragment : BaseFragment() {
             }
         })
 
+        viewModel.isErrorFromIVR.observe(viewLifecycleOwner, Observer {
+            if(it != null){
+                logMessage("Error from IVR server: $it")
+            }
+        })
+
         binding.addStudentsButton.setOnClickListener {
             logMessage("Add students button clicked")
             findNavController().navigate(CallFragmentDirections.actionCallFragmentToAddStudentsFragment())

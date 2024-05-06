@@ -73,6 +73,10 @@ class CallViewModel @Inject constructor(
     val connectionLost: LiveData<Boolean>
         get() = _connectionLost
 
+    private val _isErrorFromIVR = MutableLiveData<String>(null)
+    val isErrorFromIVR: LiveData<String>
+        get() = _isErrorFromIVR
+
     val _forwardStreamDone = MutableLiveData<Boolean>(true)
     val forwardStreamDone: LiveData<Boolean>
         get() = _forwardStreamDone
@@ -314,12 +318,13 @@ class CallViewModel @Inject constructor(
             _connectionLost.postValue(true)
         } else if (message.contains("vonageWebsocket:connected")) {
             Log.d("Message", message)
-            Log.d("AHHHHHHH", callState.value.toString())
             //TODO: Put leader code here.
             if(!args.leader.isNullOrEmpty()){
                 socket.send("lead:${args.leader}")
             }
             _connectionLost.postValue(false)
+        } else if (message.contains("error")){
+            _isErrorFromIVR.postValue(message)
         }
     }
 
