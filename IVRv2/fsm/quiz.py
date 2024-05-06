@@ -2,6 +2,11 @@ from actions.base_actions.talk_action import TalkAction
 from actions.base_actions.stream_action import StreamAction
 from actions.base_actions.input_action import InputAction
 
+from fsm.operations.quiz_post_state_operation import QuizPostStateOperation
+from fsm.operations.quiz_init_state_operation import QuizInitStateOperation
+from fsm.operations.quiz_pre_state_operation import QuizPreStateOperation
+from fsm.operations.quiz_process_state_output import QuizProcessFinalStateOutput
+
 from fsm.state import State
 from fsm.transition import Transition
 from fsm.fsm import FSM
@@ -227,11 +232,11 @@ class Quiz:
     def get_final_state(self, prefix_state_id):
         actions = []
         actions.append(TalkAction(text="Congratulations! You have completed the quiz."))
-        actions.append(TalkAction(text="Your final score is something points."))
         actions.append(TalkAction(text="Press 1 to exit the quiz."))
         actions.append(self.input_action)
         state_id = f"{prefix_state_id}_{self.id}_final_state"
-        return State(state_id=state_id, actions=actions)
+        process_operation_output_into_actions = QuizProcessFinalStateOutput()
+        return State(state_id=state_id, actions=actions, process_operation_output_into_actions = process_operation_output_into_actions)
     
     def get_correct_option_state(self, prefix_state_id, state_id_append):
         """

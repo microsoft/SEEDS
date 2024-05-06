@@ -8,7 +8,8 @@ class QuizPostStateOperation(FSMOperation):
         self.score = score
         
     def execute(self, fsm: FSM, fsm_state_doc: IVRCallStateMongoDoc = None) -> Any:
-        current_score = fsm_state_doc.quiz.score
+        current_score = fsm_state_doc.experience_data['quiz']['score']
         updated_score = current_score + self.score
-        fsm_state_doc.quiz.score = updated_score
+        fsm_state_doc.experience_data['quiz']['score'] = updated_score
+        
         

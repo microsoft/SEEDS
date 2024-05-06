@@ -7,13 +7,15 @@ from fsm.operations.empty_state_operation import EmptyStateOperation
 from fsm.transition import Transition
 
 class State:
-    def __init__(self, state_id: str, actions: [Action] = None):
+    def __init__(self, state_id: str, actions: [Action] = None, post_operation: FSMOperation = None, \
+        pre_operation: FSMOperation = None, process_operation_output_into_actions: ProcessOperationOutput = None):
         self.id = state_id
         self.actions = actions if actions is not None else []
         self.transition_map: dict[str, Transition] = {}
-        self.post_operation: FSMOperation = EmptyStateOperation()
-        self.pre_operation: FSMOperation = EmptyStateOperation()
-        self.process_operation_output_into_actions: ProcessOperationOutput = EmptyProcessStateOutput()
+        self.post_operation: FSMOperation = post_operation if post_operation is not None else EmptyStateOperation()
+        self.pre_operation: FSMOperation = pre_operation if pre_operation is not None else EmptyStateOperation()
+        self.process_operation_output_into_actions: ProcessOperationOutput = process_operation_output_into_actions \
+            if process_operation_output_into_actions is not None else EmptyProcessStateOutput()
         
     def add_transition(self, transition: Transition):
         if transition.input in self.transition_map:

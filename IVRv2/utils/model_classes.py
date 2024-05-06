@@ -26,6 +26,7 @@ class IVRCallStateMongoDoc(BaseModel):
     duration: str | None = ""
     user_actions: List[UserAction] = []
     stream_playback: List[StreamPlaybackInfo] = []
+    experience_data: Dict[str, Any] = {}
     
     def dict(self, **kwargs):
         # Use the super().dict() method with by_alias=True to use aliases in the output dictionary

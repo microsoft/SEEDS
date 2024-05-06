@@ -5,8 +5,8 @@ from utils.model_classes import IVRCallStateMongoDoc
 
 class QuizInitStateOperation(FSMOperation):
     def execute(self, fsm: FSM, fsm_state_doc: IVRCallStateMongoDoc = None) -> Any:
-        fsm_state_doc.quiz = {
-            score: 0
+        fsm_state_doc.experience_data['quiz'] = {
+            'score': 0
         }
         
         

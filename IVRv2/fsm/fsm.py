@@ -171,7 +171,7 @@ class FSM:
         dest_state.pre_operation.execute(self, ivr_state_doc)
         
         transition_actions = current_state.transition_map[input_].actions        
-        return transition_actions + dest_state.actions, dest_state_id
+        return transition_actions + dest_state.process_operation_output_into_actions.execute(state = dest_state, op_output = None, fsm_state_doc=ivr_state_doc), dest_state_id
 
     def print_states(self):
         for state_id, state in self.states.items():
