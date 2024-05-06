@@ -281,7 +281,7 @@ async def dtmf(input: Request):
     global fsm
     
     input_data = await input.json()
-    # print("INPUT DATA RAW", input_data)
+    print("INPUT DATA RAW", input_data)
     input = DTMFInput(**input_data)
     # print(f"Received request body: {input}")
     digits = input.dtmf.digits
