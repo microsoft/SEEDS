@@ -116,3 +116,14 @@ class MongoCreds:
     password: str
     port: int
     user_name: str
+
+
+class Option(BaseModel):
+    key: int
+    value: str
+
+class Menu(BaseModel):
+    description: str
+    options: Optional[List[Option]] = None
+    level: int
+

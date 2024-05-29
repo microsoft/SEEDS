@@ -1,6 +1,7 @@
 import json
 import uuid
 from fastapi import FastAPI, Request, Response, HTTPException, Form
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
 from utils.enums import CallStatus, ConversationRTCEventType
@@ -18,6 +19,7 @@ from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
 from utils.model_classes import ConversationRTCWebhookRequest, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, \
     MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse
+import copy
 
 load_dotenv()
 
@@ -26,6 +28,16 @@ client = vonage.Client(application_id=application_id, private_key=os.getenv("VON
 
 fsm = None
 app = FastAPI()
+
+# Add CORS middleware configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # List of allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
                          password=os.environ.get("MONGO_PASSWORD"),
                          port=int(os.environ.get("MONGO_PORT")),
@@ -46,13 +58,33 @@ action_factory = VonageActionFactory()
 
 accumulator = action_factory.get_action_accumulator_implmentation()
 
-@app.get("/ivr_structure", response_class=HTMLResponse)
+
+@app.get("/ivr_structure", response_class=HTMLResponse, description="This API returns the IVR structure in a visual format")
 async def get_ivr_structure():
     content = await get_latest_content()
     structured_content = process_content(content)
     print(structured_content)
     html_content = format_data_html(structured_content)
     return html_content
+
+@app.get("/getFSM")
+async def get_fsm():
+    if fsm is not None:
+        new_fsm = copy.deepcopy(fsm)
+        states = []
+        for state_id in fsm.states:
+            # print("STATE", state_id)
+            state_object = fsm.states[state_id]
+            # print("STATE OBJECT fsm.states[state] ", state_object)
+            new_state = dict()
+            new_state['id'] = state_object.id
+            new_state['menu'] = state_object.menu.dict() if state_object.menu is not None else None
+            new_state['transition_map'] = state_object.serialize_transitions()
+            states.append(new_state)
+        new_fsm.states = states
+        return new_fsm  
+    else:
+        raise HTTPException(status_code=404, detail="FSM not found")
 
 @app.on_event("startup")
 async def startup_event():
@@ -295,15 +327,22 @@ async def dtmf(input: Request):
     ivr_state = IVRCallStateMongoDoc(**doc)
     # PROCESS MULTIPLE USER INPUTS
     input_time = datetime.now()
+    print("CURRENT STATE ID", ivr_state.current_state_id)
+    print("INPUT DIGITS", digits)
     next_actions, next_state_id = None, None
     for digit in digits:
         next_actions, next_state_id = await fsm.get_next_actions(digit, ivr_state)
         ivr_state.current_state_id = next_state_id
         ivr_state.user_actions.append(UserAction(key_pressed=digit, timestamp=input_time))
-
+        
+    if digits == '':
+        next_actions, next_state_id = await fsm.get_next_actions('', ivr_state)
+        ivr_state.current_state_id = next_state_id
+        ivr_state.user_actions.append(UserAction(key_pressed="empty", timestamp=input_time))
+        
     await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
-    # print("NCCO", json.dumps(ncco, indent=2))
+    print("NCCO", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
     
 @app.get("/fallback")
