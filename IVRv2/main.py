@@ -24,7 +24,6 @@ import copy
 load_dotenv()
 
 application_id = os.getenv("VONAGE_APPLICATION_ID")
-client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
 
 fsm = None
 app = FastAPI()
@@ -137,6 +136,8 @@ async def update_ivr(request: Request, response: Response):
 @app.post("/startivr")
 async def start_ivr(response: Response, sender: str = Form(...)):
     try:
+        client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
+
         # form_data = await request.form()
         # data = dict(form_data)
         # phone_number = data.get('sender', None)

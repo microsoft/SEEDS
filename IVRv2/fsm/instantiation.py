@@ -127,8 +127,8 @@ content_attributes = [
 quiz_new = {
   "id": "e3d1db09-f5fd-44b2-8244-86ea61619175",
   "language": "kannada",
-  "theme": "Families and relationships",
-  "themeAudio": "https://seedsblob.blob.core.windows.net/theme-titles/Families%20and%20relationships",
+  "theme": "water",
+  "themeAudio": "https://seedsblob.blob.core.windows.net/theme-titles/Water/kannada",
   "title": "Punyakoti",
   "titleAudio": "https://seedsblob.blob.core.windows.net/experience-titles/quiz/12f77743-4255-48a8-855b-2f4d7b635c95/1.0.mp3",
   "localTitle": "ಮೊಲದ ಮರಿ",
@@ -841,7 +841,8 @@ async def instantiate_from_latest_content():
     # # print(quiz.type)
     # quiz_dict = quiz.to_dict()
 
-    # content.append(quiz_new)
+    content.append(quiz_new)
+    print("NUMBER OF CONTENT", len(content))
     # print('FECTHED LATEST CONTENT: ', \
     #             json.dumps(contents, indent=2, ensure_ascii=False))
 
