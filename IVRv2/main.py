@@ -2,7 +2,8 @@ import json
 import uuid
 from fastapi import FastAPI, Request, Response, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+import traceback
 from datetime import datetime
 from utils.enums import CallStatus, ConversationRTCEventType
 from utils.functions import CustomJSONEncoder, format_data_html
@@ -11,14 +12,16 @@ from fastapi.responses import JSONResponse
 import traceback  
 from dotenv import load_dotenv
 import os
+import asyncio
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content, instantitate_from_doc
+from fsm.radio_instantiation import instantiate_from_content_ids
 from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
 from utils.model_classes import ConversationRTCWebhookRequest, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, \
-    MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse
+    MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse, BulkCallRequest
 import copy
 
 load_dotenv()
@@ -45,6 +48,7 @@ mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
 ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
                             db_name="ivr", 
                             collection_name="ongoingIVRState")
+
 ivrv2_logs_mongo = MongoDB(conn_creds=mongo_creds, 
                             db_name="ivr", 
                             collection_name="ivrV2Logs")
@@ -66,8 +70,12 @@ async def get_ivr_structure():
     html_content = format_data_html(structured_content)
     return html_content
 
-@app.get("/getFSM")
+@app.get("/getFSM") #make this take id as a parameter
 async def get_fsm():
+    # 
+    
+    
+    
     if fsm is not None:
         new_fsm = copy.deepcopy(fsm)
         states = []
@@ -91,6 +99,8 @@ async def startup_event():
     
     latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
     if latest_doc != None: 
+        # latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+        # fsm[latest_fsm.fsm_id] = latest_fsm
         fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
         print("Instantiated FSM with id: ", fsm.fsm_id)
     else:
@@ -106,7 +116,9 @@ async def update_ivr(request: Request, response: Response):
         response.status_code = 409
         return {"message": f"Cannot Update IVR right now. {len(docs)} users are currently using it. Please try again after an hour.", \
             "status_code": response.status_code}
-        
+    
+    # updated_fsm = await instantiate_from_latest_content()
+    # fsm[updated_fsm.fsm_id] = updated_fsm    
     fsm = await instantiate_from_latest_content()
     current_fsm_doc = fsm.serialize()
     
@@ -123,6 +135,8 @@ async def update_ivr(request: Request, response: Response):
             response_message += "Current FSM is different from previous FSM. Added a new FSM in mongo."
         else:
             # USE SAME FSM ID AS IN LATEST FSM DOC FROM MONGO
+            # fsm[latest_fsm_doc.id] = updated_fsm
+            # del fsm[updated_fsm.fsm_id]
             fsm.fsm_id = latest_fsm_doc.id
             response_message += "Current FSM and FSM in mongo are same, skipping addition of new FSM to mongo."
     else:
@@ -168,6 +182,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
                 response.status_code = 403
                 return {"message": "IVR already running for phone number: " + phone_number}
         
+        
         ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
         print("NCCO:", json.dumps(ncco_actions, indent=2))
         
@@ -197,6 +212,81 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         return {"error": "An error occurred while processing the request.", "details": error_traceback}
 
 
+
+@app.post("/start_bulk_calls")
+async def start_bulk_calls(request: BulkCallRequest):
+    global fsm
+    try:
+        phone_numbers = request.phone_numbers
+        content_ids = request.content_ids
+        # Step 3: Get the FSM using content IDs
+        print(content_ids, phone_numbers)
+        fsm = await instantiate_from_content_ids(content_ids=content_ids)
+        
+        
+        # Step 4: Store the FSM in the 'radio' collection in 'ivr' DB
+        radio_fsm_mongo = MongoDB(conn_creds=mongo_creds, db_name="ivr", collection_name="radio")
+        current_fsm_doc = fsm.serialize()
+        await radio_fsm_mongo.insert(current_fsm_doc.dict())
+        
+        # Step 5: Initiate calls at a rate of one per second
+        client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
+        
+        count = len(phone_numbers)
+        ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
+        print("NCCO:", json.dumps(ncco_actions, indent=2))
+        
+        for phone_number in phone_numbers:
+            doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
+            if doc != None:
+                count -= 1
+                ivr_state = IVRCallStateMongoDoc(**doc)
+                # CHECK IF LAST CALL HAPPENED STALE_WAIT_IN_SECONDS SECONDS BEFORE, 
+                # IF THIS IS THE CASE IT IS ASSUMED THAT THE DOC FOUND IS STALE
+                # - DELETE THE DOC
+                # - HANG UP THE CALL IN CASE ITS STILL UP : TODO
+                if (datetime.now() - ivr_state.created_at).total_seconds() / 60 > \
+                    int(os.environ.get("STALE_WAIT_IN_SECONDS", 60)):
+                    await ongoing_fsm_mongo.delete(phone_number)
+                
+                # OTHERWISE DON'T ALLOW THE CALL TO BE STARTED
+                else:
+                    continue
+                    # response.status_code = 403
+                    # return {"message": "IVR already running for phone number: " + phone_number}
+            
+            
+            # print("NCCO:", json.dumps(ncco_actions, indent=2))
+            vonage_resp = client.voice.create_call({
+                'to': [{'type': 'phone', 'number': phone_number}],
+                'from': {'type': 'phone', 'number': os.getenv("VONAGE_NUMBER")},
+                'ncco': ncco_actions,
+                'length_timer': os.getenv("CALL_DURATION_LIMIT")
+            })
+            vonage_resp = VonageCallStartResponse(**vonage_resp)
+            
+            ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
+                                              phone_number = phone_number,
+                                              fsm_id=fsm.fsm_id,
+                                              current_state_id = fsm.init_state_id,
+                                              created_at = datetime.now())
+        
+            await ongoing_fsm_mongo.insert(ivr_call_state.dict())
+        
+            print(f"Call started for phone number {phone_number} with conversation UUID: {vonage_resp.conversation_uuid}")
+            
+            # Sleep for one second before initiating the next call
+            await asyncio.sleep(1)
+        
+        # write to bulk collection, get the user id initiating the bulk call
+        return {"message": f"Calls initiated for {count} phone numbers."} # Return list of conv IDs of calls
+    
+    
+    except Exception as e:
+        error_traceback = traceback.format_exc()
+        print(error_traceback)  # Log the traceback for debugging purposes
+        raise HTTPException(status_code=500, detail={"error": "An error occurred while processing the request.", "details": error_traceback})
+    
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -217,29 +307,47 @@ def get_answer():
     return ncco
 
 @app.post("/event")
-async def get_event(req: EventWebhookRequest, response: Response):
+async def get_event(req: Request, response: Response):
     try:
-        print("EVENT RECEIVED : ", json.dumps(req.dict(), cls=CustomJSONEncoder, indent=2))
-        if req.status in CallStatus.get_end_call_enums():
-            doc = await ongoing_fsm_mongo.find_by_id(req.conversation_uuid)
-            if doc == None:
-                print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", req.conversation_uuid)
+        req_data = await req.json()
+        print("Raw REQUEST Data:", req_data)
+        
+        event_request = EventWebhookRequest(**req_data)
+        print("EVENT RECEIVED: ", json.dumps(event_request.dict(), cls=CustomJSONEncoder, indent=2))
+        
+        if event_request.status in CallStatus.get_end_call_enums():
+            doc = await ongoing_fsm_mongo.find_by_id(event_request.conversation_uuid)
+            if doc is None:
+                print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", event_request.conversation_uuid)
                 response.status_code = 400
-                return {"message": f"event received, no onging fsm found with id {req.conversation_uuid}"}
+                return {"message": f"event received, no ongoing fsm found with id {event_request.conversation_uuid}"}
             
             ivr_state = IVRCallStateMongoDoc(**doc)
             ivr_state.stopped_at = datetime.now()
-            ivr_state.duration = req.duration
-            await ivrv2_logs_mongo.insert(ivr_state.dict())
-            await ongoing_fsm_mongo.delete(doc_id=req.conversation_uuid)
+            ivr_state.duration = event_request.duration
+            
+            doc = await ivrv2_logs_mongo.find_by_id(ivr_state.id)
+            if doc is None:
+                await ivrv2_logs_mongo.insert(ivr_state.dict())
+                await ongoing_fsm_mongo.delete(doc_id=event_request.conversation_uuid)
+            else:
+                print("DOC ALREADY EXISTS AND DUPLICATE KEY ERROR WOULD BE RAISED")
+                print(doc)
         
         response.status_code = 200
         return {"message": "event received"}
+    except ValidationError as ve:
+        error_traceback = traceback.format_exc()
+        print("Validation error:", ve.errors())
+        print("Request data causing the error:", req_data)
+        print(error_traceback)  # Log the traceback for debugging purposes
+        response.status_code = 422
+        return {"error": "Validation error occurred while processing the request.", "details": ve.errors()}
     except Exception as e:
-            error_traceback = traceback.format_exc()
-            print(error_traceback)  # Log the traceback for debugging purposes
-            response.status_code = 500
-            return {"error": "An error occurred while processing the request.", "details": error_traceback}
+        error_traceback = traceback.format_exc()
+        print(error_traceback)  # Log the traceback for debugging purposes
+        response.status_code = 500
+        return {"error": "An error occurred while processing the request.", "details": error_traceback}
 
 @app.post("/conversation_events")
 async def get_conv_event(req: ConversationRTCWebhookRequest):

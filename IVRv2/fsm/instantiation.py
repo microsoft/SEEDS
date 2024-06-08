@@ -14,6 +14,7 @@ import re
 import requests
 import aiohttp
 import asyncio
+from typing import List, Optional
 
 from utils.model_classes import IVRfsmDoc
 from utils.sas_gen import SASGen
@@ -817,32 +818,84 @@ def count_last_level_content(data):
         return sum(count_last_level_content(value) for value in data.values())
     return 0
 
-
-async def instantiate_from_latest_content():
+async def get_content_by_ids(content_ids: List[str]):
     api_url = os.environ.get("SEEDS_SERVER_BASE_URL", "") + "content"
     headers = {
         'authToken': 'postman'
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(api_url, headers=headers) as response:
-            response_data = await response.text()  # get response text
-            # Parse text to JSON
-            contents = json.loads(response_data)
-            
-    # FILTER ISPULLMODEL AND ISDELETED CONTENT
-    content = [
-        x for x in contents
-        if all(key in x for key in ["isPullModel", "isDeleted", "isProcessed"]) and
-        x["isPullModel"] and x["isProcessed"] and not x["isDeleted"]
-    ]
+    params = [('ids[]', content_id) for content_id in content_ids]
     
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_url, headers=headers, params=params) as response:
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                response_data = await response.text()  # get response text
+                contents = json.loads(response_data)  # parse text to JSON
+                return contents
+    except aiohttp.ClientError as e:
+        print(f"Client error: {e}")
+        return {"error": "Client error occurred while fetching content by IDs."}
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error: {e}")
+        return {"error": "Failed to decode JSON response."}
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": "An unexpected error occurred."}
+
+async def get_all_content():
+    api_url = os.environ.get("SEEDS_SERVER_BASE_URL", "") + "content"
+    headers = {
+        'authToken': 'postman'
+    }
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_url, headers=headers) as response:
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                response_data = await response.text()  # get response text
+                contents = json.loads(response_data)  # parse text to JSON
+                
+        # FILTER ISPULLMODEL AND ISDELETED CONTENT
+        content = [
+            x for x in contents
+            if all(key in x for key in ["isPullModel", "isDeleted", "isProcessed"]) and
+            x["isPullModel"] and x["isProcessed"] and not x["isDeleted"]
+        ]
+        content.append(quiz_new)
+        return content
+    except aiohttp.ClientError as e:
+        print(f"Client error: {e}")
+        return {"error": "Client error occurred while fetching all content."}
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error: {e}")
+        return {"error": "Failed to decode JSON response."}
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": "An unexpected error occurred."}
+
+            
+async def instantiate_from_latest_content(content_ids: Optional[List[str]] = None):
+    content = []
+    
+    if (content_ids):
+        print("CONTENT IDS SENT")
+        content = await get_content_by_ids(content_ids)
+        print(content)
+    else:
+        content = await get_all_content()
+        
+    fsm = FSM(fsm_id=str(uuid.uuid4()))
+    fsm.set_end_state(State(state_id="END", actions=[TalkAction(text="You didn't choose a valid option. Bye bye.", bargeIn=False)]))
+    parent_selections = {'language': 'kannada'}
+    generate_states(fsm, content, content_attributes, 0, parent_selections=parent_selections)
+   
     print("NUMBER OF CONTENT", len(content))
     # quiz = Quiz(title='Geography Quiz', quiz_id='GEO123', positive_marks=5, negative_marks=2, questions=questions, language='kannada', theme='My environment')
     # # print(quiz.type)
     # quiz_dict = quiz.to_dict()
 
-    content.append(quiz_new)
-    print("NUMBER OF CONTENT", len(content))
+    
+    # print("NUMBER OF CONTENT", len(content))
     # print('FECTHED LATEST CONTENT: ', \
     #             json.dumps(contents, indent=2, ensure_ascii=False))
 
@@ -850,11 +903,7 @@ async def instantiate_from_latest_content():
     # print('FECTHED LATEST CONTENT: ', \
     #             json.dumps(contents, indent=2, ensure_ascii=False))
     
-    fsm = FSM(fsm_id=str(uuid.uuid4()))
-    fsm.set_end_state(State(state_id="END", actions=[TalkAction(text="You didn't choose a valid option. Bye bye.", bargeIn=False)]))
-    parent_selections = {'language': 'kannada'}
-    generate_states(fsm, content, content_attributes, 0, parent_selections=parent_selections)
-    # fsm.set_init_state(fsm.init_state_id)
+      # fsm.set_init_state(fsm.init_state_id)
     
     
     # print("FSM IS HERE")
