@@ -2,31 +2,10 @@
 const express = require("express");
 const path = require("path");
 const Content = require("../models/Content.js");
-const SASGen = require('../models/sasGen.js');
+const BlobService = require('../models/blobService.js');
 const { tryCatchWrapper } = require(path.join("..", "util.js"))
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-const { 
-    generateBlobSASQueryParameters, 
-    BlobSASPermissions, 
-    StorageSharedKeyCredential,
-    BlobServiceClient,
-} = require('@azure/storage-blob');
-
-const sasGenerator = new SASGen(process.env.AZURE_STORAGE_CONNECTION_STRING);
-
-const constants = {
-    accountName: process.env.AZURE_STORAGE_ACCOUNT_NAME,
-    accountKey: process.env.AZURE_STORAGE_ACCOUNT_KEY
-};
-const sharedKeyCredential = new StorageSharedKeyCredential(
-    constants.accountName,
-    constants.accountKey
-);
-
-const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-const containerName = "input-container"
-const containerClient = blobServiceClient.getContainerClient(containerName)
-
+const blobService = new BlobService();
 const router = express.Router();
 
 router.get("/sasUrl", tryCatchWrapper(async (req, res)=>{
@@ -35,7 +14,7 @@ router.get("/sasUrl", tryCatchWrapper(async (req, res)=>{
         return res.status(400).json({ error: "URL parameter is required." });
     }
 
-    const urlWithSAS = await sasGenerator.getURLWithSAS(url);
+    const urlWithSAS = await blobService.getURLWithSAS(url);
     return res.json({ url: urlWithSAS });
 }))
 
@@ -119,17 +98,12 @@ router.post("/regenerateAllTitleAudios", async (req,res) => {
 })
 
 router.get("/sasToken", tryCatchWrapper(async (req, res) => {
-    const sasOptions = {
-        containerName: containerClient.containerName,
-        blobName: req.query.blobName,
-        startsOn: new Date(),
-        expiresOn: new Date(new Date().valueOf() + 3600 * 1000), //change this time duration later
-        permissions: BlobSASPermissions.parse("rw"),
-    };
-    const sasToken = generateBlobSASQueryParameters(sasOptions, sharedKeyCredential).toString();
+    const containerName = "input-container"
+    const sasToken = await blobService.getUploadSASToken(req.query.blobName, containerName)
+    const container_client = blobService.getContainerClient(containerName)
 
     return res.json({
-        sasToken:`${containerClient.getBlockBlobClient(req.query.blobName).url}?${sasToken}`
+        sasToken:`${container_client.getBlockBlobClient(req.query.blobName).url}?${sasToken}`
     });
 }))
 
@@ -316,7 +290,7 @@ router.post("/populate-title-audios",async (req,res) => {
 })
 
 async function deleteBlobFromAContainer(containerName,blobNamePrefix){
-    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const containerClient = blobService.getContainerClient(containerName);
     const options = {
       deleteSnapshots: 'include' // or 'only'
     }
@@ -343,7 +317,7 @@ async function deleteAudioBlobs(audioId){
 async function deleteUnnecessaryStorage(){
     const docs = await Content.find({})
     const containerName = "output-container"
-    const containerClient = blobServiceClient.getContainerClient(containerName)
+    const containerClient = blobService.getContainerClient(containerName)
     for(const doc of docs){
         var deleteDoc = false
         var deleteBlob = false
