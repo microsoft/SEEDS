@@ -7,7 +7,7 @@ class InputAction(Action):
         self.eventApi = eventApi
         self.extra_args = kwargs
         
-    def get(self):
+    def get(self, sas_gen_obj):
         raise NotImplementedError("Get() Function called on Base Action `InputAction`")
     
     def __str__(self):

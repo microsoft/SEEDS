@@ -41,8 +41,7 @@ class VonageStreamAction(StreamAction):
         self.bargeIn = bargeIn
         self.loop = loop
     
-    def get(self):
-        sas_gen_obj = SASGen(os.getenv("BLOB_STORE_CONN_STR"))
+    def get(self, sas_gen_obj):
         return {
             'action': "stream",
             'streamUrl': [sas_gen_obj.get_url_with_sas(self.streamUrl)],

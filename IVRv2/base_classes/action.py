@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class Action(ABC):
     @abstractmethod
-    def get(self):
+    def get(self, sas_gen_obj):
         pass
     
     def __repr__(self):

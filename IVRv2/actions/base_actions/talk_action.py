@@ -6,7 +6,7 @@ class TalkAction(Action):
         self.text = text
         self.extra_args = kwargs
         
-    def get(self):
+    def get(self, sas_gen_obj):
         raise NotImplementedError("Get() Function called on Base Action `TalkAction`")
     
     def __str__(self):

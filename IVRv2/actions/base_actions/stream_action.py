@@ -7,7 +7,7 @@ class StreamAction(Action):
         self.record_playback_time = record_playback_time
         self.extra_args = kwargs
         
-    def get(self):
+    def get(self, sas_gen_obj):
         raise NotImplementedError("Get() Function called on Base Action `StreamAction`")
     
     def __str__(self):

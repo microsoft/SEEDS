@@ -20,7 +20,7 @@ class VonageInputAction(InputAction):
         self.submitOnHash = submitOnHash
         self.timeOut = timeOut
         
-    def get(self):
+    def get(self, sas_gen_obj):
         
         action =  {
             "type": self.type,

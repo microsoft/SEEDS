@@ -49,7 +49,7 @@ class VonageTalkAction(TalkAction):
        
         
     
-    def get(self):
+    def get(self, sas_gen_obj):
         return {
             'action': "talk",
             'text': self.text,
