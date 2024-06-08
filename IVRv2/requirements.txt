@@ -3,6 +3,7 @@ uvicorn
 vonage
 python-dotenv
 azure-storage-blob
+azure-identity
 pymongo
 motor
 requests
