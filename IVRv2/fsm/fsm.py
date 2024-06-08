@@ -55,6 +55,8 @@ class FSM:
         for state_json in data.states:
             state_obj = State.from_json(state_json)
             fsm.add_state(state_obj)
+        
+        print("Init State ID", data.init_state_id)
         fsm.set_init_state_id(data.init_state_id)
         
         for transition_json in data.transitions:

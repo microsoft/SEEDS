@@ -7,7 +7,9 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import ContentDetails from "./components/ContentDetails";
 import ContentEdit from "./components/ContentEdit";
 import AddContent from './components/AddContent';
+import BulkCallInitiator from './components/BulkCallInitiator';
 import IVR from './components/IVR';
+import ViewIVR from './components/ViewIVR';
 import './App.css'
 import Login from './components/Login';
 import { useState, useEffect } from 'react';
@@ -51,6 +53,9 @@ function App() {
           <Route path='/content/detail/:type/:id' element={<ContentDetails />}/>
           <Route path='/content/edit/:type/:id' element={<ContentEdit />}/>
           <Route path ='/ivr' element={<IVR />}/>
+          <Route path = '/viewivr' element={<ViewIVR />}/>
+          <Route path = '/bulkcall' element={<BulkCallInitiator />}/>
+
         </Routes>
       </BrowserRouter>
     </div>

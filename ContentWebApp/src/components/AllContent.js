@@ -199,6 +199,35 @@ const AllContent = () => {
       </div>
 
       <br />
+      <br>
+      </br>
+      <div className="align-items-end">
+        <Link to="/viewivr">
+          <button
+            className="btn"
+            style={{ backgroundColor: "#28574F", color: "white" }}
+          >
+            {" "}
+            Visualise IVR
+          </button>
+        </Link>
+      </div>
+      
+      <br>
+      </br>
+      <div className="align-items-end">
+        <Link to="/bulkcall">
+          <button
+            className="btn"
+            style={{ backgroundColor: "#28574F", color: "white" }}
+          >
+            {" "}
+            Mass call
+          </button>
+        </Link>
+      </div>
+      
+
 
       <Multiselect
         options={options} // Use dynamic options
@@ -242,6 +271,7 @@ const AllContent = () => {
 
       <br>
       </br>
+
       {content.length == 0 && <h3>No content found :( </h3>}
       <div className="row">
         {content.length > 0 && <table className="table table-striped table-bordered">
