@@ -5,8 +5,10 @@ global.path = require('path')
 
 // third-party libraries
 const { BlobServiceClient } = require('@azure/storage-blob');
-global.blobServiceClient = BlobServiceClient.fromConnectionString(
-  process.env.BLOB_STORAGE_CONNECTION_STRING
+const credential = new DefaultAzureCredential();
+global.blobServiceClient = new BlobServiceClient(
+    `https://seedsblob.blob.core.windows.net`, 
+    credential
 );
 
 // internal libraries

@@ -70,60 +70,60 @@ async function copyBlobToOriginalContainer(ffmpeg,myBlob,blobExtension,inputBloc
     }
 }
 
-async function copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,blobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata){
-  // all the settings in this function are related to roshni's blob storage account
-  const { BlobServiceClient } = require('@azure/storage-blob');
+// async function copyBlobToRoshniAccountOutputOriginalContainer(ffmpeg,myBlob,blobExtension,inputBlockBlobClient,fetchFile,inputBlobName,metadata){
+//   // all the settings in this function are related to roshni's blob storage account
+//   const { BlobServiceClient } = require('@azure/storage-blob');
 
-    const blobServiceClient = BlobServiceClient.fromConnectionString(
-    process.env.ROSHNI_BLOB_STORAGE_CONNECTION_STRING
-    );
+//     const blobServiceClient = BlobServiceClient.fromConnectionString(
+//     process.env.ROSHNI_BLOB_STORAGE_CONNECTION_STRING
+//     );
 
-  const outputOriginalContainerName = "output-original"
-  const outputOriginalContainerClient = blobServiceClient.getContainerClient(outputOriginalContainerName);
-  var outputOriginalBlobNameWithExtension = `${inputBlobName}.mp3`
-  const experienceName = metadata['experience']
-  if(experienceName === "Riddle"){
-    inputBlobName = inputBlobName.split("_")[0]
-    if(metadata["question"] === "true"){
-      outputOriginalBlobNameWithExtension = `${inputBlobName}/question.mp3`
-    }
-    else{
-      outputOriginalBlobNameWithExtension = `${inputBlobName}/answer.mp3`
-    }
-  }
-  const outputOriginalBlockBlobClient = outputOriginalContainerClient.getBlockBlobClient(outputOriginalBlobNameWithExtension);
+//   const outputOriginalContainerName = "output-original"
+//   const outputOriginalContainerClient = blobServiceClient.getContainerClient(outputOriginalContainerName);
+//   var outputOriginalBlobNameWithExtension = `${inputBlobName}.mp3`
+//   const experienceName = metadata['experience']
+//   if(experienceName === "Riddle"){
+//     inputBlobName = inputBlobName.split("_")[0]
+//     if(metadata["question"] === "true"){
+//       outputOriginalBlobNameWithExtension = `${inputBlobName}/question.mp3`
+//     }
+//     else{
+//       outputOriginalBlobNameWithExtension = `${inputBlobName}/answer.mp3`
+//     }
+//   }
+//   const outputOriginalBlockBlobClient = outputOriginalContainerClient.getBlockBlobClient(outputOriginalBlobNameWithExtension);
 
-  // if(blobExtension !== "mp3"){
-  //     ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
-  //     await ffmpeg.run(
-  //       "-i",
-  //       `temp_in.${blobExtension}`,
-  //       "-filter:a",
-  //       `atempo=1.0`,
-  //       "-vn",
-  //       `temp_out.mp3`
-  //     );
-  //     const data = ffmpeg.FS("readFile", `temp_out.mp3`);
+//   // if(blobExtension !== "mp3"){
+//   //     ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
+//   //     await ffmpeg.run(
+//   //       "-i",
+//   //       `temp_in.${blobExtension}`,
+//   //       "-filter:a",
+//   //       `atempo=1.0`,
+//   //       "-vn",
+//   //       `temp_out.mp3`
+//   //     );
+//   //     const data = ffmpeg.FS("readFile", `temp_out.mp3`);
   
-  //     await outputOriginalBlockBlobClient.uploadData(data)
-  //   }
-  //   else{
-  //     await outputOriginalBlockBlobClient.beginCopyFromURL(inputBlockBlobClient.url)
-  //   }
+//   //     await outputOriginalBlockBlobClient.uploadData(data)
+//   //   }
+//   //   else{
+//   //     await outputOriginalBlockBlobClient.beginCopyFromURL(inputBlockBlobClient.url)
+//   //   }
 
-  ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
-  await ffmpeg.run(
-    "-i",
-    `temp_in.${blobExtension}`,
-    "-filter:a",
-    `atempo=1.0`,
-    "-vn",
-    `temp_out.mp3`
-  );
-  const data = ffmpeg.FS("readFile", `temp_out.mp3`);
+//   ffmpeg.FS("writeFile", `temp_in.${blobExtension}`, await fetchFile(myBlob));
+//   await ffmpeg.run(
+//     "-i",
+//     `temp_in.${blobExtension}`,
+//     "-filter:a",
+//     `atempo=1.0`,
+//     "-vn",
+//     `temp_out.mp3`
+//   );
+//   const data = ffmpeg.FS("readFile", `temp_out.mp3`);
 
-  await outputOriginalBlockBlobClient.uploadData(data)
-}
+//   await outputOriginalBlockBlobClient.uploadData(data)
+// }
 
 async function deleteBlob(inputBlockBlobClient){
   const options = {
@@ -135,9 +135,10 @@ async function deleteBlob(inputBlockBlobClient){
 module.exports = async function (context, myBlob) {
     context.log("JavaScript blob trigger function processed blob \n Blob:", context.bindingData.blobTrigger, "\n Blob Size:", myBlob.length, "Bytes");
     const { BlobServiceClient } = require('@azure/storage-blob');
-
-    const blobServiceClient = BlobServiceClient.fromConnectionString(
-    process.env.BLOB_STORAGE_CONNECTION_STRING
+    const credential = new DefaultAzureCredential();
+    const blobServiceClient = new BlobServiceClient(
+        `https://seedsblob.blob.core.windows.net`, 
+        credential
     );
 
     var inputBlobName = context.bindingData.blobName
