@@ -1,4 +1,3 @@
-import time
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from urllib.parse import urlparse, unquote
@@ -27,8 +26,6 @@ class SASGen:
         return self.user_delegation_key
 
     def get_url_with_sas(self, url: str) -> str:
-        print('GENERATING SAS FOR URL: ', url)
-        start = time.time()
         decoded_url = unquote(url)
         parsed_url = urlparse(decoded_url)
         container_name = parsed_url.path.split('/')[1]
@@ -48,5 +45,4 @@ class SASGen:
             expiry=self.key_expiry_time,
             user_delegation_key=user_delegation_key,
         )
-        print("TIME TAKEN: ", time.time() - start)
         return blob_client.url + "?" + sas_token
