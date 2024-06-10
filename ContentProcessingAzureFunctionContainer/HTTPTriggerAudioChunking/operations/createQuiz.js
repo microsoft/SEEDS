@@ -2,7 +2,7 @@ const { sendResponse, convertMessageFromTextToAudio, addForInOptionAudio, getURL
 
 
 module.exports = async function createQuizAudios(context, req){
-    if(!req.body.language || !req.body.questions || !req.body.options || !req.body.id){
+    if(!req.body.language || !req.body.questions || !req.body.options || !req.body.id || !req.body.title){
         throw {
             message:"language, questions, options or id property not defined.",
             statusCode:400
@@ -12,6 +12,7 @@ module.exports = async function createQuizAudios(context, req){
     console.log(req.body);
     var lang = global.humanLanguageCodeToTranslationLanguageCode[req.body.language.toLowerCase()]
     var containerName = 'output-container'
+    let responseData = {}
     
     const extension = ".mp3"
     const separator = "/"
@@ -30,7 +31,7 @@ module.exports = async function createQuizAudios(context, req){
       titleAudioUrl = outputBlockBlobClient.url
       console.log(`FINISHED TITLE AUDIO PROCESSING ${fullFilePath}`);
     }
-    req.body.titleAudio = encodeURI(getURLForPLACE(decodeURIComponent(titleAudioUrl)))
+    responseData.titleAudio = encodeURI(getURLForPLACE(decodeURIComponent(titleAudioUrl)))
 
     // CREATE QUESTION AUDIOS
     var questionFps = [];
@@ -49,7 +50,6 @@ module.exports = async function createQuizAudios(context, req){
       i++
       questionFps.push(encodeURI(getURLForPLACE(decodeURIComponent(url))))
     };
-    console.info(questionFps)
 
     // CREATE OPTIONS AUDIOS
     var optionFps = [];
@@ -74,10 +74,20 @@ module.exports = async function createQuizAudios(context, req){
       i++
       optionFps.push(op)
     }
-    console.info(optionFps)
-    req.body.questions = questionFps
-    req.body.options = optionFps
-    req.body.speechRates = global.speechRates
+    responseData.questionAudios = questionFps
+    responseData.optionsAudios = optionFps
+    // ADD AUDIO DATA TO REQUEST OBJECT TO COMPLETE THE QUIZ INFO
+    req.body.quizAudioData = responseData
     console.log(JSON.stringify(req.body))
-    await sendMessageToMQ(req.body)
+    
+    fetch(process.env.SEEDS_SERVER_BASE_URL + "content/quiz", {
+      method: 'PATCH',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(req.body)
+  })
+  .then(response => response.json())
+  .then(data => console.log('Success response from SEEDS server for PATCH Quiz Request:', data))
+  .catch((error) => console.error('Error response from SEEDS server for PATCH Quiz Request:', error));
 }

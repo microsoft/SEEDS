@@ -1,5 +1,6 @@
 // const Blob = require('buffer').Blob;
 require('dotenv').config()
+const { DefaultAzureCredential } = require("@azure/identity");
 const axios = require('axios');
 
 async function createSeperateFileForEachSpeechRate(ffmpeg,metadata,myBlob,blobExtension,inputBlobName,outputContainerClient,fetchFile){
