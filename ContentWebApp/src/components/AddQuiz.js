@@ -109,18 +109,19 @@ const AddQuiz = ({ quiz }) => {
     createQuizJson();
 
     if (isValid()) {
-      fetch("https://place-seeds.azurewebsites.net/create", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(metadata),
-      })
-        .then((res) => {
-          alert("Saved successfully.");
-          navigate("/content");
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      console.log(JSON.stringify(metadata))
+      // fetch("https://place-seeds.azurewebsites.net/create", {
+      //   method: "POST",
+      //   headers: { "content-type": "application/json" },
+      //   body: JSON.stringify(metadata),
+      // })
+      //   .then((res) => {
+      //     alert("Saved successfully.");
+      //     navigate("/content");
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.message);
+      //   });
     }
   };
 

@@ -8,6 +8,8 @@ from utils.enums import CallStatus, ConversationRTCEventType
 class UserAction(BaseModel):
     key_pressed: str
     timestamp: datetime
+    pre_state_id: str = 'pre-default'
+    post_state_id: str = 'post-default'
 
 class StreamPlaybackInfo(BaseModel):
     play_id: str
@@ -27,6 +29,7 @@ class IVRCallStateMongoDoc(BaseModel):
     user_actions: List[UserAction] = []
     stream_playback: List[StreamPlaybackInfo] = []
     experience_data: Dict[str, Any] = {}
+    call_status_updates: Dict[str, Any] = {}
     
     def dict(self, **kwargs):
         # Use the super().dict() method with by_alias=True to use aliases in the output dictionary
@@ -109,6 +112,9 @@ class DTMFInput(BaseModel):
     
 class StartIVRRequest(BaseModel):
     phone_number: str
+    
+class FSMRequest(BaseModel):
+    fsm_id: str    
     
 @dataclass
 class MongoCreds:

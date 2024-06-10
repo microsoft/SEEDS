@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ValidationError
 import traceback
 from datetime import datetime
+import time
 from utils.enums import CallStatus, ConversationRTCEventType
 from utils.functions import CustomJSONEncoder, format_data_html
 import vonage
@@ -13,6 +14,7 @@ import traceback
 from dotenv import load_dotenv
 import os
 import asyncio
+from actions.base_actions.talk_action import TalkAction
 
 from actions.vonage_actions.vonage_action_factory import VonageActionFactory
 from fsm.instantiation import instantiate_from_latest_content, instantitate_from_doc
@@ -21,14 +23,16 @@ from utils.mongodb import MongoDB
 from fastapi.responses import HTMLResponse
 from fsm.visualiseIVR import get_latest_content, process_content
 from utils.model_classes import ConversationRTCWebhookRequest, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, \
-    MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse, BulkCallRequest
+    MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse, BulkCallRequest, FSMRequest
 import copy
 
 load_dotenv()
 
 application_id = os.getenv("VONAGE_APPLICATION_ID")
 
-fsm = None
+fsm = dict()
+latest_fsm_id = None
+
 app = FastAPI()
 
 # Add CORS middleware configuration
@@ -57,6 +61,10 @@ fsm_json_mongo = MongoDB(conn_creds=mongo_creds,
                          db_name="ivr",
                          collection_name="fsm")
 
+radio_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
+                          db_name="ivr", 
+                          collection_name="radio")
+
 action_factory = VonageActionFactory()
 
 accumulator = action_factory.get_action_accumulator_implmentation()
@@ -70,18 +78,26 @@ async def get_ivr_structure():
     html_content = format_data_html(structured_content)
     return html_content
 
-@app.get("/getFSM") #make this take id as a parameter
-async def get_fsm():
-    # 
-    
-    
-    
-    if fsm is not None:
-        new_fsm = copy.deepcopy(fsm)
+
+
+@app.get("/getFSM")
+async def get_fsm(fsm_id: str):
+    # global fsm
+    fsm_by_id = None
+    doc = await fsm_json_mongo.find_by_id(fsm_id)
+    if doc is not None:
+        fsm_by_id = instantitate_from_doc(IVRfsmDoc(**doc))
+    else:
+        doc = await radio_fsm_mongo.find_by_id(fsm_id)
+        if doc is not None:
+            fsm_by_id = instantitate_from_doc(IVRfsmDoc(**doc))
+    # fsm_by_id = fsm.get(fsm_id)
+    if fsm_by_id is not None:
+        new_fsm = copy.deepcopy(fsm_by_id)
         states = []
-        for state_id in fsm.states:
+        for state_id in fsm_by_id.states:
             # print("STATE", state_id)
-            state_object = fsm.states[state_id]
+            state_object = fsm_by_id.states[state_id]
             # print("STATE OBJECT fsm.states[state] ", state_object)
             new_state = dict()
             new_state['id'] = state_object.id
@@ -96,19 +112,22 @@ async def get_fsm():
 @app.on_event("startup")
 async def startup_event():
     global fsm
+    global latest_fsm_id
     
     latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
     if latest_doc != None: 
-        # latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
-        # fsm[latest_fsm.fsm_id] = latest_fsm
-        fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
-        print("Instantiated FSM with id: ", fsm.fsm_id)
+        latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+        fsm[latest_fsm.fsm_id] = latest_fsm
+        latest_fsm_id = latest_fsm.fsm_id
+        # fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+        print("Instantiated FSM with id: ", latest_fsm.fsm_id)
     else:
         print("No FSM found in MongoDB, please call `updateivr` API to create a new FSM object from latest content before calling any APIs")
 
 @app.post("/updateivr")
 async def update_ivr(request: Request, response: Response):
     global fsm
+    global latest_fsm_id
     
     # FIND ONGOING FSM COUNT
     docs = await ongoing_fsm_mongo.find_all()
@@ -117,10 +136,11 @@ async def update_ivr(request: Request, response: Response):
         return {"message": f"Cannot Update IVR right now. {len(docs)} users are currently using it. Please try again after an hour.", \
             "status_code": response.status_code}
     
-    # updated_fsm = await instantiate_from_latest_content()
-    # fsm[updated_fsm.fsm_id] = updated_fsm    
-    fsm = await instantiate_from_latest_content()
-    current_fsm_doc = fsm.serialize()
+    updated_fsm = await instantiate_from_latest_content()
+    fsm[updated_fsm.fsm_id] = updated_fsm  
+    latest_fsm_id = updated_fsm.fsm_id  
+    # fsm = await instantiate_from_latest_content()
+    current_fsm_doc = updated_fsm.serialize()
     
     response_message = "Successfully created FSM. "
     
@@ -135,9 +155,11 @@ async def update_ivr(request: Request, response: Response):
             response_message += "Current FSM is different from previous FSM. Added a new FSM in mongo."
         else:
             # USE SAME FSM ID AS IN LATEST FSM DOC FROM MONGO
-            # fsm[latest_fsm_doc.id] = updated_fsm
-            # del fsm[updated_fsm.fsm_id]
-            fsm.fsm_id = latest_fsm_doc.id
+            fsm[latest_fsm_doc.id] = updated_fsm
+            del fsm[updated_fsm.fsm_id]
+            latest_fsm_id = latest_fsm_doc.id
+            # latest_fsm_id = latest_fsm_doc.id
+            # fsm.fsm_id = latest_fsm_doc.id
             response_message += "Current FSM and FSM in mongo are same, skipping addition of new FSM to mongo."
     else:
         await fsm_json_mongo.insert(current_fsm_doc.dict())
@@ -149,6 +171,7 @@ async def update_ivr(request: Request, response: Response):
     
 @app.post("/startivr")
 async def start_ivr(response: Response, sender: str = Form(...)):
+    global fsm
     try:
         client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
 
@@ -181,9 +204,12 @@ async def start_ivr(response: Response, sender: str = Form(...)):
             else:
                 response.status_code = 403
                 return {"message": "IVR already running for phone number: " + phone_number}
-        
-        
-        ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
+            
+            
+        latest_fsm = fsm[latest_fsm_id]
+        ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in latest_fsm.get_start_fsm_actions()])
+
+        # ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
         print("NCCO:", json.dumps(ncco_actions, indent=2))
         
         vonage_resp = client.voice.create_call({
@@ -197,8 +223,8 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         
         ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
                                               phone_number = phone_number,
-                                              fsm_id=fsm.fsm_id,
-                                              current_state_id = fsm.init_state_id,
+                                              fsm_id=latest_fsm.fsm_id,
+                                              current_state_id = latest_fsm.init_state_id,
                                               created_at = datetime.now())
         
         await ongoing_fsm_mongo.insert(ivr_call_state.dict())
@@ -221,19 +247,23 @@ async def start_bulk_calls(request: BulkCallRequest):
         content_ids = request.content_ids
         # Step 3: Get the FSM using content IDs
         print(content_ids, phone_numbers)
-        fsm = await instantiate_from_content_ids(content_ids=content_ids)
+        radio_fsm = await instantiate_from_content_ids(content_ids=content_ids)
+        fsm[radio_fsm.fsm_id] = radio_fsm
         
         
         # Step 4: Store the FSM in the 'radio' collection in 'ivr' DB
-        radio_fsm_mongo = MongoDB(conn_creds=mongo_creds, db_name="ivr", collection_name="radio")
-        current_fsm_doc = fsm.serialize()
-        await radio_fsm_mongo.insert(current_fsm_doc.dict())
+        
+        radio_fsm_doc = radio_fsm.serialize()
+        with open("radio_fsm.json", "w") as f:
+            f.write(json.dumps(radio_fsm_doc.dict(), indent=2))
+        # print(json.dumps(radio_fsm_doc.dict(), indent=2))
+        await radio_fsm_mongo.insert(radio_fsm_doc.dict())
         
         # Step 5: Initiate calls at a rate of one per second
         client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
         
         count = len(phone_numbers)
-        ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.get_start_fsm_actions()])
+        ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in radio_fsm.get_start_fsm_actions()])
         print("NCCO:", json.dumps(ncco_actions, indent=2))
         
         for phone_number in phone_numbers:
@@ -267,8 +297,8 @@ async def start_bulk_calls(request: BulkCallRequest):
             
             ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
                                               phone_number = phone_number,
-                                              fsm_id=fsm.fsm_id,
-                                              current_state_id = fsm.init_state_id,
+                                              fsm_id=radio_fsm.fsm_id,
+                                              current_state_id = radio_fsm.init_state_id,
                                               created_at = datetime.now())
         
             await ongoing_fsm_mongo.insert(ivr_call_state.dict())
@@ -280,7 +310,6 @@ async def start_bulk_calls(request: BulkCallRequest):
         
         # write to bulk collection, get the user id initiating the bulk call
         return {"message": f"Calls initiated for {count} phone numbers."} # Return list of conv IDs of calls
-    
     
     except Exception as e:
         error_traceback = traceback.format_exc()
@@ -314,15 +343,18 @@ async def get_event(req: Request, response: Response):
         
         event_request = EventWebhookRequest(**req_data)
         print("EVENT RECEIVED: ", json.dumps(event_request.dict(), cls=CustomJSONEncoder, indent=2))
+        doc = await ongoing_fsm_mongo.find_by_id(event_request.conversation_uuid)
+        if doc is not None:
+            ivr_state = IVRCallStateMongoDoc(**doc)
+            ivr_state.call_status_updates[event_request.timestamp] = event_request.status.value
         
         if event_request.status in CallStatus.get_end_call_enums():
-            doc = await ongoing_fsm_mongo.find_by_id(event_request.conversation_uuid)
             if doc is None:
                 print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", event_request.conversation_uuid)
                 response.status_code = 400
                 return {"message": f"event received, no ongoing fsm found with id {event_request.conversation_uuid}"}
             
-            ivr_state = IVRCallStateMongoDoc(**doc)
+            
             ivr_state.stopped_at = datetime.now()
             ivr_state.duration = event_request.duration
             
@@ -333,6 +365,10 @@ async def get_event(req: Request, response: Response):
             else:
                 print("DOC ALREADY EXISTS AND DUPLICATE KEY ERROR WOULD BE RAISED")
                 print(doc)
+        
+        else:
+            if doc is not None:
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
         
         response.status_code = 200
         return {"message": "event received"}
@@ -365,13 +401,15 @@ async def get_conv_event(req: ConversationRTCWebhookRequest):
     - Checks the play ID provided in the event against the IVR state document.
     - Updates the corresponding 'stoppedAt' and 'doneAt' timestamps for the playback information in the document.
     """
+    global fsm
     if req.type == ConversationRTCEventType.AUDIO_PLAY and \
         "stream_url" in req.body and \
             "play_id" in req.body:
         doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
         if doc is not None:
             ivr_state = IVRCallStateMongoDoc(**doc)
-            current_state = fsm.get_state(ivr_state.current_state_id)
+            fsm_in_progress = fsm[ivr_state.fsm_id]
+            current_state = fsm_in_progress.get_state(ivr_state.current_state_id)
             req_stream_url = req.body["stream_url"][0]
             if current_state is not None:
                 stream_actions = current_state.get_stream_action_with_record_playback_option()
@@ -430,30 +468,39 @@ async def dtmf(input: Request):
     doc = await ongoing_fsm_mongo.find_by_id(conv_id)
     if doc == None:
         print("ERROR: NO ONGOING IVR STATE FOUND FOR CONV ID: ", conv_id)
-        ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in fsm.invalid_input_error_actions])
+        # Talk Action of server error bye bye
+        # internal_server_action = ask Kavyansh if it's fine to import TalkAction here
+        ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in [TalkAction(text="Server error. Please try again later. Bye bye.")]])
         return JSONResponse(ncco)
     
     ivr_state = IVRCallStateMongoDoc(**doc)
+    
+    fsm_in_progress = fsm[ivr_state.fsm_id]
+    print('iS FSM IN PROGRESS NONE', fsm_in_progress == None)
     # PROCESS MULTIPLE USER INPUTS
     input_time = datetime.now()
     print("CURRENT STATE ID", ivr_state.current_state_id)
     print("INPUT DIGITS", digits)
     next_actions, next_state_id = None, None
     for digit in digits:
-        next_actions, next_state_id = await fsm.get_next_actions(digit, ivr_state)
+        pre_state_id = ivr_state.current_state_id
+        next_actions, next_state_id = await fsm_in_progress.get_next_actions(digit, ivr_state)
         ivr_state.current_state_id = next_state_id
-        ivr_state.user_actions.append(UserAction(key_pressed=digit, timestamp=input_time))
+        ivr_state.user_actions.append(UserAction(key_pressed=digit, timestamp=input_time, pre_state_id = pre_state_id, post_state_id = next_state_id))
         
     if digits == '':
-        next_actions, next_state_id = await fsm.get_next_actions('', ivr_state)
+        pre_state_id = ivr_state.current_state_id
+        next_actions, next_state_id = await fsm_in_progress.get_next_actions('', ivr_state)
         ivr_state.current_state_id = next_state_id
-        ivr_state.user_actions.append(UserAction(key_pressed="empty", timestamp=input_time))
+        ivr_state.user_actions.append(UserAction(key_pressed="empty", timestamp=input_time, pre_state_id = pre_state_id, post_state_id = next_state_id))
         
     await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+    start = time.time()
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
-    print("NCCO", json.dumps(ncco, indent=2))
+    print('TIME TAKEN TO CREATE NCCO ', time.time() - start)
+    print("NCCO RETURNED FROM INPUT API: ", json.dumps(ncco, indent=2))
     return JSONResponse(ncco)
     
-@app.get("/fallback")
+@app.post("/fallback")
 def get_answer():
     return {"hello": "world"}
