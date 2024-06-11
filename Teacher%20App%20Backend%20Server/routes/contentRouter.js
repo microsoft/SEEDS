@@ -2,11 +2,50 @@
 const express = require("express");
 const path = require("path");
 const Content = require("../models/Content.js");
-const BlobService = require('../models/blobService.js');
+const QuizCreateRequest = require("../models/QuizCreateRequest.js")
+const QuizData = require("../models/QuizData.js")
+const BlobService = require('../models/BlobService.js');
 const { tryCatchWrapper } = require(path.join("..", "util.js"))
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const blobService = new BlobService();
 const router = express.Router();
+
+router.post("/quiz", tryCatchWrapper(async (req, res)=>{
+    const quizCreateRequest = new QuizCreateRequest(req.body)
+    if (quizCreateRequest.id === 'default-id') {
+        return res.status(400).json({ error: "Invalid Quiz format" });
+    }
+    const quizData = QuizData.fromQuizCreateRequest(quizCreateRequest)
+    quizData.creation_time = Math.floor(Date.now() / 1000);
+    await quizData.save()
+    
+    // TRIGGER CREATION OF QUIZ AUDIO FILES
+    await fetch(
+        process.env.AUDIO_AZURE_FUNCTION_BASE_URL,
+        {
+            method: 'POST',
+            body: JSON.stringify(quizCreateRequest),
+            headers: { 'Content-Type': 'application/json' }
+        }
+    )
+    return res.send(quizData)
+}))
+
+router.patch("/quiz", tryCatchWrapper(async (req, res)=>{
+    const quizCreateRequest = new QuizCreateRequest(req.body)
+    const quizData = QuizData.fromQuizCreateRequest(quizCreateRequest)
+    quizData.isProcessed = true
+    return res.json(await QuizData.findOneAndUpdate(
+        { id: quizData._id },                   
+        { $set: {
+            themeAudio: quizData.themeAudio,
+            titleAudio: quizData.titleAudio,
+            questions: quizData.questions,
+            isProcessed: quizData.isProcessed
+        } },
+        { new: true }
+    ).exec())
+}))
 
 router.get("/sasUrl", tryCatchWrapper(async (req, res)=>{
     const url = req.query.url;  // URL is now obtained from query string

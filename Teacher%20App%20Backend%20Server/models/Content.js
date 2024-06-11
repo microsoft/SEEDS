@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 
 const ContentSchema = new mongoose.Schema({
   _id: { type: String, default: () => require('uuid').v4() }, // Set default UUID generation
-  title: { type: String, required: true, index: true, unique: true },
   description: { type: String, default: "" },
   id: { type: String, required: true, index: true, unique: true },
   type: { type: String, required: true},
@@ -12,8 +11,9 @@ const ContentSchema = new mongoose.Schema({
   isTeacherApp: {type: Boolean, default:false },
   isProcessed: {type: Boolean, default:false },
   isDeleted: {type: Boolean, default:false },
-  titleAudio: { type: String, default: "" },
+  title: { type: String, required: true, index: true, unique: true },
   localTitle: { type: String, default: ""},
+  titleAudio: { type: String, default: "" },
   theme: { type: String, default: ""},
   localTheme: { type: String, default: ""},
   themeAudio: { type: String, default: ""},
