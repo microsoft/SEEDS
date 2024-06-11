@@ -6,9 +6,28 @@ const sdk = require('microsoft-cognitiveservices-speech-sdk');
 const { Buffer } = require('buffer');
 const { PassThrough } = require('stream');
 const fs = require('fs');
+const { DefaultAzureCredential } = require('@azure/identity');
 
-var subscriptionKey = process.env.TTS_KEY
-var region = process.env.TTS_REGION
+async function getCognitiveServicesToken(resource) {
+    const credential = new DefaultAzureCredential();
+    try {
+        const accessToken = await credential.getToken(resource);
+        return accessToken.token;
+    } catch (error) {
+        console.error("Error fetching access token for resource: " + resource, error);
+        throw error;
+    }
+}
+
+async function createSpeechConfig() {
+    const token = await getCognitiveServicesToken("https://cognitiveservices.azure.com/.default");
+    const region = process.env.TTS_REGION
+    const resourceId = process.env.TTS_RESOURCE_ID
+    const authorizationToken = "aad#" + resourceId + "#" + token;
+
+    const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(authorizationToken, region);
+    return speechConfig;
+}
 
 /**
  * Node.js server code to convert text to speech
@@ -22,9 +41,9 @@ var region = process.env.TTS_REGION
 const textToSpeech = async (text, lang,rate, filename)=> {
     
     // convert callback function to promise
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         
-        const speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey, region);
+        const speechConfig = await createSpeechConfig()
         speechConfig.speechSynthesisOutputFormat = 5; //mp3
 
         const voiceName = global.voiceName[lang]
@@ -73,7 +92,9 @@ const textToSpeech = async (text, lang,rate, filename)=> {
                 synthesizer.close();
                 reject(error)
             });
-    });
+    }).catch(
+        (err) => console.error(err)
+    );
 };
 
 module.exports = {
