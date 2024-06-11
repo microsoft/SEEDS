@@ -1,4 +1,4 @@
-const { sendResponse, sendMessageToMQ } = require("../utils");
+const { sendResponse } = require("../utils");
 
 
 module.exports = async function deleteQuiz(context, req){
@@ -22,7 +22,5 @@ module.exports = async function deleteQuiz(context, req){
       const outputBlockBlobClient = destinationContainerClient.getBlockBlobClient(item.name);
       await outputBlockBlobClient.deleteIfExists()
     }
-    var message = {'type': global.deleteQuiz, "id": req.body.id};
-    await sendMessageToMQ(message)
     sendResponse(context, 200, "DELETED ALL AUDIO FILES FOR QUIZ " + req.body.id);
 }

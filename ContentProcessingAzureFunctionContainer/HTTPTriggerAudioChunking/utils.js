@@ -65,23 +65,6 @@ function getURLForPLACE(url){
     return newParts.join('/')
 }
 
-async function sendMessageToMQ(message){
-    const { ServiceBusClient, ServiceBusMessage } = require("@azure/service-bus");
-    const connectionString = process.env.SERVICE_BUS_CONNECTION_STRING;
-    const queueName = process.env.SERVICE_BUS_QUEUE_NAME;
-  
-    const sbClient = new ServiceBusClient(connectionString);
-      const sender = sbClient.createSender(queueName);
-    try{
-      await sender.sendMessages({body: message});
-      await sender.close();
-    }catch(ex){
-      console.log(ex)
-    }finally {
-        await sbClient.close();
-    }
-}
-
 async function convertAllTranslationsToAudioWithFilePaths(translations, filepaths){
     if (translations.length != filepaths.length) {
       throw new Error("NUMBER OF TRANSLATIONS != NUMBER OF FILEPATHS in convertAllTranslationsToAudioWithFilePaths()");
@@ -106,9 +89,6 @@ async function convertAllTranslationsToAudioWithFilePaths(translations, filepath
         fp = encodeURI(getURLForPLACE(decodeURIComponent(outputBlockBlobClient.url)))
         console.log(`FINISHED PROCESSING ${fullFilePath}`);
       }
-      var message = {'type': "pullModelMenuItem", 'filePaths': {}, 'basePath': filepaths[i], 'speechRates': global.speechRates};
-      message['filePaths']['path'] = fp
-      await sendMessageToMQ(message);
       i++;
     }
 }
@@ -119,7 +99,5 @@ module.exports = {
     sendResponse,
     addForInOptionAudio,
     getURLForPLACE,
-    sendMessageToMQ,
-    convertAllTranslationsToAudioWithFilePaths,
-    
+    convertAllTranslationsToAudioWithFilePaths
 }
