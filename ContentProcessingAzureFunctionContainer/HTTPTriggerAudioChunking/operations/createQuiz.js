@@ -1,15 +1,7 @@
-const { sendResponse, convertMessageFromTextToAudio, addForInOptionAudio, getURLForPLACE, sendMessageToMQ } = require("../utils")
+const { sendResponse, convertMessageFromTextToAudio, addForInOptionAudio, getURLForPLACE } = require("../utils")
 
-
-module.exports = async function createQuizAudios(context, req){
-    if(!req.body.language || !req.body.questions || !req.body.options || !req.body.id || !req.body.title){
-        throw {
-            message:"language, questions, options or id property not defined.",
-            statusCode:400
-        }
-    }
-    sendResponse(context, 200, "CREATING... Check IVR PULL MODEL AFTER FEW MINUTES")
-    console.log(req.body);
+async function createQuizAudiosBackgroundTask(context, req){
+    console.log("REQUEST BODY " + JSON.stringify(req.body));
     var lang = global.humanLanguageCodeToTranslationLanguageCode[req.body.language.toLowerCase()]
     var containerName = 'output-container'
     let responseData = {}
@@ -23,6 +15,7 @@ module.exports = async function createQuizAudios(context, req){
     const titleAudioContainerClient = global.blobServiceClient.getContainerClient(titleAudioContainerName);
     var titleAudioUrl = ''
     const filePath = 'quiz' + separator + req.body.id
+
     for(const speechRate of global.speechRates){
       const audioStream = await convertMessageFromTextToAudio(addForInOptionAudio(lang, req.body.title), lang, speechRate - global.speechRateMargin)
       const fullFilePath = filePath + separator + speechRate + extension
@@ -31,7 +24,31 @@ module.exports = async function createQuizAudios(context, req){
       titleAudioUrl = outputBlockBlobClient.url
       console.log(`FINISHED TITLE AUDIO PROCESSING ${fullFilePath}`);
     }
-    responseData.titleAudio = encodeURI(getURLForPLACE(decodeURIComponent(titleAudioUrl)))
+    responseData.titleAudio = encodeURI(getURLForPLACE(decodeURIComponent(titleAudioUrl))) + '/1.0.mp3';
+
+    // CREATE/FETCH THEME AUDIO
+    const theme = req.body.theme.trim()
+    const localTheme = req.body.localTheme.trim()
+    var themeTitleContainerName = "theme-titles"
+    const themeTitleContainerClient = global.blobServiceClient.getContainerClient(themeTitleContainerName);
+    const themeTitleFilePath = theme + separator + req.body.language.toLowerCase()
+    const themeBlobName = themeTitleFilePath + separator + "1.0" + extension
+    const themeBlobClient = themeTitleContainerClient.getBlockBlobClient(themeBlobName);
+    if(await themeBlobClient.exists()){
+      url = themeBlobClient.url
+      console.log(`existing theme url = ${url}`)
+    }
+    else{
+      for(const speechRate of global.speechRates){
+        const audioStream = await convertMessageFromTextToAudio(addForInOptionAudio(lang, localTheme), lang, speechRate - global.speechRateMargin)
+        const fullFilePath = themeTitleFilePath + separator + speechRate + extension
+        const outputBlockBlobClient = themeTitleContainerClient.getBlockBlobClient(fullFilePath);
+        await outputBlockBlobClient.uploadStream(audioStream);
+        url = outputBlockBlobClient.url
+        console.log(`FINISHED PROCESSING ${fullFilePath}`);
+      }
+    }
+    responseData.themeAudio = encodeURI(getURLForPLACE(decodeURIComponent(url)) + '/1.0.mp3')
 
     // CREATE QUESTION AUDIOS
     var questionFps = [];
@@ -48,7 +65,7 @@ module.exports = async function createQuizAudios(context, req){
         console.log(`FINISHED PROCESSING ${fullFilePath}`);
       }
       i++
-      questionFps.push(encodeURI(getURLForPLACE(decodeURIComponent(url))))
+      questionFps.push(encodeURI(getURLForPLACE(decodeURIComponent(url)) + '/1.0.mp3'))
     };
 
     // CREATE OPTIONS AUDIOS
@@ -69,7 +86,7 @@ module.exports = async function createQuizAudios(context, req){
           console.log(`FINISHED PROCESSING ${fullFilePath}`);
         }
         optionNum++
-        op.push(encodeURI(getURLForPLACE(decodeURIComponent(url))))
+        op.push(encodeURI(getURLForPLACE(decodeURIComponent(url)) + '/1.0.mp3'))
       }
       i++
       optionFps.push(op)
@@ -83,11 +100,23 @@ module.exports = async function createQuizAudios(context, req){
     fetch(process.env.SEEDS_SERVER_BASE_URL + "content/quiz", {
       method: 'PATCH',
       headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'authToken' :'postman'
       },
       body: JSON.stringify(req.body)
   })
   .then(response => response.json())
   .then(data => console.log('Success response from SEEDS server for PATCH Quiz Request:', data))
   .catch((error) => console.error('Error response from SEEDS server for PATCH Quiz Request:', error));
+}
+
+module.exports = async function createQuizAudios(context, req){
+    if(!req.body.language || !req.body.questions || !req.body.options || !req.body.id || !req.body.title || !req.body.theme || !req.body.localTheme){
+        throw {
+            message:"language, questions, options, id, title, theme or localTheme property not defined.",
+            statusCode:400
+        }
+    }
+    createQuizAudiosBackgroundTask(context, req)
+    sendResponse(context, 200, "CREATING... Check IVR PULL MODEL AFTER FEW MINUTES")
 }
