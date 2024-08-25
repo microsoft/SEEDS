@@ -2,6 +2,7 @@ fastapi
 uvicorn
 vonage
 python-dotenv
+azure-cosmos
 azure-storage-blob
 azure-identity
 pymongo

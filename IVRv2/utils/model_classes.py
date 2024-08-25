@@ -19,7 +19,7 @@ class StreamPlaybackInfo(BaseModel):
     done_at: Optional[datetime] = None
     
 class IVRCallStateMongoDoc(BaseModel):
-    id: str = Field(..., alias="_id")
+    id: str
     phone_number: str
     fsm_id: str
     current_state_id: str
@@ -30,29 +30,13 @@ class IVRCallStateMongoDoc(BaseModel):
     stream_playback: List[StreamPlaybackInfo] = []
     experience_data: Dict[str, Any] = {}
     call_status_updates: Dict[str, Any] = {}
-    
-    def dict(self, **kwargs):
-        # Use the super().dict() method with by_alias=True to use aliases in the output dictionary
-        return super().dict(by_alias=True, **kwargs)
-
-    class Config:
-        # This will allow the model to be instantiated with 'id' instead of '_id'
-        populate_by_name = True
 
 class IVRfsmDoc(BaseModel):
-    id: str = Field(..., alias="_id")
+    id: str
     created_at: int
     states: List[Dict]
     transitions: List[Dict]
     init_state_id: str
-    
-    def dict(self, **kwargs):
-        # Use the super().dict() method with by_alias=True to use aliases in the output dictionary
-        return super().dict(by_alias=True, **kwargs)
-
-    class Config:
-        # This will allow the model to be instantiated with 'id' instead of '_id'
-        populate_by_name = True
     
     def __eq__(self, other):
         if not isinstance(other, IVRfsmDoc):

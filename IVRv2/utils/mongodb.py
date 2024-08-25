@@ -1,49 +1,62 @@
-from motor.motor_asyncio import AsyncIOMotorClient
-import uuid
-
-from utils.model_classes import MongoCreds
+import os
+from azure.identity import DefaultAzureCredential
+from azure.cosmos import CosmosClient as cosmos_client
+from azure.cosmos import PartitionKey, exceptions
+from dotenv import load_dotenv
+load_dotenv()
 
 class MongoDB:
-    def __init__(self, conn_creds: MongoCreds, db_name: str, collection_name: str):
-        options = f'ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@{conn_creds.user_name}@'
+    def __init__(self, container_name, db_name = "ivr"):
+        credential = DefaultAzureCredential()
+        client = cosmos_client(os.environ.get("COSMOS_DB_EP", ""), credential)
 
-        # Construct the connection string
-        conn_str = f'mongodb://{conn_creds.user_name}:{conn_creds.password}@{conn_creds.host}:{conn_creds.port}/?{options}'
-        client = AsyncIOMotorClient(conn_str)
-        db = client[db_name]
-        self.collection = db[collection_name]
+        db = client.get_database_client(db_name)
+        self.container = db.get_container_client(container_name)
     
-    async def insert(self, doc: dict):
-        if "_id" not in doc:
-            doc["_id"] = str(uuid.uuid1())
-        result = await self.collection.insert_one(doc)
-        print(f"Single document inserted with _id: {result.inserted_id}")
+    async def find_by_id(self, id_string: str) -> dict | None:
+        query = f"SELECT * FROM c WHERE c.id={id_string}"
+        response = self.container.query_items(query)
+        result = [item for item in response]
+        return result[0] if len(result) > 0 else None
     
-    async def find_by_id(self, id: str) -> dict | None:
-        doc = await self.collection.find_one({"_id": id})
-        return doc
-
+    async def find_one_by_query(self, query: dict):
+        attrs_list = [f"c.{k}={v}" for k,v in query.items()]
+        where_clause = ' AND '.join(attrs_list)
+        response = self.container.query_items(f"SELECT * FROM c WHERE {where_clause}")
+        result = [item for item in response]
+        return result[0] if len(result) > 0 else None
+    
     async def find_all(self) -> list:
-        cursor = self.collection.find({})
-        documents = []
-        async for document in cursor:
-            documents.append(document)
-        return documents
-
-    async def find(self, query: dict) -> dict | None:
-        doc = await self.collection.find_one(query)
-        return doc
-
-    async def delete(self, doc_id: str):
-        await self.collection.delete_one({"_id": doc_id})
+        query = f"SELECT * FROM c"
+        response = self.container.query_items(query)
+        result = [item for item in response]
+        return result
     
+    async def query_items(self, query:str):
+        response = self.container.query_items(query)
+        result = [item for item in response]
+
+    async def insert(self, doc: dict):
+        return self.container.upsert_item(doc)
+
     async def update_document(self, id: str, new_doc: dict):
-        if "_id" not in new_doc:
-            new_doc["_id"] = id
-        result = await self.collection.replace_one({"_id": id}, new_doc, upsert=True)
-        if result.modified_count > 0:
-            print(f"Document with _id: {id} replaced.")
-        elif result.upserted_id is not None:
-            print(f"New document inserted with _id: {result.upserted_id}.")
-        else:
-            print("No document was replaced.")
+        return self.insert(new_doc)
+    
+    async def delete(self, id: str):
+        query = {'id': id}
+        return self.container.delete_item(query)
+    
+    async def find_top_one(self, attr: str):
+        query = f"""
+            SELECT TOP 1 * 
+            FROM c 
+            ORDER BY c.{attr} DESC
+        """
+        items = list(self.container.query_items(
+            query=query,
+            enable_cross_partition_query=True
+        ))
+        return items[0] if items else None
+    
+    def get_container(self):
+        return self.container

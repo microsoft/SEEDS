@@ -13,7 +13,7 @@ class QuizQuestion(BaseModel):
     correct_option_id: str
     
 class QuizData(BaseModel):
-    id: str = Field(..., alias="_id")
+    id: str
     language: str
     theme: str
     themeAudio: str
@@ -27,12 +27,8 @@ class QuizData(BaseModel):
 
     def dict(self, **kwargs):
         # Ensure that sub-models also serialize recursively with their custom dict methods
-        data_dict = super().dict(by_alias=True, **kwargs)
+        data_dict = super().dict(**kwargs)
         # Customize the serialization for nested models if needed
         # data_dict['title'] = self.title.dict(**kwargs)
         data_dict['questions'] = [item.dict(**kwargs) for item in self.questions]
         return data_dict
-
-    class Config:
-        # This will allow the model to be instantiated with 'id' instead of '_id'
-        populate_by_name = True

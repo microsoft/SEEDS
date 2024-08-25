@@ -44,26 +44,26 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
-                         password=os.environ.get("MONGO_PASSWORD"),
-                         port=int(os.environ.get("MONGO_PORT")),
-                         user_name=os.environ.get("MONGO_USER_NAME"))
+# mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
+#                          password=os.environ.get("MONGO_PASSWORD"),
+#                          port=int(os.environ.get("MONGO_PORT")),
+#                          user_name=os.environ.get("MONGO_USER_NAME"))
 
-ongoing_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
+ongoing_fsm_mongo = MongoDB( 
                             db_name="ivr", 
-                            collection_name="ongoingIVRState")
+                            container_name="ongoingIVRState")
 
-ivrv2_logs_mongo = MongoDB(conn_creds=mongo_creds, 
+ivrv2_logs_mongo = MongoDB( 
                             db_name="ivr", 
-                            collection_name="ivrV2Logs")
+                            container_name="ivrV2Logs")
 
-fsm_json_mongo = MongoDB(conn_creds=mongo_creds, 
+fsm_json_mongo = MongoDB( 
                          db_name="ivr",
-                         collection_name="fsm")
+                         container_name="fsm")
 
-radio_fsm_mongo = MongoDB(conn_creds=mongo_creds, 
+radio_fsm_mongo = MongoDB( 
                           db_name="ivr", 
-                          collection_name="radio")
+                          container_name="radio")
 
 action_factory = VonageActionFactory()
 
@@ -114,7 +114,7 @@ async def startup_event():
     global fsm
     global latest_fsm_id
     
-    latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
+    latest_doc = await fsm_json_mongo.find_top_one("created_at")
     if latest_doc != None: 
         latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
         fsm[latest_fsm.fsm_id] = latest_fsm
@@ -145,7 +145,7 @@ async def update_ivr(request: Request, response: Response):
     response_message = "Successfully created FSM. "
     
     # CHECK IF THE LATEST CONTENT FSM IS SAME AS THE LATEST FSM STORED IN MONGO
-    latest_doc = await fsm_json_mongo.collection.find_one(sort=[("created_at", -1)])
+    latest_doc = await fsm_json_mongo.find_top_one("created_at")
     if latest_doc != None:
         latest_fsm_doc = IVRfsmDoc(**latest_doc)
         
@@ -189,7 +189,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         
         print("RECIEVED START IVR CALL FOR PHONE NUMBER", phone_number)
         
-        doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
+        doc = await ongoing_fsm_mongo.find_one_by_query({'phone_number': phone_number})
         if doc != None:
             ivr_state = IVRCallStateMongoDoc(**doc)
             # CHECK IF LAST CALL HAPPENED STALE_WAIT_IN_SECONDS SECONDS BEFORE, 
@@ -221,7 +221,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
         vonage_resp = VonageCallStartResponse(**vonage_resp)
         print("VONAGE RESPONSE", vonage_resp)
         
-        ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
+        ivr_call_state = IVRCallStateMongoDoc(id = vonage_resp.conversation_uuid, 
                                               phone_number = phone_number,
                                               fsm_id=latest_fsm.fsm_id,
                                               current_state_id = latest_fsm.init_state_id,
@@ -265,7 +265,7 @@ async def start_bulk_calls(request: BulkCallRequest):
         print("NCCO:", json.dumps(ncco_actions, indent=2))
         
         for phone_number in phone_numbers:
-            doc = await ongoing_fsm_mongo.find({'phone_number': phone_number})
+            doc = await ongoing_fsm_mongo.find_one_by_query({'phone_number': phone_number})
             if doc != None:
                 count -= 1
                 ivr_state = IVRCallStateMongoDoc(**doc)
@@ -293,7 +293,7 @@ async def start_bulk_calls(request: BulkCallRequest):
             })
             vonage_resp = VonageCallStartResponse(**vonage_resp)
             
-            ivr_call_state = IVRCallStateMongoDoc(_id = vonage_resp.conversation_uuid, 
+            ivr_call_state = IVRCallStateMongoDoc(id = vonage_resp.conversation_uuid, 
                                               phone_number = phone_number,
                                               fsm_id=radio_fsm.fsm_id,
                                               current_state_id = radio_fsm.init_state_id,
