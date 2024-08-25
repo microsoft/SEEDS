@@ -260,8 +260,6 @@ async def start_bulk_calls(request: BulkCallRequest):
         await radio_fsm_mongo.insert(radio_fsm_doc.dict())
         
         # Step 5: Initiate calls at a rate of one per second
-        client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
-        
         count = len(phone_numbers)
         ncco_actions = accumulator.combine([action_factory.get_action_implmentation(x) for x in radio_fsm.get_start_fsm_actions()])
         print("NCCO:", json.dumps(ncco_actions, indent=2))
@@ -285,7 +283,7 @@ async def start_bulk_calls(request: BulkCallRequest):
                     # response.status_code = 403
                     # return {"message": "IVR already running for phone number: " + phone_number}
             
-            
+            client = vonage.Client(application_id=application_id, private_key=os.getenv("VONAGE_PRIVATE_KEY_PATH"))
             # print("NCCO:", json.dumps(ncco_actions, indent=2))
             vonage_resp = client.voice.create_call({
                 'to': [{'type': 'phone', 'number': phone_number}],
