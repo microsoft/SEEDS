@@ -101,7 +101,7 @@ async def get_fsm(fsm_id: str):
             # print("STATE OBJECT fsm.states[state] ", state_object)
             new_state = dict()
             new_state['id'] = state_object.id
-            new_state['menu'] = state_object.menu.dict() if state_object.menu is not None else None
+            new_state['menu'] = state_object.menu.dict(by_alias=True) if state_object.menu is not None else None
             new_state['transition_map'] = state_object.serialize_transitions()
             states.append(new_state)
         new_fsm.states = states
@@ -151,7 +151,7 @@ async def update_ivr(request: Request, response: Response):
         
         if current_fsm_doc != latest_fsm_doc:
             # CURRENT FSM IS DIFFERENT, SAVE IT IN MONGO
-            await fsm_json_mongo.insert(current_fsm_doc.dict())
+            await fsm_json_mongo.insert(current_fsm_doc.dict(by_alias=True))
             response_message += "Current FSM is different from previous FSM. Added a new FSM in mongo."
         else:
             # USE SAME FSM ID AS IN LATEST FSM DOC FROM MONGO
@@ -162,7 +162,7 @@ async def update_ivr(request: Request, response: Response):
             # fsm.fsm_id = latest_fsm_doc.id
             response_message += "Current FSM and FSM in mongo are same, skipping addition of new FSM to mongo."
     else:
-        await fsm_json_mongo.insert(current_fsm_doc.dict())
+        await fsm_json_mongo.insert(current_fsm_doc.dict(by_alias=True))
         response_message += "FSM collection was empty. Added a new FSM in mongo."
     
     response.status_code = 200
@@ -227,7 +227,7 @@ async def start_ivr(response: Response, sender: str = Form(...)):
                                               current_state_id = latest_fsm.init_state_id,
                                               created_at = datetime.now())
         
-        await ongoing_fsm_mongo.insert(ivr_call_state.dict())
+        await ongoing_fsm_mongo.insert(ivr_call_state.dict(by_alias=True))
         
         response.status_code = 200
         return {"message": "IVR started for phone number: " + phone_number}
@@ -255,9 +255,9 @@ async def start_bulk_calls(request: BulkCallRequest):
         
         radio_fsm_doc = radio_fsm.serialize()
         with open("radio_fsm.json", "w") as f:
-            f.write(json.dumps(radio_fsm_doc.dict(), indent=2))
-        # print(json.dumps(radio_fsm_doc.dict(), indent=2))
-        await radio_fsm_mongo.insert(radio_fsm_doc.dict())
+            f.write(json.dumps(radio_fsm_doc.dict(by_alias=True), indent=2))
+        # print(json.dumps(radio_fsm_doc.dict(by_alias=True), indent=2))
+        await radio_fsm_mongo.insert(radio_fsm_doc.dict(by_alias=True))
         
         # Step 5: Initiate calls at a rate of one per second
         count = len(phone_numbers)
@@ -299,7 +299,7 @@ async def start_bulk_calls(request: BulkCallRequest):
                                               current_state_id = radio_fsm.init_state_id,
                                               created_at = datetime.now())
         
-            await ongoing_fsm_mongo.insert(ivr_call_state.dict())
+            await ongoing_fsm_mongo.insert(ivr_call_state.dict(by_alias=True))
         
             print(f"Call started for phone number {phone_number} with conversation UUID: {vonage_resp.conversation_uuid}")
             
@@ -337,10 +337,10 @@ def get_answer():
 async def get_event(req: Request, response: Response):
     try:
         req_data = await req.json()
-        print("Raw REQUEST Data:", req_data)
+        # print("Raw REQUEST Data:", req_data)
         
         event_request = EventWebhookRequest(**req_data)
-        print("EVENT RECEIVED: ", json.dumps(event_request.dict(), cls=CustomJSONEncoder, indent=2))
+        print("EVENT RECEIVED: ", json.dumps(event_request.dict(by_alias=True), cls=CustomJSONEncoder, indent=2))
         doc = await ongoing_fsm_mongo.find_by_id(event_request.conversation_uuid)
         if doc is not None:
             ivr_state = IVRCallStateMongoDoc(**doc)
@@ -358,15 +358,15 @@ async def get_event(req: Request, response: Response):
             
             doc = await ivrv2_logs_mongo.find_by_id(ivr_state.id)
             if doc is None:
-                await ivrv2_logs_mongo.insert(ivr_state.dict())
-                await ongoing_fsm_mongo.delete(doc_id=event_request.conversation_uuid)
+                await ivrv2_logs_mongo.insert(ivr_state.dict(by_alias=True))
+                await ongoing_fsm_mongo.delete(event_request.conversation_uuid)
             else:
                 print("DOC ALREADY EXISTS AND DUPLICATE KEY ERROR WOULD BE RAISED")
                 print(doc)
         
         else:
             if doc is not None:
-                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict(by_alias=True))
         
         response.status_code = 200
         return {"message": "event received"}
@@ -413,13 +413,13 @@ async def get_conv_event(req: ConversationRTCWebhookRequest):
                 stream_actions = current_state.get_stream_action_with_record_playback_option()
                 for action in stream_actions:
                     if req_stream_url.startswith(action.url): # IGNORE THE SAS PART OF THE stream URL
-                        print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                        print(json.dumps(req.dict(by_alias=True), indent=2, cls=CustomJSONEncoder))
                         ivr_state.stream_playback.append(StreamPlaybackInfo(
                             play_id=req.body["play_id"],
                             stream_url=action.url,
                             started_at=req.timestamp
                         ))
-                        await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+                        await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict(by_alias=True))
     elif req.type == ConversationRTCEventType.AUDIO_PLAY_STOP and \
         "play_id" in req.body:
         doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
@@ -429,12 +429,12 @@ async def get_conv_event(req: ConversationRTCWebhookRequest):
             should_update = False
             for playback_info in ivr_state.stream_playback:
                 if playback_info.play_id == req_play_id:
-                    print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                    print(json.dumps(req.dict(by_alias=True), indent=2, cls=CustomJSONEncoder))
                     playback_info.stopped_at = req.timestamp
                     should_update = True
                     break
             if should_update:
-                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict(by_alias=True))
     elif req.type == ConversationRTCEventType.AUDIO_PLAY_DONE and \
         "play_id" in req.body:
         doc = await ongoing_fsm_mongo.find_by_id(req.conversation_id)
@@ -444,12 +444,12 @@ async def get_conv_event(req: ConversationRTCWebhookRequest):
             should_update = False
             for playback_info in ivr_state.stream_playback:
                 if playback_info.play_id == req_play_id:
-                    print(json.dumps(req.dict(), indent=2, cls=CustomJSONEncoder))
+                    print(json.dumps(req.dict(by_alias=True), indent=2, cls=CustomJSONEncoder))
                     playback_info.done_at = req.timestamp
                     should_update = True
                     break
             if should_update:
-                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+                await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict(by_alias=True))
     return {"message": "recorded"}
 
 
@@ -492,7 +492,7 @@ async def dtmf(input: Request):
         ivr_state.current_state_id = next_state_id
         ivr_state.user_actions.append(UserAction(key_pressed="empty", timestamp=input_time, pre_state_id = pre_state_id, post_state_id = next_state_id))
         
-    await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict())
+    await ongoing_fsm_mongo.update_document(ivr_state.id, ivr_state.dict(by_alias=True))
     start = time.time()
     ncco = accumulator.combine([action_factory.get_action_implmentation(x) for x in next_actions])
     print('TIME TAKEN TO CREATE NCCO ', time.time() - start)

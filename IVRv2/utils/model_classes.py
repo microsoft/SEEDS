@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+import json
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
@@ -11,12 +12,22 @@ class UserAction(BaseModel):
     pre_state_id: str = 'pre-default'
     post_state_id: str = 'post-default'
 
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
+
 class StreamPlaybackInfo(BaseModel):
     play_id: str
     stream_url: str
     started_at: datetime
     stopped_at: Optional[datetime] = None
     done_at: Optional[datetime] = None
+
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
     
 class IVRCallStateMongoDoc(BaseModel):
     id: str
@@ -30,6 +41,11 @@ class IVRCallStateMongoDoc(BaseModel):
     stream_playback: List[StreamPlaybackInfo] = []
     experience_data: Dict[str, Any] = {}
     call_status_updates: Dict[str, Any] = {}
+
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
 
 class IVRfsmDoc(BaseModel):
     id: str
@@ -45,6 +61,11 @@ class IVRfsmDoc(BaseModel):
         return (self.states == other.states and 
                 self.transitions == other.transitions and 
                 self.init_state_id == other.init_state_id)
+
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
     
 
 class VonageCallStartResponse(BaseModel):
@@ -71,6 +92,11 @@ class EventWebhookRequest(BaseModel):
     status: CallStatus
     direction: str
     timestamp: str = ""
+
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
     
     class Config:
         # Specify custom JSON serialization for CallStatus
@@ -85,6 +111,11 @@ class ConversationRTCWebhookRequest(BaseModel):
     type: ConversationRTCEventType
     conversation_id: str = "DEFAULT"
     id: int = -1
+
+    def dict(self, *args, **kwargs):
+        # Serialize the model to JSON and then parse it back to a Python dictionary
+        json_string = self.json(*args, **kwargs)
+        return json.loads(json_string)
 
 class DTMFDetails(BaseModel):
     digits: str
