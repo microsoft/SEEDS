@@ -44,11 +44,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-# mongo_creds = MongoCreds(host=os.environ.get("MONGO_HOST"),
-#                          password=os.environ.get("MONGO_PASSWORD"),
-#                          port=int(os.environ.get("MONGO_PORT")),
-#                          user_name=os.environ.get("MONGO_USER_NAME"))
-
 ongoing_fsm_mongo = MongoDB( 
                             db_name="ivr", 
                             container_name="ongoingIVRState")
