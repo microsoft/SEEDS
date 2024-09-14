@@ -64,15 +64,6 @@ class ConferenceCall:
         # Update state and save
         await self.update_state()
     
-    async def process_webhook_event(self, payload: dict):
-        await self.communication_api.process_webhook_event(payload)
-
-    async def process_webhook_conversation_event(self, payload: dict):
-        await self.communication_api.process_webhook_conversation_event(payload)
-
-    async def process_webhook_input_event(self, payload: dict):
-        await self.communication_api.process_webhook_input_event(payload)
-
     async def add_participant(self, phone_number: str):
         participant = Participant(
             name="Student",
@@ -252,3 +243,16 @@ class ConferenceCall:
                                                 )
                                 )
             await self.update_state()
+    
+    # INPUTS FROM WEBHOOK
+    async def process_webhook_event(self, payload: dict):
+        event = self.communication_api.parse_event_webhook(payload)
+        # TODO: PROCESS EVENT to UPDATE STATES
+
+    async def process_webhook_conversation_event(self, payload: dict):
+        event = self.communication_api.parse_conversation_event_webhook(payload)
+        # TODO: PROCESS EVENT to UPDATE STATES
+
+    async def process_webhook_input_event(self, payload: dict):
+        event = self.communication_api.parse_input_webhook(payload)
+        # TODO: PROCESS EVENT to UPDATE STATES

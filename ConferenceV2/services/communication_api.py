@@ -1,7 +1,9 @@
 # services/communication_api.py
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
+
+from models.webhook_event import WebHookEvent
 
 
 class CommunicationAPI(ABC):
@@ -38,13 +40,13 @@ class CommunicationAPI(ABC):
         pass
 
     @abstractmethod
-    async def process_webhook_event(self, payload: dict):
+    def parse_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass
 
     @abstractmethod
-    async def process_webhook_conversation_event(self, payload: dict):
+    def parse_conversation_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass
 
     @abstractmethod
-    async def process_webhook_input_event(self, payload: dict):
+    def parse_input_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass

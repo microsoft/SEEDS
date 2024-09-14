@@ -1,7 +1,8 @@
 # services/vonage_api.py
 
+from models.webhook_event import WebHookEvent
 from services.communication_api import CommunicationAPI
-from typing import List
+from typing import List, Optional
 import aiohttp
 
 
@@ -43,11 +44,11 @@ class VonageAPI(CommunicationAPI):
         # Implement the method to pause audio
         pass  # TODO: Implement this method
 
-    async def process_webhook_event(self, payload: dict):
+    def parse_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass
 
-    async def process_webhook_conversation_event(self, payload: dict):
+    def parse_conversation_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass
 
-    async def process_webhook_input_event(self, payload: dict):
+    def parse_input_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
         pass
