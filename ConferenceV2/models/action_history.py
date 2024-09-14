@@ -22,4 +22,4 @@ class ActionHistory(BaseModel):
     timestamp: datetime
     action_type: ActionType
     metadata: Dict
-    owner:Str  # Phone number or identifier of the user who performed the action
+    owner: str  # Phone number or identifier of the user who performed the action
