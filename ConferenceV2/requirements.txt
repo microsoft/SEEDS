@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+azure-messaging-webpubsubservice
+python-dotenv
+pydantic
+aiohttp
+azure-cosmos
+python-dotenv
