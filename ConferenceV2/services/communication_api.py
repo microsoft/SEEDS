@@ -6,7 +6,7 @@ from typing import List
 
 class CommunicationAPI(ABC):
     @abstractmethod
-    async def start_call(self, teacher_phone: str, student_phones: List[str], conference_id: str):
+    async def start_call(self, teacher_phone: str, student_phones: List[str]):
         pass
 
     @abstractmethod
@@ -35,4 +35,16 @@ class CommunicationAPI(ABC):
 
     @abstractmethod
     async def pause_audio(self, conference_id: str):
+        pass
+
+    @abstractmethod
+    async def process_webhook_event(self, payload: dict):
+        pass
+
+    @abstractmethod
+    async def process_webhook_conversation_event(self, payload: dict):
+        pass
+
+    @abstractmethod
+    async def process_webhook_input_event(self, payload: dict):
         pass

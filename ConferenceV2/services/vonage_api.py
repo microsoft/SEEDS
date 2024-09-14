@@ -11,7 +11,7 @@ class VonageAPI(CommunicationAPI):
         self.api_secret = api_secret
         self.base_url = "https://api.nexmo.com"  # Vonage base URL
 
-    async def start_call(self, teacher_phone: str, student_phones: List[str], conference_id: str):
+    async def start_call(self, teacher_phone: str, student_phones: List[str]):
         # Implement the method to start a call using Vonage API
         pass  # TODO: Implement this method
 
@@ -42,3 +42,12 @@ class VonageAPI(CommunicationAPI):
     async def pause_audio(self, conference_id: str):
         # Implement the method to pause audio
         pass  # TODO: Implement this method
+
+    async def process_webhook_event(self, payload: dict):
+        pass
+
+    async def process_webhook_conversation_event(self, payload: dict):
+        pass
+
+    async def process_webhook_input_event(self, payload: dict):
+        pass

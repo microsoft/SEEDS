@@ -11,6 +11,7 @@ class Role(str, Enum):
 
 
 class CallStatus(str, Enum):
+    RINGING = "Ringing"
     CONNECTED = "Connected"
     DISCONNECTED = "Disconnected"
     CONNECTING = "Connecting"

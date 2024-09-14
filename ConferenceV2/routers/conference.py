@@ -1,10 +1,11 @@
 # routers/conference.py
 
-from fastapi import APIRouter, Depends, WebSocket
+import uuid
+from fastapi import APIRouter, Depends, HTTPException, WebSocket
 from typing import List
 from services import ConferenceCallManager, VonageAPI, CosmosDBStorage, InMemoryStorageManager
 from utils.smartphone_connection_manager import WebSocketSmartphoneConnectionManager
-from schemas.conference_schemas import StartConferenceRequest
+from schemas.conference_schemas import EndConferenceRequest, StartConferenceRequest
 from config import get_settings
 
 router = APIRouter()
@@ -20,32 +21,54 @@ communication_api = VonageAPI(api_key=settings.VONAGE_API_KEY, api_secret=settin
 # )
 storage_manager = InMemoryStorageManager()
 
-# TODO: Create for each conference call
+# Factory function to create a new connection manager for each conference
+def connection_manager_factory():
+    return WebSocketSmartphoneConnectionManager()
+
 # Create an instance of ConferenceCallManager
 conference_manager = ConferenceCallManager(
     communication_api=communication_api,
     storage_manager=storage_manager,
-    connection_manager=WebSocketSmartphoneConnectionManager(),
+    connection_manager_factory=connection_manager_factory,
 )
 
-
-@router.post("/start_conf")
+@router.post("/start")
 async def start_conference(request: StartConferenceRequest):
-    await conference_manager.start_conference(request.teacher_phone, request.student_phones)
-    return {"message": "Conference started successfully"}
+    # Create and start the conference
+    conference_call = await conference_manager.create_conference(request.teacher_phone, 
+                                               request.student_phones, 
+                                               smartphone_connection_manager=connection_manager_factory())
+    return {
+                "status": "Created", 
+                "id": conference_call.conference_id
+            }
 
+@router.post("/end")
+async def end_conference(request: EndConferenceRequest):
+    # Create and start the conference
+    conference_call = await conference_manager.end_conference(request.conference_id)
+    return {
+                "status": "Created", 
+                "conf": conference_call
+            }
 
-# TODO: Create ConferenceCallManager from DB
 @router.post("/add_participant")
-async def add_participant(phone_number: str):
-    await conference_manager.add_participant(phone_number)
+async def add_participant(conference_id: str, phone_number: str):
+    conference = conference_manager.get_conference(conference_id)
+    if not conference:
+        raise HTTPException(status_code=404, detail="Conference not found")
+    await conference.add_participant(phone_number)
     return {"message": "Participant added successfully"}
 
 
 # Additional endpoints for other actions (mute, unmute, etc.)
 
 # TODO: Define SmartphoneConnectionManager connect API
-@router.websocket("/smartphoneconnect")
-async def websocket_endpoint(websocket: WebSocket):
-    # await connection_manager.handle_request(websocket)
+@router.websocket("/ws/{conference_id}")
+async def websocket_endpoint(websocket: WebSocket, conference_id: str):
     pass
+    # conference = conference_manager.get_conference(conference_id)
+    # if not conference:
+    #     await websocket.close(code=1000)
+    #     return
+    # await conference.connection_manager.handle_request(websocket)
