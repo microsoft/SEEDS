@@ -25,6 +25,7 @@ from fsm.visualiseIVR import get_latest_content, process_content
 from utils.model_classes import ConversationRTCWebhookRequest, DTMFInput, EventWebhookRequest, IVRCallStateMongoDoc, IVRfsmDoc, \
     MongoCreds, StartIVRFormData, StreamPlaybackInfo, UserAction, VonageCallStartResponse, BulkCallRequest, FSMRequest
 import copy
+from comprehension_model_classes import fsm as comprehension_fsm
 
 load_dotenv()
 
@@ -108,16 +109,19 @@ async def get_fsm(fsm_id: str):
 async def startup_event():
     global fsm
     global latest_fsm_id
+
+    fsm[comprehension_fsm.fsm_id] = comprehension_fsm
+    latest_fsm_id = comprehension_fsm.fsm_id
     
-    latest_doc = await fsm_json_mongo.find_top_one("created_at")
-    if latest_doc != None: 
-        latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
-        fsm[latest_fsm.fsm_id] = latest_fsm
-        latest_fsm_id = latest_fsm.fsm_id
-        # fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
-        print("Instantiated FSM with id: ", latest_fsm.fsm_id)
-    else:
-        print("No FSM found in MongoDB, please call `updateivr` API to create a new FSM object from latest content before calling any APIs")
+    # latest_doc = await fsm_json_mongo.find_top_one("created_at")
+    # if latest_doc != None: 
+    #     latest_fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+    #     fsm[latest_fsm.fsm_id] = latest_fsm
+    #     latest_fsm_id = latest_fsm.fsm_id
+    #     # fsm = instantitate_from_doc(IVRfsmDoc(**latest_doc))
+    #     print("Instantiated FSM with id: ", latest_fsm.fsm_id)
+    # else:
+    #     print("No FSM found in MongoDB, please call `updateivr` API to create a new FSM object from latest content before calling any APIs")
 
 @app.post("/updateivr")
 async def update_ivr(request: Request, response: Response):
