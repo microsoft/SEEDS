@@ -9,7 +9,6 @@ from models.participant import Participant
 
 
 class ConferenceCallState(BaseModel):
-    conference_id : str = None
     call_status: str = None
     teacher_phone_number: str = None
     participants: Dict[str, Participant] = {}

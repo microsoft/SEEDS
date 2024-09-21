@@ -4,10 +4,9 @@ from abc import ABC, abstractmethod
 from typing import Any, List
 import asyncio
 
-# TODO: Need a global connection manager that keeps adding new connections to live connections pool, 
-# and sends messsages to particular connections, whenever its function is called
 
 class SmartphoneConnectionManager(ABC):
+    # TODO: Callbacks to ConferenceCall instance is required to handle disconnections
     @abstractmethod
     async def connect(self, client: Any):
         pass

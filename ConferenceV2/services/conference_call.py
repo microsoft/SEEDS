@@ -15,10 +15,12 @@ import asyncio
 class ConferenceCall:
     def __init__(
         self,
+        conf_id: str,
         communication_api: CommunicationAPI,
         storage_manager: StorageManager,
         connection_manager: SmartphoneConnectionManager,
     ):
+        self.conf_id = conf_id
         self.communication_api = communication_api
         self.storage_manager = storage_manager
         self.connection_manager = connection_manager
@@ -46,8 +48,8 @@ class ConferenceCall:
             self.state.participants[phone] = student
 
         # Start the call via communication API
-        self.state.conference_id = await self.communication_api.start_call(
-            teacher_phone, student_phones
+        await self.communication_api.start_conf(
+            teacher_phone, student_phones, self.conf_id
         )
         # TODO: Set CONNECTED CALL STATUS WHEN ATLEAST ONE OF THE PARTICIPANTS HAVE PICKED UP
         self.state.call_status = CallStatus.RINGING
@@ -65,6 +67,7 @@ class ConferenceCall:
         await self.update_state()
     
     async def add_participant(self, phone_number: str):
+        # TODO: Speak out announcement messages in conversation through comm API
         participant = Participant(
             name="Student",
             phone_number=phone_number,
@@ -86,6 +89,7 @@ class ConferenceCall:
         await self.update_state()
 
     async def remove_participant(self, phone_number: str):
+        # TODO: Speak out announcement messages in conversation through comm API
         if phone_number in self.state.participants:
             await self.communication_api.remove_participant(self.state.conference_id, phone_number)
             del self.state.participants[phone_number]
@@ -101,6 +105,7 @@ class ConferenceCall:
             await self.update_state()
 
     async def mute_participant(self, phone_number: str, record_history: True):
+        # TODO: Speak out announcement messages in conversation through comm API
         if phone_number in self.state.participants:
             await self.communication_api.mute_participant(self.state.conference_id, phone_number)
             self.state.participants[phone_number].is_muted = True
@@ -118,6 +123,7 @@ class ConferenceCall:
             await self.update_state()
 
     async def unmute_participant(self, phone_number: str, record_history: True):
+        # TODO: Speak out announcement messages in conversation through comm API
         if phone_number in self.state.participants:
             await self.communication_api.unmute_participant(self.state.conference_id, phone_number)
             self.state.participants[phone_number].is_muted = False
@@ -135,6 +141,7 @@ class ConferenceCall:
             await self.update_state()
 
     async def mute_all(self):
+        # TODO: Speak out announcement messages in conversation through comm API
         tasks = []
         for participant in self.state.participants.values():
             if participant.role == Role.STUDENT and not participant.is_muted:
@@ -150,6 +157,7 @@ class ConferenceCall:
         await self.update_state()
 
     async def unmute_all(self):
+        # TODO: Speak out announcement messages in conversation through comm API
         tasks = []
         for participant in self.state.participants.values():
             if participant.role == Role.STUDENT and participant.is_muted:
@@ -195,6 +203,7 @@ class ConferenceCall:
         await self.update_state()
     
     async def update_participant_call_status(self, phone_number: str, call_status: str):
+        # TODO: Speak out announcement messages in conversation through comm API
         if phone_number in self.state.participants:
             self.state.participants[phone_number].call_status = call_status
             self.state.action_history.append(ActionHistory(

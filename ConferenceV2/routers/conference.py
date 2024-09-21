@@ -4,6 +4,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, WebSocket
 from typing import List
 from services import ConferenceCallManager, VonageAPI, CosmosDBStorage, InMemoryStorageManager
+from services.communication_api_factory import CommunicationAPIType
 from utils.smartphone_connection_manager import WebSocketSmartphoneConnectionManager
 from schemas.conference_schemas import EndConferenceRequest, StartConferenceRequest
 from config import get_settings
@@ -12,7 +13,6 @@ router = APIRouter()
 settings = get_settings()
 
 # Initialize services
-communication_api = VonageAPI(api_key=settings.VONAGE_API_KEY, api_secret=settings.VONAGE_API_SECRET)
 # storage_manager = CosmosDBStorage(
 #     endpoint=settings.COSMOS_ENDPOINT,
 #     key=settings.COSMOS_KEY,
@@ -27,9 +27,8 @@ def connection_manager_factory():
 
 # Create an instance of ConferenceCallManager
 conference_manager = ConferenceCallManager(
-    communication_api=communication_api,
+    communication_api_type=CommunicationAPIType.VONAGE,
     storage_manager=storage_manager,
-    connection_manager_factory=connection_manager_factory,
 )
 
 @router.post("/start")

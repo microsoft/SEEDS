@@ -1,42 +1,49 @@
 # services/communication_api.py
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
-
+from typing import List, Optional, Tuple
 from models.webhook_event import WebHookEvent
 
 
 class CommunicationAPI(ABC):
+    # RETURN CONF ID
     @abstractmethod
-    async def start_call(self, teacher_phone: str, student_phones: List[str]):
+    async def start_conf(self, teacher_phone: str, student_phones: List[str]) -> str:
         pass
 
+    # ENDS A CONF
     @abstractmethod
-    async def end_call(self, conference_id: str):
+    async def end_conf(self):
         pass
 
+    # ADD PARTICIPANT TO THE CONF
     @abstractmethod
-    async def add_participant(self, conference_id: str, phone_number: str):
+    async def add_participant(self, phone_number: str):
         pass
 
+    # REMOVE PARTICIPANT TO THE CONF
     @abstractmethod
-    async def remove_participant(self, conference_id: str, phone_number: str):
+    async def remove_participant(self, phone_number: str):
         pass
 
+    # MUTE PARTICIPANT IN THE CONF
     @abstractmethod
-    async def mute_participant(self, conference_id: str, phone_number: str):
+    async def mute_participant(self, phone_number: str):
         pass
 
+    # UNMUTE PARTICIPANT IN THE CONF
     @abstractmethod
-    async def unmute_participant(self, conference_id: str, phone_number: str):
+    async def unmute_participant(self, phone_number: str):
         pass
 
+    # PLAY AUDIO IN CONF
     @abstractmethod
-    async def play_audio(self, conference_id: str, url: str):
+    async def play_audio(self, url: str):
         pass
 
+    # PAUSE AUDIO IN CONF
     @abstractmethod
-    async def pause_audio(self, conference_id: str):
+    async def pause_audio(self):
         pass
 
     @abstractmethod

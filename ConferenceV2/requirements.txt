@@ -6,3 +6,5 @@ pydantic
 aiohttp
 azure-cosmos
 python-dotenv
+vonage
+azure-servicebus
