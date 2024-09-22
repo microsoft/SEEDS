@@ -1,6 +1,6 @@
 import json
 from models.participant import Participant
-from utils.smartphone_connection_manager import SmartphoneConnectionManager
+from services.smartphone_connection_manager.base_smartphone_connection_manager import SmartphoneConnectionManager
 from azure.identity import DefaultAzureCredential
 from azure.servicebus import ServiceBusClient, ServiceBusMessage
 from azure.servicebus.management import ServiceBusAdministrationClient

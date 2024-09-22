@@ -1,6 +1,6 @@
 # services/cosmosdb_storage.py
 
-from services.storage_manager import StorageManager
+from services.storage_manager.base_storage_manager import StorageManager
 from azure.cosmos.aio import CosmosClient
 from azure.cosmos.exceptions import CosmosResourceNotFoundError
 import asyncio

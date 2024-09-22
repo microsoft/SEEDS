@@ -2,12 +2,10 @@
 
 from typing import Dict, List
 import uuid
-from services.communication_api_factory import CommunicationAPIFactory, CommunicationAPIType
-from services.conference_call import ConferenceCall
-from services.communication_api import CommunicationAPI
-from services.smartphone_connection_manager_factory import SmartphoneConnectionManagerFactory, SmartphoneConnectionManagerType
+from services.communication_api import CommunicationAPIFactory, CommunicationAPIType
 from services.storage_manager import StorageManager
-from utils.smartphone_connection_manager import SmartphoneConnectionManager
+from services.smartphone_connection_manager import SmartphoneConnectionManagerType, SmartphoneConnectionManagerFactory
+from services.conference_call import ConferenceCall
 
 
 class ConferenceCallManager:

@@ -6,8 +6,8 @@ from models.participant import Participant, Role, CallStatus
 from models.audio_content_state import AudioContentState, ContentStatus
 from models.action_history import ActionHistory, ActionType
 from services.communication_api import CommunicationAPI
-from services.storage_manager import StorageManager
-from utils.smartphone_connection_manager import SmartphoneConnectionManager
+from services.storage_manager import StorageManager 
+from services.smartphone_connection_manager import SmartphoneConnectionManager
 from datetime import datetime
 import asyncio
 

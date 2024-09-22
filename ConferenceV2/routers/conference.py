@@ -3,10 +3,10 @@
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket
 from typing import List
-from services import ConferenceCallManager, VonageAPI, CosmosDBStorage, InMemoryStorageManager
-from services.communication_api_factory import CommunicationAPIType
-from services.smartphone_connection_manager_factory import SmartphoneConnectionManagerType
-from utils.azure_service_bus_connection_manager import AzureServiceBusSmartphoneConnectionManager
+from services.conference_call_manager import ConferenceCallManager
+from services.communication_api import CommunicationAPIType
+from services.storage_manager import InMemoryStorageManager
+from services.smartphone_connection_manager import SmartphoneConnectionManagerType
 from schemas.conference_schemas import EndConferenceRequest, StartConferenceRequest
 from pydantic_settings import BaseSettings
 

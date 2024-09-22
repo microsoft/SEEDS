@@ -1,6 +1,6 @@
 # services/in_memory_storage.py
 
-from services.storage_manager import StorageManager
+from services.storage_manager.base_storage_manager import StorageManager
 from typing import Dict
 
 class InMemoryStorageManager(StorageManager):

@@ -1,10 +1,8 @@
 # Enum for animal types
 from enum import Enum
 import os
-from dotenv import load_dotenv
 from services.communication_api import CommunicationAPI
-from services.vonage_api import VonageAPI
-
+from dotenv import load_dotenv
 load_dotenv()
 
 class CommunicationAPIType(Enum):
@@ -13,6 +11,8 @@ class CommunicationAPIType(Enum):
 class CommunicationAPIFactory:
     @staticmethod
     def create(type: CommunicationAPIType, conf_id: str) -> CommunicationAPI:
+        from services.communication_api import VonageAPI
+        
         if type == CommunicationAPIType.VONAGE:
             return VonageAPI(application_id=os.environ.get("VONAGE_APPLICATION_ID"),
                              private_key_path=os.environ.get("VONAGE_PRIVATE_KEY_PATH"),

@@ -2,9 +2,7 @@
 from enum import Enum
 import os
 from dotenv import load_dotenv
-from utils.azure_service_bus_connection_manager import AzureServiceBusSmartphoneConnectionManager
-from utils.smartphone_connection_manager import SmartphoneConnectionManager
-from services.vonage_api import VonageAPI
+from services.smartphone_connection_manager import AzureServiceBusSmartphoneConnectionManager, SmartphoneConnectionManager
 
 load_dotenv()
 
