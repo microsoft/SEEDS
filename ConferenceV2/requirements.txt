@@ -3,8 +3,10 @@ uvicorn
 azure-messaging-webpubsubservice
 python-dotenv
 pydantic
+pydantic-settings
 aiohttp
 azure-cosmos
 python-dotenv
 vonage
 azure-servicebus
+azure-identity

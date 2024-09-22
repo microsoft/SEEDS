@@ -66,6 +66,12 @@ class ConferenceCall:
         # Update state and save
         await self.update_state()
     
+    async def connect_smartphone(self):
+        teacher = self.state.get_teacher()
+        if teacher:
+            return await self.connection_manager.connect(client=teacher)
+        raise ValueError("No teacher participant in conf call " + self.conf_id)
+    
     async def add_participant(self, phone_number: str):
         # TODO: Speak out announcement messages in conversation through comm API
         participant = Participant(
@@ -74,9 +80,9 @@ class ConferenceCall:
             role=Role.STUDENT,
             call_status=CallStatus.CONNECTING,
         )
-        self.state.participants[phone_number] = participant
-        await self.communication_api.add_participant(self.state.conference_id, phone_number)
+        await self.communication_api.add_participant(self.conf_id, phone_number)
 
+        self.state.participants[phone_number] = participant
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now(), 
                                                     action_type=ActionType.TEACHER_ADD_STUDENT, 

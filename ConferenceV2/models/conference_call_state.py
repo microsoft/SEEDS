@@ -12,5 +12,10 @@ class ConferenceCallState(BaseModel):
     call_status: str = None
     teacher_phone_number: str = None
     participants: Dict[str, Participant] = {}
-    audio_content_state = AudioContentState()
+    audio_content_state: AudioContentState = AudioContentState()
     action_history: List[ActionHistory] = []
+
+    def get_teacher(self):
+        if self.teacher_phone_number and self.teacher_phone_number in self.participants:
+            return self.participants[self.teacher_phone_number]
+        return None
