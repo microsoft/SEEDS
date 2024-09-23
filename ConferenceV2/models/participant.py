@@ -24,3 +24,9 @@ class Participant(BaseModel):
     is_raised: bool = False
     is_muted: bool = False
     call_status: CallStatus = CallStatus.DISCONNECTED
+
+    class Config:
+        use_enum_values = True  # Automatically use enum values instead of objects for serialization
+        json_encoders = {
+            Enum: lambda e: e.value,  # Encode enums as their values (this handles your enums like Role)
+        }

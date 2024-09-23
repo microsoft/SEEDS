@@ -7,7 +7,7 @@ from services.conference_call_manager import ConferenceCallManager
 from services.communication_api import CommunicationAPIType
 from services.storage_manager import InMemoryStorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType
-from schemas.conference_schemas import EndConferenceRequest, StartConferenceRequest
+from schemas.conference_schemas import CreateConferenceRequest, EndConferenceRequest, SmartphoneConnectRequest, StartConferenceRequest
 from pydantic_settings import BaseSettings
 
 router = APIRouter()
@@ -28,26 +28,37 @@ conference_manager = ConferenceCallManager(
     storage_manager=InMemoryStorageManager(),
 )
 
+@router.post("/create")
+async def start_conference(request: CreateConferenceRequest):
+    conference_call_id = conference_manager.create_conference(request.teacher_phone, request.student_phones)
+    return {
+                "status": "CREATED", 
+                "id": conference_call_id
+            }
+
 @router.post("/start")
 async def start_conference(request: StartConferenceRequest):
-    # Create and start the conference
-    conference_call = await conference_manager.create_conference(request.teacher_phone, request.student_phones)
+    await conference_manager.start_conference_call(request.conference_id)
     return {
-                "status": "Created", 
-                "id": conference_call.conf_id
+                "status": "STARTED", 
+                "id": request.conference_id
             }
 
 @router.post("/smartphoneconnect")
-async def connect_smartphone(conference_id: str):
-    conference = conference_manager.get_conference(conference_id)
+async def connect_smartphone(request: SmartphoneConnectRequest):
+    conference = conference_manager.get_conference(request.conference_id)
     return await conference.connect_smartphone()
+
+@router.post("/smartphonedisconnect")
+async def connect_smartphone(request: SmartphoneConnectRequest):
+    conference = conference_manager.get_conference(request.conference_id)
+    return await conference.disconnect_smartphone()
 
 @router.put("/end")
 async def end_conference(request: EndConferenceRequest):
-    # Create and start the conference
     conference_call = await conference_manager.end_conference(request.conference_id)
     return {
-                "status": "End", 
+                "status": "END", 
                 "conf": conference_call
             }
 

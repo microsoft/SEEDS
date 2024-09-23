@@ -19,7 +19,13 @@ class ActionType(str, Enum):
     
 
 class ActionHistory(BaseModel):
-    timestamp: datetime
+    timestamp: str
     action_type: ActionType
     metadata: Dict
     owner: str  # Phone number or identifier of the user who performed the action
+
+    class Config:
+        use_enum_values = True  # Automatically use enum values instead of objects for serialization
+        json_encoders = {
+            Enum: lambda e: e.value,  # Encode enums as their values (this handles your enums like Role)
+        }

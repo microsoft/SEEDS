@@ -15,4 +15,10 @@ class ContentStatus(str, Enum):
 class AudioContentState(BaseModel):
     current_url: Optional[str] = None
     status: ContentStatus = ContentStatus.STOPPED
-    paused_at: Optional[datetime] = None
+    paused_at: Optional[str] = None
+
+    class Config:
+        use_enum_values = True  # Automatically use enum values instead of objects for serialization
+        json_encoders = {
+            Enum: lambda e: e.value,  # Encode enums as their values (this handles your enums like Role)
+        }

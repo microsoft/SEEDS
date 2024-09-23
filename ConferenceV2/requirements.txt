@@ -10,3 +10,6 @@ python-dotenv
 vonage
 azure-servicebus
 azure-identity
+pytest
+pytest-asyncio 
+httpx

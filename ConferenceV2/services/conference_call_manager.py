@@ -22,8 +22,7 @@ class ConferenceCallManager:
         self.smartphone_connection_manager_factory = SmartphoneConnectionManagerFactory()
         self.conferences: Dict[str, ConferenceCall] = {}
 
-    async def create_conference(self, teacher_phone: str, student_phones: List[str]) -> ConferenceCall:
-        # Create a new connection manager for this conference
+    def create_conference(self, teacher_phone: str, student_phones: List[str]) -> ConferenceCall:
         conf_id = str(uuid.uuid4())
         conference_call = ConferenceCall(
             conf_id=conf_id,
@@ -31,16 +30,23 @@ class ConferenceCallManager:
             connection_manager=self.smartphone_connection_manager_factory.create(self.smartphone_connection_manager_type, conf_id),
             storage_manager=self.storage_manager
         )
-        await conference_call.start_conference(teacher_phone, student_phones)
+        conference_call.set_participant_state(teacher_phone, student_phones)
         self.conferences[conf_id] = conference_call
-        return conference_call
-
+        return conf_id
+       
+    async def start_conference_call(self, conf_id: str, ) -> ConferenceCall:
+        conf: ConferenceCall = self.get_conference(conf_id)
+        if not conf:
+            raise ValueError(f"No such conference has been created; ID: {conf_id}")
+        
+        await conf.start_conference()
+        
     async def end_conference(self, conference_id: str):
-        conf = self.get_conference(conference_id)
+        conf: ConferenceCall = self.get_conference(conference_id)
         if conf:
             await conf.end_conference()
             del self.conferences[conference_id]
         return conf
 
-    def get_conference(self, conference_id: str) -> ConferenceCall:
+    def get_conference(self, conference_id: str) -> ConferenceCall | None:
         return self.conferences.get(conference_id, None)
