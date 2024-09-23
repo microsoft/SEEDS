@@ -106,7 +106,7 @@ class VonageAPI(CommunicationAPI):
             self.client.voice.update_call(uuid=participant_info.call_leg_id, action="mute")
 
     # client.update_call()
-    async def unmute_participant(self, conference_id: str, phone_number: str):
+    async def unmute_participant(self, phone_number: str):
         """
         Unmutes a participant in the call.
         """

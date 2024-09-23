@@ -80,14 +80,14 @@ class ConferenceCall:
         raise ValueError("No teacher participant in conf call " + self.conf_id)
     
     async def add_participant(self, phone_number: str):
-        # TODO: Speak out announcement messages in conversation through comm API
+        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already connected
         participant = Participant(
             name="Student",
             phone_number=phone_number,
             role=Role.STUDENT,
             call_status=CallStatus.CONNECTING,
         )
-        await self.communication_api.add_participant(self.conf_id, phone_number)
+        await self.communication_api.add_participant(phone_number)
 
         self.state.participants[phone_number] = participant
         self.state.action_history.append(ActionHistory(
@@ -102,9 +102,9 @@ class ConferenceCall:
         await self.update_state()
 
     async def remove_participant(self, phone_number: str):
-        # TODO: Speak out announcement messages in conversation through comm API
+        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already removed
         if phone_number in self.state.participants:
-            await self.communication_api.remove_participant(self.state.conference_id, phone_number)
+            await self.communication_api.remove_participant(phone_number)
             del self.state.participants[phone_number]
             self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
@@ -117,10 +117,10 @@ class ConferenceCall:
                                     )
             await self.update_state()
 
-    async def mute_participant(self, phone_number: str, record_history: True):
-        # TODO: Speak out announcement messages in conversation through comm API
+    async def mute_participant(self, phone_number: str, record_history: bool = True):
+        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already muted
         if phone_number in self.state.participants:
-            await self.communication_api.mute_participant(self.state.conference_id, phone_number)
+            await self.communication_api.mute_participant(phone_number)
             self.state.participants[phone_number].is_muted = True
             if record_history: 
                 self.state.action_history.append(ActionHistory(
@@ -135,10 +135,10 @@ class ConferenceCall:
                                         )
             await self.update_state()
 
-    async def unmute_participant(self, phone_number: str, record_history: True):
-        # TODO: Speak out announcement messages in conversation through comm API
+    async def unmute_participant(self, phone_number: str, record_history: bool = True):
+        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already unmuted
         if phone_number in self.state.participants:
-            await self.communication_api.unmute_participant(self.state.conference_id, phone_number)
+            await self.communication_api.unmute_participant(phone_number)
             self.state.participants[phone_number].is_muted = False
             if record_history:
                 self.state.action_history.append(ActionHistory(
@@ -232,7 +232,7 @@ class ConferenceCall:
             await self.update_state()
 
     async def end_conference(self):
-        await self.communication_api.end_call(self.conference_id)
+        await self.communication_api.end_conf()
         self.call_status = CallStatus.DISCONNECTED
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 

@@ -50,7 +50,7 @@ async def connect_smartphone(request: SmartphoneConnectRequest):
     return await conference.connect_smartphone()
 
 @router.post("/smartphonedisconnect")
-async def connect_smartphone(request: SmartphoneConnectRequest):
+async def disconnect_smartphone(request: SmartphoneConnectRequest):
     conference = conference_manager.get_conference(request.conference_id)
     return await conference.disconnect_smartphone()
 

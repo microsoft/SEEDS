@@ -44,6 +44,7 @@ class ConferenceCallManager:
     async def end_conference(self, conference_id: str):
         conf: ConferenceCall = self.get_conference(conference_id)
         if conf:
+            print('ENDING CONF', conference_id)
             await conf.end_conference()
             del self.conferences[conference_id]
         return conf
