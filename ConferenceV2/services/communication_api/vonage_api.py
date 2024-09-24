@@ -30,15 +30,35 @@ class VonageAPI(CommunicationAPI):
         self.participant_info_map: Dict[str, VonageParticipantInfo] = {}
     
     # TODO: Connect a websocket to the call
-    async def start_conf(self, teacher_phone: str, student_phones: List[str]):
+    async def start_conf(self, teacher_phone: str, student_phones: List[str], websocket_ep: str):
         """
         Starts a conference call between a teacher and students using Vonage API.
         """
         call_payload = {"type": "phone", "number": teacher_phone}
+        print('WEBSOCKET EP: ', websocket_ep)
         call_data = {
             "to": [call_payload],
-            "from": {"type": "phone", "number": self.vonage_number},
-            "ncco": [{"action": "conversation", "name": self.conf_id}]
+            "from": {
+                "type": "phone", 
+                "number": self.vonage_number
+            },
+            "ncco": [
+                {
+                    "action": "conversation", 
+                    "name": self.conf_id
+                }, 
+                {
+                    "action": "connect",
+                    "from": "Vonage",
+                    "endpoint": [
+                        {
+                            "type": "websocket",
+                            "uri": websocket_ep,
+                            "content-type": "audio/l16;rate=16000",
+                        }
+                    ],
+                },
+            ]
         }
         vonage_resp = self.client.voice.create_call(call_data)
         print("VONAGE TEACHER RESPONSE", json.dumps(vonage_resp, indent=2))

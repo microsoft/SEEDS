@@ -1,6 +1,8 @@
 # services/conference_call.py
 
 from typing import List, Dict, Any
+
+from fastapi import WebSocket
 from models.conference_call_state import ConferenceCallState
 from models.participant import Participant, Role, CallStatus
 from models.audio_content_state import AudioContentState, ContentStatus
@@ -11,6 +13,8 @@ from services.smartphone_connection_manager import SmartphoneConnectionManager
 from datetime import datetime
 import asyncio
 
+from services.websocket_service import WebSocketService
+
 
 class ConferenceCall:
     def __init__(
@@ -19,12 +23,17 @@ class ConferenceCall:
         communication_api: CommunicationAPI,
         storage_manager: StorageManager,
         connection_manager: SmartphoneConnectionManager,
+        websocket_service: WebSocketService,
     ):
         self.conf_id = conf_id
         self.communication_api = communication_api
         self.storage_manager = storage_manager
         self.connection_manager = connection_manager
+        self.websocket_service = websocket_service
         self.state = ConferenceCallState()
+    
+    def set_websocket(self, websocket: WebSocket):
+        self.websocket_service.set_websocket(websocket)
     
     def set_participant_state(self, teacher_phone: str, student_phones: List[str]):
         teacher = Participant(
@@ -50,7 +59,8 @@ class ConferenceCall:
         # Start the call via communication API
         await self.communication_api.start_conf(
             self.state.teacher_phone_number, 
-            [student.phone_number for student in self.state.get_students()]
+            [student.phone_number for student in self.state.get_students()],
+            websocket_ep=self.websocket_service.websocket_server_ep
         )
         # TODO: Set CONNECTED CALL STATUS WHEN ATLEAST ONE OF THE PARTICIPANTS HAVE PICKED UP
         self.state.call_status = CallStatus.RINGING
@@ -188,7 +198,7 @@ class ConferenceCall:
     async def play_content(self, url: str):
         self.state.audio_content_state.current_url = url
         self.state.audio_content_state.status = ContentStatus.PLAYING
-        await self.communication_api.play_audio(self.state.conference_id, url)
+        await self.communication_api.play_audio(url)
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 
@@ -203,7 +213,7 @@ class ConferenceCall:
     async def pause_content(self):
         self.state.audio_content_state.status = ContentStatus.PAUSED
         self.state.audio_content_state.paused_at = datetime.utcnow()
-        await self.communication_api.pause_audio(self.state.conference_id)
+        await self.communication_api.pause_audio()
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 
@@ -248,9 +258,9 @@ class ConferenceCall:
         # Save state to storage
         await self.storage_manager.save_state(self.conf_id, self.state.model_dump(by_alias=True))
         # Notify clients
-        # TODO: Finish notifying smartphone app
-        await self.connection_manager.send_message_to_client(client=self.state.get_teacher(),
-                                                             message=self.state.model_dump())
+        # # TODO: Finish notifying smartphone app
+        # await self.connection_manager.send_message_to_client(client=self.state.get_teacher(),
+        #                                                      message=self.state.model_dump())
 
     async def handle_student_raised_hand(self, phone_number: str):
         if phone_number in self.state.participants and self.state.participants[phone_number].role == Role.STUDENT:

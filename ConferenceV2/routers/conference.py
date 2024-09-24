@@ -29,7 +29,7 @@ conference_manager = ConferenceCallManager(
 )
 
 @router.post("/create")
-async def start_conference(request: CreateConferenceRequest):
+async def create_conference(request: CreateConferenceRequest):
     conference_call_id = conference_manager.create_conference(request.teacher_phone, request.student_phones)
     return {
                 "status": "CREATED", 

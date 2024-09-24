@@ -9,7 +9,7 @@ router = APIRouter()
 # Import the conference_manager instance
 from routers.conference import conference_manager
 
-@router.post("/webhooks/event")
+@router.post("/event")
 async def event_webhook(request: Request, background_tasks: BackgroundTasks):
     event_data = await request.json()
     background_tasks.add_task(process_event, event_data)
@@ -23,7 +23,7 @@ async def process_event(event_data: Dict):
         return
     await conference.process_webhook_event(event_data)
 
-@router.post("/webhooks/conversation_events")
+@router.post("/conversation_events")
 async def conversation_events_webhook(request: Request, background_tasks: BackgroundTasks):
     event_data = await request.json()
     background_tasks.add_task(process_conversation_event, event_data)
@@ -36,7 +36,7 @@ async def process_conversation_event(event_data: Dict):
         return
     await conference.process_webhook_conversation_event(event_data)
 
-@router.post("/webhooks/input")
+@router.post("/input")
 async def input_webhook(request: Request, background_tasks: BackgroundTasks):
     event_data = await request.json()
     background_tasks.add_task(process_input_event, event_data)

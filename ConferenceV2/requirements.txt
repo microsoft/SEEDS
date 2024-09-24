@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 azure-messaging-webpubsubservice
+azure-messaging-webpubsubclient
 python-dotenv
 pydantic
 pydantic-settings
@@ -13,3 +14,6 @@ azure-identity
 pytest
 pytest-asyncio 
 httpx
+websockets 
+pydub
+ffmpeg-python
