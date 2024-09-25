@@ -3,6 +3,7 @@
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket
 from typing import List
+from services.conference_call import ConferenceCall
 from services.conference_call_manager import ConferenceCallManager
 from services.communication_api import CommunicationAPIType
 from services.storage_manager import InMemoryStorageManager
@@ -93,3 +94,12 @@ async def unmute_participant(conference_id: str, phone_number: str):
         raise HTTPException(status_code=404, detail="Conference not found")
     await conference.unmute_participant(phone_number)
     return {"message": "Participant unmuted successfully"}
+
+@router.put("/playaudio/{conference_id}")
+async def play_audio(conference_id: str):
+    conference = conference_manager.get_conference(conference_id)
+    if not conference:
+        raise HTTPException(status_code=404, detail="Conference not found")
+    await conference.play_content()
+    return {"message": "Playing audio"}
+

@@ -195,10 +195,11 @@ class ConferenceCall:
                                     )
         await self.update_state()
 
-    async def play_content(self, url: str):
+    async def play_content(self, url: str = "/home/kavyansh/SEEDS/ConferenceV2/audio_test.wav"):
         self.state.audio_content_state.current_url = url
         self.state.audio_content_state.status = ContentStatus.PLAYING
-        await self.communication_api.play_audio(url)
+        # await self.communication_api.play_audio(url)
+        await self.websocket_service.play(url)
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 

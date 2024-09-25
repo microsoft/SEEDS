@@ -35,7 +35,6 @@ class VonageAPI(CommunicationAPI):
         Starts a conference call between a teacher and students using Vonage API.
         """
         call_payload = {"type": "phone", "number": teacher_phone}
-        print('WEBSOCKET EP: ', websocket_ep)
         call_data = {
             "to": [call_payload],
             "from": {
@@ -44,20 +43,19 @@ class VonageAPI(CommunicationAPI):
             },
             "ncco": [
                 {
-                    "action": "conversation", 
-                    "name": self.conf_id
-                }, 
-                {
                     "action": "connect",
-                    "from": "Vonage",
                     "endpoint": [
                         {
                             "type": "websocket",
                             "uri": websocket_ep,
-                            "content-type": "audio/l16;rate=16000",
+                            "content-type": "audio/l16;rate=8000",
                         }
                     ],
                 },
+                {
+                    "action": "conversation", 
+                    "name": self.conf_id
+                }
             ]
         }
         vonage_resp = self.client.voice.create_call(call_data)

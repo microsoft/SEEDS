@@ -35,7 +35,7 @@ class ConferenceCallManager:
             communication_api=self.communication_api_factory.create(self.communication_api_type, conf_id),
             connection_manager=self.smartphone_connection_manager_factory.create(self.smartphone_connection_manager_type, conf_id),
             storage_manager=self.storage_manager,
-            websocket_service=WebSocketService(websocket_server_ep="wss://8225-2406-7400-63-6c4f-d134-68b6-4ac8-7359.ngrok-free.app" + f"/websocket/{conf_id}")
+            websocket_service=WebSocketService(websocket_server_ep="wss://f84c-2404-f801-8028-1-19c8-4493-772c-20ab.ngrok-free.app" + f"/websocket/{conf_id}")
         )
         conference_call.set_participant_state(teacher_phone, student_phones)
         self.conferences[conf_id] = conference_call
