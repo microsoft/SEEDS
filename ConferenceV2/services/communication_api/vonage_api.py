@@ -21,16 +21,18 @@ load_dotenv()
 
 class VonageAPI(CommunicationAPI):
 # class VonageAPI:
-    def __init__(self, application_id: str, private_key_path: str, vonage_number: str, conf_id: str):
+    def __init__(self, application_id: str, private_key_path: str, vonage_number: str, conf_id: str, ws_server_url: str = ""):
+        self.ws_server_url = ws_server_url
         self.application_id = application_id
         self.private_key_path = private_key_path
         self.vonage_number = vonage_number
         self.conf_id = conf_id
         self.client = vonage.Client(application_id=self.application_id, private_key=self.private_key_path)
         self.participant_info_map: Dict[str, VonageParticipantInfo] = {}
+        self.teacher_phone_number = None
     
     # TODO: Connect a websocket to the call
-    async def start_conf(self, teacher_phone: str, student_phones: List[str], websocket_ep: str):
+    async def start_conf(self, teacher_phone: str, student_phones: List[str]):
         """
         Starts a conference call between a teacher and students using Vonage API.
         """
@@ -43,16 +45,6 @@ class VonageAPI(CommunicationAPI):
             },
             "ncco": [
                 {
-                    "action": "connect",
-                    "endpoint": [
-                        {
-                            "type": "websocket",
-                            "uri": websocket_ep,
-                            "content-type": "audio/l16;rate=8000",
-                        }
-                    ],
-                },
-                {
                     "action": "conversation", 
                     "name": self.conf_id
                 }
@@ -60,10 +52,13 @@ class VonageAPI(CommunicationAPI):
         }
         vonage_resp = self.client.voice.create_call(call_data)
         print("VONAGE TEACHER RESPONSE", json.dumps(vonage_resp, indent=2))
+        self.teacher_phone_number = teacher_phone
         self.participant_info_map[teacher_phone] = VonageParticipantInfo(
                                                         phone_number=teacher_phone,
                                                         call_leg_id=vonage_resp['uuid'],
                                                         conv_id=vonage_resp['conversation_uuid'])
+        
+        asyncio.create_task(self.connect_websocket())
 
         for student_phone in student_phones:
             call_payload = {"type": "phone", "number": student_phone}
@@ -86,6 +81,47 @@ class VonageAPI(CommunicationAPI):
         """
         for participant in self.participant_info_map.values():
             self.client.voice.update_call(uuid=participant.call_leg_id, action="hangup")
+    
+    async def connect_websocket(self):
+        print("CONNECTING CALL TO WEBSOCKET IN BACKGROUND: ", self.ws_server_url)
+        teacher_info = self.participant_info_map[self.teacher_phone_number]
+        teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
+
+        # WAIT TILL TEACHER PHONE IS RINGING
+        while teacher_call['status'] == "started" or teacher_call['status'] == 'ringing':
+            teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
+            await asyncio.sleep(1)
+
+        # IF TEACHER PICKED UP THE CALL: CONNECT THE WEBSOCKET AND PUT BOTH OF THEM BACK INTO THE CONVERSATION
+        if teacher_call['status'] == 'answered':
+            self.client.voice.update_call(uuid=teacher_info.call_leg_id, 
+                                            params={
+                                                "action": "transfer",
+                                                "destination": {
+                                                    "type": "ncco",
+                                                    "ncco": [
+                                                        # {
+                                                        #     "action": "talk",
+                                                        #     "text": "Connecting websocket"
+                                                        # },
+                                                        {
+                                                            "action": "connect",
+                                                            "from": "SEEDS-ConfV2",
+                                                            "endpoint": [
+                                                                {
+                                                                    "type": "websocket",
+                                                                    "uri": self.ws_server_url,
+                                                                    "content-type": "audio/l16;rate=8000",
+                                                                }
+                                                            ],
+                                                        },
+                                                        {
+                                                            "action": "conversation", 
+                                                            "name": self.conf_id
+                                                        }
+                                                    ]
+                                                }
+                                            })
 
     # client.create_call()
     async def add_participant(self, phone_number: str):

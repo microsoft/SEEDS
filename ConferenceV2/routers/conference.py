@@ -29,6 +29,15 @@ conference_manager = ConferenceCallManager(
     storage_manager=InMemoryStorageManager(),
 )
 
+@router.post("/test-createstart")
+async def create_start_conference(request: CreateConferenceRequest):
+    conference_call_id = conference_manager.create_conference(request.teacher_phone, request.student_phones)
+    await conference_manager.start_conference_call(conference_call_id)
+    return {
+                "status": "STARTED", 
+                "id": conference_call_id
+            }
+
 @router.post("/create")
 async def create_conference(request: CreateConferenceRequest):
     conference_call_id = conference_manager.create_conference(request.teacher_phone, request.student_phones)
@@ -103,3 +112,10 @@ async def play_audio(conference_id: str):
     await conference.play_content()
     return {"message": "Playing audio"}
 
+@router.put("/pauseaudio/{conference_id}")
+async def play_audio(conference_id: str):
+    conference = conference_manager.get_conference(conference_id)
+    if not conference:
+        raise HTTPException(status_code=404, detail="Conference not found")
+    await conference.pause_content()
+    return {"message": "Playing audio"}

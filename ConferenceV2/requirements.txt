@@ -1,7 +1,5 @@
 fastapi
 uvicorn
-azure-messaging-webpubsubservice
-azure-messaging-webpubsubclient
 python-dotenv
 pydantic
 pydantic-settings
@@ -17,3 +15,4 @@ httpx
 websockets 
 pydub
 ffmpeg-python
+wave

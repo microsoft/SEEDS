@@ -1,7 +1,8 @@
 # routers/webhooks.py
 
 import json
-from fastapi import APIRouter, Request, BackgroundTasks, HTTPException
+from fastapi import APIRouter, Request, BackgroundTasks, HTTPException, Response
+from fastapi.responses import JSONResponse
 from services.conference_call_manager import ConferenceCallManager
 from typing import Dict
 
@@ -9,6 +10,10 @@ router = APIRouter()
 
 # Import the conference_manager instance
 from routers.conference import conference_manager
+
+from fastapi import APIRouter, Request, Response
+
+router = APIRouter()
 
 @router.post("/event")
 async def event_webhook(request: Request, background_tasks: BackgroundTasks):

@@ -1,15 +1,13 @@
 # services/conference_call_manager.py
-
-import os
 from typing import Dict, List
 import uuid
+import os
 
 from dotenv import load_dotenv
 from services.communication_api import CommunicationAPIFactory, CommunicationAPIType
 from services.storage_manager import StorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType, SmartphoneConnectionManagerFactory
 from services.conference_call import ConferenceCall
-from services.websocket_service import WebSocketService
 
 load_dotenv()
 
@@ -27,15 +25,18 @@ class ConferenceCallManager:
         self.communication_api_factory = CommunicationAPIFactory()
         self.smartphone_connection_manager_factory = SmartphoneConnectionManagerFactory()
         self.conferences: Dict[str, ConferenceCall] = {}
+        self.ws_base_url = os.environ.get("WS_SERVER_EP", "")
 
     def create_conference(self, teacher_phone: str, student_phones: List[str]) -> ConferenceCall:
         conf_id = str(uuid.uuid4())
         conference_call = ConferenceCall(
             conf_id=conf_id,
-            communication_api=self.communication_api_factory.create(self.communication_api_type, conf_id),
-            connection_manager=self.smartphone_connection_manager_factory.create(self.smartphone_connection_manager_type, conf_id),
-            storage_manager=self.storage_manager,
-            websocket_service=WebSocketService(websocket_server_ep="wss://f84c-2404-f801-8028-1-19c8-4493-772c-20ab.ngrok-free.app" + f"/websocket/{conf_id}")
+            communication_api=self.communication_api_factory.create(self.communication_api_type, 
+                                                                    conf_id, 
+                                                                    ws_url=f"{self.ws_base_url}/{conf_id}"),
+            connection_manager=self.smartphone_connection_manager_factory.create(self.smartphone_connection_manager_type, 
+                                                                                 conf_id),
+            storage_manager=self.storage_manager
         )
         conference_call.set_participant_state(teacher_phone, student_phones)
         self.conferences[conf_id] = conference_call

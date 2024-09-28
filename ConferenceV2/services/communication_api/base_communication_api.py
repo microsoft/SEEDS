@@ -8,12 +8,16 @@ from models.webhook_event import WebHookEvent
 class CommunicationAPI(ABC):
     # RETURN CONF ID
     @abstractmethod
-    async def start_conf(self, teacher_phone: str, student_phones: List[str], websocket_ep: str) -> str:
+    async def start_conf(self, teacher_phone: str, student_phones: List[str]) -> str:
         pass
 
     # ENDS A CONF
     @abstractmethod
     async def end_conf(self):
+        pass
+
+    @abstractmethod
+    def connect_websocket(self):
         pass
 
     # ADD PARTICIPANT TO THE CONF

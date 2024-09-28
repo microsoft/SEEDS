@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 from fastapi import WebSocket
 from models.conference_call_state import ConferenceCallState
 from models.participant import Participant, Role, CallStatus
-from models.audio_content_state import AudioContentState, ContentStatus
+from models.audio_content_state import ContentStatus
 from models.action_history import ActionHistory, ActionType
 from services.communication_api import CommunicationAPI
 from services.storage_manager import StorageManager 
@@ -13,8 +13,7 @@ from services.smartphone_connection_manager import SmartphoneConnectionManager
 from datetime import datetime
 import asyncio
 
-from services.websocket_service import WebSocketService
-
+from services.vanilla_websocket_service import VanillaWebSocketService
 
 class ConferenceCall:
     def __init__(
@@ -23,17 +22,18 @@ class ConferenceCall:
         communication_api: CommunicationAPI,
         storage_manager: StorageManager,
         connection_manager: SmartphoneConnectionManager,
-        websocket_service: WebSocketService,
     ):
         self.conf_id = conf_id
         self.communication_api = communication_api
         self.storage_manager = storage_manager
         self.connection_manager = connection_manager
-        self.websocket_service = websocket_service
+        self.websocket_service = VanillaWebSocketService(
+                on_disconnect_callback=self.__on_websocket_disconnect_callback,
+            )
         self.state = ConferenceCallState()
     
-    def set_websocket(self, websocket: WebSocket):
-        self.websocket_service.set_websocket(websocket)
+    async def __on_websocket_disconnect_callback(self):
+        await self.communication_api.connect_websocket()
     
     def set_participant_state(self, teacher_phone: str, student_phones: List[str]):
         teacher = Participant(
@@ -54,13 +54,15 @@ class ConferenceCall:
                 call_status=CallStatus.DISCONNECTED,
             )
             self.state.participants[phone] = student
+    
+    def set_websocket(self, websocket: WebSocket):
+        self.websocket_service.set_websocket(websocket)
 
     async def start_conference(self):
         # Start the call via communication API
         await self.communication_api.start_conf(
             self.state.teacher_phone_number, 
-            [student.phone_number for student in self.state.get_students()],
-            websocket_ep=self.websocket_service.websocket_server_ep
+            [student.phone_number for student in self.state.get_students()]
         )
         # TODO: Set CONNECTED CALL STATUS WHEN ATLEAST ONE OF THE PARTICIPANTS HAVE PICKED UP
         self.state.call_status = CallStatus.RINGING
@@ -213,8 +215,8 @@ class ConferenceCall:
 
     async def pause_content(self):
         self.state.audio_content_state.status = ContentStatus.PAUSED
-        self.state.audio_content_state.paused_at = datetime.utcnow()
-        await self.communication_api.pause_audio()
+        self.state.audio_content_state.paused_at =  datetime.now().isoformat()
+        await self.websocket_service.pause()
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 
