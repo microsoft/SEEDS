@@ -10,7 +10,6 @@ from models.participant import Participant, Role
 
 
 class ConferenceCallState(BaseModel):
-    call_status: str = None
     teacher_phone_number: str = None
     participants: Dict[str, Participant] = {}
     audio_content_state: AudioContentState = AudioContentState()

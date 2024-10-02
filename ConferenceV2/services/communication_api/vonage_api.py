@@ -1,10 +1,11 @@
 import asyncio
+from enum import Enum
 import os
 import time
 import uuid
 from models.webhook_event import WebHookEvent
 from services.communication_api import CommunicationAPI
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 import aiohttp
 import json
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ class VonageAPI(CommunicationAPI):
 # class VonageAPI:
     def __init__(self, application_id: str, private_key_path: str, vonage_number: str, conf_id: str, ws_server_url: str = ""):
         self.ws_server_url = ws_server_url
+        self.events_webhook_url = os.environ.get("EVENTS_WEBHOOK_EP", "")
         self.application_id = application_id
         self.private_key_path = private_key_path
         self.vonage_number = vonage_number
@@ -43,6 +45,9 @@ class VonageAPI(CommunicationAPI):
                 "type": "phone", 
                 "number": self.vonage_number
             },
+            "event_url": [
+                self.events_webhook_url + f"/{self.conf_id}"
+            ],
             "ncco": [
                 {
                     "action": "conversation", 
@@ -65,6 +70,9 @@ class VonageAPI(CommunicationAPI):
             call_data = {
                 "to": [call_payload],
                 "from": {"type": "phone", "number": self.vonage_number},
+                "event_url": [
+                    self.events_webhook_url + f"/{self.conf_id}"
+                ],
                 "ncco": [{"action": "conversation", "name": self.conf_id}]
             }
             vonage_resp = self.client.voice.create_call(call_data)
@@ -132,6 +140,9 @@ class VonageAPI(CommunicationAPI):
         call_data = {
             "to": [call_payload],
             "from": {"type": "phone", "number": self.vonage_number},
+            "event_url": [
+                self.events_webhook_url + f"/{self.conf_id}"
+            ],
             "ncco": [{"action": "conversation", "name": self.conf_id}]
         }
         vonage_resp = self.client.voice.create_call(call_data)
@@ -167,59 +178,3 @@ class VonageAPI(CommunicationAPI):
         if phone_number in self.participant_info_map:
             participant_info = self.participant_info_map[phone_number]
             self.client.voice.update_call(uuid=participant_info.call_leg_id, action="unmute")
-
-    # TODO: Start streaming audio bytes to the call websocket
-    async def play_audio(self, conference_id: str, url: str):
-        """
-        Plays an audio file into the conference.
-        """
-        pass
-        # api_url = f"{self.base_url}/calls/{conference_id}/stream"
-        # data = {
-        #     "stream_url": [url]
-        # }
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.put(api_url, headers=self.headers, json=data) as response:
-        #         if response.status == 200:
-        #             return await response.json()
-        #         else:
-        #             raise Exception(f"Error playing audio: {response.status}, {await response.text()}")
-
-    # TODO: Stop streaming audio bytes to the call websocket
-    async def pause_audio(self, conference_id: str):
-        """
-        Pauses the currently playing audio.
-        """
-        pass
-        # api_url = f"{self.base_url}/calls/{conference_id}/stream"
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.delete(api_url, headers=self.headers) as response:
-        #         if response.status == 200:
-        #             return await response.json()
-        #         else:
-                    # raise Exception(f"Error pausing audio: {response.status}, {await response.text()}")
-
-    def parse_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
-        # Parse the incoming event webhook (e.g., for call status updates)
-        pass
-
-    def parse_conversation_event_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
-        # Parse conversation-related webhook events
-        pass
-
-    def parse_input_webhook(self, request_data: dict) -> Optional[WebHookEvent]:
-        # Parse input-related webhook events (e.g., DTMF input)
-        pass
-
-
-# # Run the async function
-# if __name__ == "__main__":
-#     async def execute():
-#         instance = VonageAPI(application_id=os.environ.get("VONAGE_APPLICATION_ID"), 
-#                             private_key_path=os.environ.get("VONAGE_PRIVATE_KEY_PATH"))
-#         await instance.start_conf("917999435373", ["919606612444"], str(uuid.uuid4()))
-#         time.sleep(10)
-#         print("ENDING CALLS NOW...")
-#         await instance.end_conf()
-
-#     asyncio.run(execute())

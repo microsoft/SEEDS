@@ -1,4 +1,5 @@
 # services/conference_call_manager.py
+import asyncio
 from typing import Dict, List
 import uuid
 import os
@@ -26,6 +27,7 @@ class ConferenceCallManager:
         self.smartphone_connection_manager_factory = SmartphoneConnectionManagerFactory()
         self.conferences: Dict[str, ConferenceCall] = {}
         self.ws_base_url = os.environ.get("WS_SERVER_EP", "")
+        print('WEBSOCKET BASE URL: ', self.ws_base_url)
 
     def create_conference(self, teacher_phone: str, student_phones: List[str]) -> ConferenceCall:
         conf_id = str(uuid.uuid4())
@@ -39,6 +41,7 @@ class ConferenceCallManager:
             storage_manager=self.storage_manager
         )
         conference_call.set_participant_state(teacher_phone, student_phones)
+        conference_call.start_processing_conf_events_from_queue()
         self.conferences[conf_id] = conference_call
         return conf_id
        
@@ -59,3 +62,10 @@ class ConferenceCallManager:
 
     def get_conference(self, conference_id: str) -> ConferenceCall | None:
         return self.conferences.get(conference_id, None)
+
+    def get_conference_from_phone_number(self, phone_number: str) -> ConferenceCall | None:
+        for conf in self.conferences.values():
+            participant_phone_numbers = conf.state.participants.keys()
+            if phone_number in participant_phone_numbers:
+                return conf
+        return None

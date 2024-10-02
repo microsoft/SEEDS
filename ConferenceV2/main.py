@@ -5,7 +5,7 @@ import socketio
 from routers import conference, webhooks, websocket
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Conference Call System")
+app = FastAPI(title="SEEDS Conference Call System")
 
 app.add_middleware(
     CORSMiddleware,

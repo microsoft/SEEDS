@@ -1,9 +1,11 @@
 # services/conference_call.py
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 
 from fastapi import WebSocket
 from models.conference_call_state import ConferenceCallState
+from models.confevents.call_status_change_event import CallStatusChangeEvent
+from models.confevents.dtmf_input_event import DTMFInputEvent
 from models.participant import Participant, Role, CallStatus
 from models.audio_content_state import ContentStatus
 from models.action_history import ActionHistory, ActionType
@@ -31,11 +33,17 @@ class ConferenceCall:
                 on_disconnect_callback=self.__on_websocket_disconnect_callback,
             )
         self.state = ConferenceCallState()
+        self.event_queue = asyncio.Queue()
+        self.event_queue_processing_task = None
     
-    async def __on_websocket_disconnect_callback(self):
-        await self.communication_api.connect_websocket()
+    async def queue_event(self, event: Union[CallStatusChangeEvent, DTMFInputEvent]):
+        await self.event_queue.put(event)
+    
+    def start_processing_conf_events_from_queue(self):
+        self.event_queue_processing_task = asyncio.create_task(self.__process_conf_events_queue())
     
     def set_participant_state(self, teacher_phone: str, student_phones: List[str]):
+        self.state.participants = {}
         teacher = Participant(
             name="Teacher",
             phone_number=teacher_phone,
@@ -65,7 +73,6 @@ class ConferenceCall:
             [student.phone_number for student in self.state.get_students()]
         )
         # TODO: Set CONNECTED CALL STATUS WHEN ATLEAST ONE OF THE PARTICIPANTS HAVE PICKED UP
-        self.state.call_status = CallStatus.RINGING
         self.state.action_history.append(ActionHistory(
                                                     timestamp=datetime.now().isoformat(), 
                                                     action_type=ActionType.CONFERENCE_START, 
@@ -246,7 +253,6 @@ class ConferenceCall:
 
     async def end_conference(self):
         await self.communication_api.end_conf()
-        self.call_status = CallStatus.DISCONNECTED
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.CONFERENCE_END, 
@@ -256,39 +262,55 @@ class ConferenceCall:
                                                  )
                                     )
         await self.update_state()
+        self.event_queue_processing_task.cancel()
     
     async def update_state(self):
         # Save state to storage
         await self.storage_manager.save_state(self.conf_id, self.state.model_dump(by_alias=True))
+        print("UPDATED STATE", self.state)
         # Notify clients
         # # TODO: Finish notifying smartphone app
         # await self.connection_manager.send_message_to_client(client=self.state.get_teacher(),
         #                                                      message=self.state.model_dump())
+    
+    async def __on_websocket_disconnect_callback(self):
+        await self.communication_api.connect_websocket()
+    
+    # Dequeue function: runs continuously to process tasks
+    async def __process_conf_events_queue(self):
+        while True:
+            event = await self.event_queue.get()
+            if isinstance(event, CallStatusChangeEvent):
+                await self.__handle_call_status_change_event(event)
+            elif isinstance(event, DTMFInputEvent):
+                await self.__handle_dtmf_input_event(event)
+            else:
+                print("Error: Not a known type of conf event")
 
-    async def handle_student_raised_hand(self, phone_number: str):
-        if phone_number in self.state.participants and self.state.participants[phone_number].role == Role.STUDENT:
-            self.state.participants[phone_number].is_raised = not self.state.participants[phone_number].is_raised
-            self.state.action_history.append(ActionHistory(
-                                                timestamp= datetime.now().isoformat(), 
-                                                action_type=ActionType.STUDENT_RAISE_HAND_STATE_CHANGE, 
-                                                metadata={
-                                                    "phone_number": phone_number,
-                                                    "raised_hand": self.state.participants[phone_number].is_raised
-                                                }, 
-                                                owner=phone_number
+            await asyncio.sleep(0.2)
+
+    async def __handle_dtmf_input_event(self, dtmf_input_event: DTMFInputEvent):
+        if dtmf_input_event.phone_number in self.state.participants:
+            participant = self.state.participants[dtmf_input_event.phone_number]
+
+            # FLIP RAISE HAND STATE : PHONE NUMBER IS STUDENT AND INPUT IS 0
+            if participant.role == Role.STUDENT and dtmf_input_event.digit == "0":
+                print("HANDLING DTMF INPUT EVENT", dtmf_input_event)
+                participant.is_raised = not participant.is_raised
+                self.state.action_history.append(ActionHistory(
+                                                    timestamp= datetime.now().isoformat(), 
+                                                    action_type=ActionType.STUDENT_RAISE_HAND_STATE_CHANGE, 
+                                                    metadata={
+                                                        "phone_number": participant.phone_number,
+                                                        "raised_hand": participant.is_raised
+                                                    }, 
+                                                    owner=participant.phone_number
                                                 )
                                 )
-            await self.update_state()
+                await self.update_state()
     
-    # INPUTS FROM WEBHOOK
-    async def process_webhook_event(self, payload: dict):
-        event = self.communication_api.parse_event_webhook(payload)
-        # TODO: PROCESS EVENT to UPDATE STATES
-
-    async def process_webhook_conversation_event(self, payload: dict):
-        event = self.communication_api.parse_conversation_event_webhook(payload)
-        # TODO: PROCESS EVENT to UPDATE STATES
-
-    async def process_webhook_input_event(self, payload: dict):
-        event = self.communication_api.parse_input_webhook(payload)
-        # TODO: PROCESS EVENT to UPDATE STATES
+    async def __handle_call_status_change_event(self, call_status_change_event: CallStatusChangeEvent):
+        if call_status_change_event.phone_number in self.state.participants:
+            participant: Participant = self.state.participants[call_status_change_event.phone_number]
+            participant.call_status = call_status_change_event.status
+            await self.update_state()

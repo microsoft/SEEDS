@@ -4,17 +4,15 @@ from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
 
-
 class Role(str, Enum):
     TEACHER = "Teacher"
     STUDENT = "Student"
 
 
 class CallStatus(str, Enum):
-    RINGING = "Ringing"
-    CONNECTED = "Connected"
-    DISCONNECTED = "Disconnected"
-    CONNECTING = "Connecting"
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"
+    CONNECTING = "connecting"
 
 
 class Participant(BaseModel):
