@@ -157,8 +157,13 @@ class ConferenceCall:
     async def unmute_participant(self, phone_number: str, record_history: bool = True):
         # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already unmuted
         if phone_number in self.state.participants:
+            participant = self.state.participants[phone_number]
             await self.communication_api.unmute_participant(phone_number)
-            self.state.participants[phone_number].is_muted = False
+            participant.is_muted = False
+            # SET RAISED HAND TO FALSE
+            participant.is_raised = False
+            participant.raised_at = -1
+            
             if record_history:
                 self.state.action_history.append(ActionHistory(
                                                         timestamp= datetime.now().isoformat(), 
@@ -293,16 +298,18 @@ class ConferenceCall:
         if dtmf_input_event.phone_number in self.state.participants:
             participant = self.state.participants[dtmf_input_event.phone_number]
 
-            # FLIP RAISE HAND STATE : PHONE NUMBER IS STUDENT AND INPUT IS 0
-            if participant.role == Role.STUDENT and dtmf_input_event.digit == "0":
+            # FLIP RAISE HAND STATE : PHONE NUMBER IS STUDENT AND INPUT IS 0 AND STUDENT HAND IS NOT ALREADY RAISED
+            if participant.role == Role.STUDENT and dtmf_input_event.digit == "0" and not participant.is_raised:
                 print("HANDLING DTMF INPUT EVENT", dtmf_input_event)
-                participant.is_raised = not participant.is_raised
+                participant.is_raised = True
+                participant.raised_at = int(datetime.now().timestamp())
                 self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.STUDENT_RAISE_HAND_STATE_CHANGE, 
                                                     metadata={
                                                         "phone_number": participant.phone_number,
-                                                        "raised_hand": participant.is_raised
+                                                        "raised_hand": participant.is_raised,
+                                                        "raised_at": participant.raised_at
                                                     }, 
                                                     owner=participant.phone_number
                                                 )
