@@ -5,7 +5,7 @@ from datetime import datetime
 import asyncio
 
 from fastapi import WebSocket
-from services.conference_call_state import ConferenceCallState
+from models.conference_call_state import ConferenceCallState
 from services.confevents.base_event import ConferenceEvent
 from models.participant import Participant, Role, CallStatus
 from models.action_history import ActionHistory, ActionType
