@@ -163,7 +163,7 @@ class ConferenceCall:
             # SET RAISED HAND TO FALSE
             participant.is_raised = False
             participant.raised_at = -1
-            
+
             if record_history:
                 self.state.action_history.append(ActionHistory(
                                                         timestamp= datetime.now().isoformat(), 
@@ -258,6 +258,7 @@ class ConferenceCall:
 
     async def end_conference(self):
         await self.communication_api.end_conf()
+        self.state.is_ended = True
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.CONFERENCE_END, 
