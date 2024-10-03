@@ -3,8 +3,9 @@ from typing import Any
 
 from pydantic import BaseModel, Field, validator
 
-from models.confevents.call_status_change_event import CallStatusChangeEvent
+from services.confevents.call_status_change_event import CallStatusChangeEvent
 from models.participant import CallStatus
+from services.conference_call import ConferenceCall
 
 
 class VonageCallStatus(str, Enum):
@@ -28,7 +29,7 @@ class VonageCallStatusChangeEvent(BaseModel):
     class Config:
         populate_by_name = True  # Corrected from 'allow_population_by_field_name'
     
-    def get_conf_call_status_change_event(self) -> CallStatusChangeEvent:
+    def get_conf_call_status_change_event(self, conf_call: ConferenceCall) -> CallStatusChangeEvent:
         status: CallStatus = None
         if self.status == VonageCallStatus.STARTED or self.status == VonageCallStatus.RINGING:
             status = CallStatus.CONNECTING
@@ -39,5 +40,6 @@ class VonageCallStatusChangeEvent(BaseModel):
 
         return CallStatusChangeEvent(
             phone_number=self.phone_number,
-            status=status
+            status=status,
+            conf_call=conf_call
         )

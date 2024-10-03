@@ -1,21 +1,19 @@
 # services/conference_call.py
 
-from typing import List, Dict, Any, Union
+from typing import List
+from datetime import datetime
+import asyncio
 
 from fastapi import WebSocket
-from models.conference_call_state import ConferenceCallState
-from models.confevents.call_status_change_event import CallStatusChangeEvent
-from models.confevents.dtmf_input_event import DTMFInputEvent
+from services.conference_call_state import ConferenceCallState
+from services.confevents.base_event import ConferenceEvent
 from models.participant import Participant, Role, CallStatus
-from models.audio_content_state import ContentStatus
 from models.action_history import ActionHistory, ActionType
 from services.communication_api import CommunicationAPI
 from services.storage_manager import StorageManager 
 from services.smartphone_connection_manager import SmartphoneConnectionManager
-from datetime import datetime
-import asyncio
-
 from services.vanilla_websocket_service import VanillaWebSocketService
+
 
 class ConferenceCall:
     def __init__(
@@ -36,7 +34,7 @@ class ConferenceCall:
         self.event_queue = asyncio.Queue()
         self.event_queue_processing_task = None
     
-    async def queue_event(self, event: Union[CallStatusChangeEvent, DTMFInputEvent]):
+    async def queue_event(self, event: ConferenceEvent):
         await self.event_queue.put(event)
     
     def start_processing_conf_events_from_queue(self):
@@ -97,165 +95,7 @@ class ConferenceCall:
         if teacher:
             return await self.connection_manager.disconnect(client=teacher)
         raise ValueError("No teacher participant in conf call " + self.conf_id)
-    
-    async def add_participant(self, phone_number: str):
-        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already connected
-        participant = Participant(
-            name="Student",
-            phone_number=phone_number,
-            role=Role.STUDENT,
-            call_status=CallStatus.CONNECTING,
-        )
-        await self.communication_api.add_participant(phone_number)
-
-        self.state.participants[phone_number] = participant
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_ADD_STUDENT, 
-                                                    metadata={
-                                                        "phone_number": phone_number
-                                                    }, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-
-    async def remove_participant(self, phone_number: str):
-        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already removed
-        if phone_number in self.state.participants:
-            await self.communication_api.remove_participant(phone_number)
-            del self.state.participants[phone_number]
-            self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_REMOVE_STUDENT, 
-                                                    metadata={
-                                                        "phone_number": phone_number
-                                                    }, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-            await self.update_state()
-
-    async def mute_participant(self, phone_number: str, record_history: bool = True):
-        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already muted
-        if phone_number in self.state.participants:
-            await self.communication_api.mute_participant(phone_number)
-            self.state.participants[phone_number].is_muted = True
-            if record_history: 
-                self.state.action_history.append(ActionHistory(
-                                                        timestamp= datetime.now().isoformat(), 
-                                                        action_type=ActionType.TEACHER_MUTE_UNMUTE_STUDENT, 
-                                                        metadata={
-                                                            "phone_number": phone_number,
-                                                            "is_muted": True
-                                                        }, 
-                                                        owner=self.state.teacher_phone_number
-                                                    )
-                                        )
-            await self.update_state()
-
-    async def unmute_participant(self, phone_number: str, record_history: bool = True):
-        # TODO: Speak out announcement messages in conversation through comm API, check if the participant is already unmuted
-        if phone_number in self.state.participants:
-            participant = self.state.participants[phone_number]
-            await self.communication_api.unmute_participant(phone_number)
-            participant.is_muted = False
-            # SET RAISED HAND TO FALSE
-            participant.is_raised = False
-            participant.raised_at = -1
-
-            if record_history:
-                self.state.action_history.append(ActionHistory(
-                                                        timestamp= datetime.now().isoformat(), 
-                                                        action_type=ActionType.TEACHER_MUTE_UNMUTE_STUDENT, 
-                                                        metadata={
-                                                            "phone_number": phone_number,
-                                                            "is_muted": False
-                                                        }, 
-                                                        owner=self.state.teacher_phone_number
-                                                    )
-                                        )
-            await self.update_state()
-
-    async def mute_all(self):
-        # TODO: Speak out announcement messages in conversation through comm API
-        tasks = []
-        for participant in self.state.participants.values():
-            if participant.role == Role.STUDENT and not participant.is_muted:
-                tasks.append(self.mute_participant(participant.phone_number, record_history=False))
-        await asyncio.gather(*tasks)
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_MUTE_ALL, 
-                                                    metadata={}, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-
-    async def unmute_all(self):
-        # TODO: Speak out announcement messages in conversation through comm API
-        tasks = []
-        for participant in self.state.participants.values():
-            if participant.role == Role.STUDENT and participant.is_muted:
-                tasks.append(self.unmute_participant(participant.phone_number, record_history=False))
-        await asyncio.gather(*tasks)
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_UNMUTE_ALL, 
-                                                    metadata={}, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-
-    async def play_content(self, url: str = "/home/kavyansh/SEEDS/ConferenceV2/audio_test.wav"):
-        self.state.audio_content_state.current_url = url
-        self.state.audio_content_state.status = ContentStatus.PLAYING
-        # await self.communication_api.play_audio(url)
-        await self.websocket_service.play(url)
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 
-                                                    metadata={
-                                                        "playback_status": self.state.audio_content_state.model_dump()
-                                                    }, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-
-    async def pause_content(self):
-        self.state.audio_content_state.status = ContentStatus.PAUSED
-        self.state.audio_content_state.paused_at =  datetime.now().isoformat()
-        await self.websocket_service.pause()
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.TEACHER_AUDIO_PLAYBACK_STATUS_CHANGE, 
-                                                    metadata={
-                                                        "playback_status": self.state.audio_content_state.model_dump()
-                                                    }, 
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-    
-    async def update_participant_call_status(self, phone_number: str, call_status: str):
-        # TODO: Speak out announcement messages in conversation through comm API
-        if phone_number in self.state.participants:
-            self.state.participants[phone_number].call_status = call_status
-            self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.CONFERENCE_CALLSTATUS_CHANGE, 
-                                                    metadata={
-                                                        "phone_number": phone_number,
-                                                        "call_status": call_status
-                                                    }, 
-                                                    owner=phone_number
-                                                 )
-                                    )
-            await self.update_state()
-
+      
     async def end_conference(self):
         await self.communication_api.end_conf()
         self.state.is_ended = True
@@ -271,6 +111,7 @@ class ConferenceCall:
         self.event_queue_processing_task.cancel()
     
     async def update_state(self):
+        print("INSIDE UPDATE STATE")
         # Save state to storage
         await self.storage_manager.save_state(self.conf_id, self.state.model_dump(by_alias=True))
         print("UPDATED STATE", self.state)
@@ -285,40 +126,9 @@ class ConferenceCall:
     # Dequeue function: runs continuously to process tasks
     async def __process_conf_events_queue(self):
         while True:
-            event = await self.event_queue.get()
-            if isinstance(event, CallStatusChangeEvent):
-                await self.__handle_call_status_change_event(event)
-            elif isinstance(event, DTMFInputEvent):
-                await self.__handle_dtmf_input_event(event)
-            else:
-                print("Error: Not a known type of conf event")
-
+            event: ConferenceEvent = await self.event_queue.get()
+            await event.execute_event()
             await asyncio.sleep(0.2)
-
-    async def __handle_dtmf_input_event(self, dtmf_input_event: DTMFInputEvent):
-        if dtmf_input_event.phone_number in self.state.participants:
-            participant = self.state.participants[dtmf_input_event.phone_number]
-
-            # FLIP RAISE HAND STATE : PHONE NUMBER IS STUDENT AND INPUT IS 0 AND STUDENT HAND IS NOT ALREADY RAISED
-            if participant.role == Role.STUDENT and dtmf_input_event.digit == "0" and not participant.is_raised:
-                print("HANDLING DTMF INPUT EVENT", dtmf_input_event)
-                participant.is_raised = True
-                participant.raised_at = int(datetime.now().timestamp())
-                self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.STUDENT_RAISE_HAND_STATE_CHANGE, 
-                                                    metadata={
-                                                        "phone_number": participant.phone_number,
-                                                        "raised_hand": participant.is_raised,
-                                                        "raised_at": participant.raised_at
-                                                    }, 
-                                                    owner=participant.phone_number
-                                                )
-                                )
-                await self.update_state()
     
-    async def __handle_call_status_change_event(self, call_status_change_event: CallStatusChangeEvent):
-        if call_status_change_event.phone_number in self.state.participants:
-            participant: Participant = self.state.participants[call_status_change_event.phone_number]
-            participant.call_status = call_status_change_event.status
-            await self.update_state()
+
+        

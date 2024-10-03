@@ -3,7 +3,8 @@ from enum import Enum
 from typing import Any
 from pydantic import BaseModel, Field, validator
 
-from models.confevents.dtmf_input_event import DTMFInputEvent
+from services.confevents.dtmf_input_event import DTMFInputEvent
+from services.conference_call import ConferenceCall
 
 class ChannelNumber(BaseModel):
     type: str
@@ -38,8 +39,9 @@ class VonageDTMFInputEvent(BaseModel):
             return VonageRTCEventType.UNKNOWN
         return VonageRTCEventType(value)
 
-    def get_conf_dtmf_input_event(self) -> DTMFInputEvent:
+    def get_conf_dtmf_input_event(self, conf_call: ConferenceCall) -> DTMFInputEvent:
         return DTMFInputEvent(
             phone_number=self.body.channel.to.number,
-            digit=self.body.digit
+            digit=self.body.digit,
+            conf_call=conf_call
         )
