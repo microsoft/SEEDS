@@ -10,12 +10,3 @@ load_dotenv()
 class CreateConferenceRequest(BaseModel):
     teacher_phone: str = os.environ.get("MY_NUMBER", "")
     student_phones: List[str] = [os.environ.get("FEATURE_PH", "")]
-
-class StartConferenceRequest(BaseModel):
-    conference_id: str
-
-class EndConferenceRequest(BaseModel):
-    conference_id: str
-
-class SmartphoneConnectRequest(BaseModel):
-    conference_id: str

@@ -8,7 +8,7 @@ from services.conference_call_manager import ConferenceCallManager
 from services.communication_api import CommunicationAPIType
 from services.storage_manager import InMemoryStorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType
-from schemas.conference_schemas import CreateConferenceRequest, EndConferenceRequest, SmartphoneConnectRequest, StartConferenceRequest
+from schemas.conference_schemas import CreateConferenceRequest
 from pydantic_settings import BaseSettings
 
 router = APIRouter()
@@ -46,33 +46,33 @@ async def create_conference(request: CreateConferenceRequest):
                 "id": conference_call_id
             }
 
-@router.post("/start")
-async def start_conference(request: StartConferenceRequest):
-    await conference_manager.start_conference_call(request.conference_id)
+@router.post("/start/{conference_id}")
+async def start_conference(conference_id: str):
+    await conference_manager.start_conference_call(conference_id)
     return {
                 "status": "STARTED", 
-                "id": request.conference_id
+                "id": conference_id
             }
 
-@router.post("/smartphoneconnect")
-async def connect_smartphone(request: SmartphoneConnectRequest):
-    conference = conference_manager.get_conference(request.conference_id)
+@router.post("/teacherappconnect/{conference_id}")
+async def connect_smartphone(conference_id: str):
+    conference = conference_manager.get_conference(conference_id)
     return await conference.connect_smartphone()
 
-@router.post("/smartphonedisconnect")
-async def disconnect_smartphone(request: SmartphoneConnectRequest):
-    conference = conference_manager.get_conference(request.conference_id)
+@router.post("/teacherappdisconnect/{conference_id}")
+async def disconnect_smartphone(conference_id: str):
+    conference = conference_manager.get_conference(conference_id)
     return await conference.disconnect_smartphone()
 
-@router.put("/end")
-async def end_conference(request: EndConferenceRequest):
-    conference_call = await conference_manager.end_conference(request.conference_id)
+@router.put("/end/{conference_id}")
+async def end_conference(conference_id: str):
+    conference_call = await conference_manager.end_conference(conference_id)
     return {
                 "status": "END", 
                 "conf": conference_call
             }
 
-@router.put("/addparticipant")
+@router.put("/addparticipant/{conference_id}")
 async def add_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
@@ -80,7 +80,7 @@ async def add_participant(conference_id: str, phone_number: str):
     await conference.add_participant(phone_number)
     return {"message": "Participant added successfully"}
 
-@router.put("/removeparticipant")
+@router.put("/removeparticipant/{conference_id}")
 async def add_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
@@ -88,7 +88,7 @@ async def add_participant(conference_id: str, phone_number: str):
     await conference.remove_participant(phone_number)
     return {"message": "Participant removed successfully"}
 
-@router.put("/muteparticipant")
+@router.put("/muteparticipant/{conference_id}")
 async def mute_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
@@ -96,7 +96,7 @@ async def mute_participant(conference_id: str, phone_number: str):
     await conference.mute_participant(phone_number)
     return {"message": "Participant muted successfully"}
 
-@router.put("/unmuteparticipant")
+@router.put("/unmuteparticipant/{conference_id}")
 async def unmute_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
