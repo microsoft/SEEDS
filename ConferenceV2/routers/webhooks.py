@@ -45,7 +45,7 @@ async def process_conversation_event(event_data: Dict):
     try:
         vonage_dtmf_input_event = VonageDTMFInputEvent(**event_data)
         if vonage_dtmf_input_event.type == VonageRTCEventType.DTMF:
-            conf = conference_manager.get_conference_from_phone_number(vonage_dtmf_input_event.body.channel.to.number)
+            conf = conference_manager.get_conference_from_phone_number(vonage_dtmf_input_event.get_user_phone_number())
             if conf:
                 dtmf_input_event = vonage_dtmf_input_event.get_conf_dtmf_input_event(conf)
                 print(json.dumps(event_data, indent=2))

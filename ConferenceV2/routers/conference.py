@@ -6,6 +6,12 @@ from typing import List
 from services.conference_call import ConferenceCall
 from services.conference_call_manager import ConferenceCallManager
 from services.communication_api import CommunicationAPIType
+from services.confevents.add_participant_event import AddParticipantEvent
+from services.confevents.mute_participant_event import MuteParticipantEvent
+from services.confevents.pause_content_event import PauseContentEvent
+from services.confevents.play_content_event import PlayContentEvent
+from services.confevents.remove_participant_event import RemoveParticipantEvent
+from services.confevents.unmute_participant_event import UnmuteParticipantEvent
 from services.storage_manager import InMemoryStorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType
 from schemas.conference_schemas import CreateConferenceRequest
@@ -69,7 +75,7 @@ async def end_conference(conference_id: str):
     conference_call = await conference_manager.end_conference(conference_id)
     return {
                 "status": "END", 
-                "conf": conference_call
+                "conf": conference_call.conf_id
             }
 
 @router.put("/addparticipant/{conference_id}")
@@ -77,45 +83,45 @@ async def add_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.add_participant(phone_number)
-    return {"message": "Participant added successfully"}
+    await conference.queue_event(AddParticipantEvent(phone_number=phone_number, conf_call=conference))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/removeparticipant/{conference_id}")
 async def add_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.remove_participant(phone_number)
-    return {"message": "Participant removed successfully"}
+    await conference.queue_event(RemoveParticipantEvent(phone_number=phone_number, conf_call=conference))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/muteparticipant/{conference_id}")
 async def mute_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.mute_participant(phone_number)
-    return {"message": "Participant muted successfully"}
+    await conference.queue_event(MuteParticipantEvent(phone_number=phone_number, conf_call=conference))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/unmuteparticipant/{conference_id}")
 async def unmute_participant(conference_id: str, phone_number: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.unmute_participant(phone_number)
-    return {"message": "Participant unmuted successfully"}
+    await conference.queue_event(UnmuteParticipantEvent(phone_number=phone_number, conf_call=conference))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/playaudio/{conference_id}")
 async def play_audio(conference_id: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.play_content()
-    return {"message": "Playing audio"}
+    await conference.queue_event(PlayContentEvent(conf_call=conference))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/pauseaudio/{conference_id}")
 async def play_audio(conference_id: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.pause_content()
-    return {"message": "Playing audio"}
+    await conference.queue_event(PauseContentEvent(conf_call=conference))
+    return {"message": "Event Queued for execution"}

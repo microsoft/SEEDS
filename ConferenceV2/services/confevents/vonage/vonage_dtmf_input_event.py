@@ -45,3 +45,6 @@ class VonageDTMFInputEvent(BaseModel):
             digit=self.body.digit,
             conf_call=conf_call
         )
+
+    def get_user_phone_number(self):
+        return self.body.channel.to.number

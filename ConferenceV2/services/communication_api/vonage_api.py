@@ -63,6 +63,7 @@ class VonageAPI(CommunicationAPI):
                                                         call_leg_id=vonage_resp['uuid'],
                                                         conv_id=vonage_resp['conversation_uuid'])
         
+        print("CONNECTING CALL TO WEBSOCKET IN BACKGROUND")
         asyncio.create_task(self.connect_websocket())
 
         for student_phone in student_phones:
@@ -88,10 +89,10 @@ class VonageAPI(CommunicationAPI):
         Ends a call by its conference ID using the Vonage API.
         """
         for participant in self.participant_info_map.values():
+            print("ENDING CALL FOR PARTICIPANT", participant.phone_number)
             self.client.voice.update_call(uuid=participant.call_leg_id, action="hangup")
     
     async def connect_websocket(self):
-        print("CONNECTING CALL TO WEBSOCKET IN BACKGROUND: ", self.ws_server_url)
         teacher_info = self.participant_info_map[self.teacher_phone_number]
         teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
 
@@ -100,8 +101,11 @@ class VonageAPI(CommunicationAPI):
             teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
             await asyncio.sleep(1)
 
-        # IF TEACHER PICKED UP THE CALL: CONNECT THE WEBSOCKET AND PUT BOTH OF THEM BACK INTO THE CONVERSATION
+        # IF TEACHER PICKED UP THE CALL: CONNECT THE WEBSOCKET AND PUT BOTH OF THEM BACK INTO THE CONVERSATION. 
+        # THIS IS BECAUSE ATLEAST ONE answered CALL LEG IS REQUIRED TO EXECUTE THE transfer ACTION. 
+        # CAN USE ANY STUDENT'S answered CALL LEG ALSO.
         if teacher_call['status'] == 'answered':
+            print("TEACHER HAS ANSWERED THE CALL, CONNECTING WEBSOCKET NOW... URL:", self.ws_server_url)
             self.client.voice.update_call(uuid=teacher_info.call_leg_id, 
                                             params={
                                                 "action": "transfer",
@@ -160,6 +164,7 @@ class VonageAPI(CommunicationAPI):
         if phone_number in self.participant_info_map:
             participant_info = self.participant_info_map[phone_number]
             self.client.voice.update_call(uuid=participant_info.call_leg_id, action="hangup")
+            del self.participant_info_map[phone_number]
 
     # client.update_call()
     async def mute_participant(self, phone_number: str):

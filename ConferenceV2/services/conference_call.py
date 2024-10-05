@@ -109,12 +109,11 @@ class ConferenceCall:
                                     )
         await self.update_state()
         self.event_queue_processing_task.cancel()
+        self.websocket_service.close_websocket()
     
     async def update_state(self):
-        print("INSIDE UPDATE STATE")
         # Save state to storage
         await self.storage_manager.save_state(self.conf_id, self.state.model_dump(by_alias=True))
-        print("UPDATED STATE", self.state)
         # Notify clients
         # # TODO: Finish notifying smartphone app
         # await self.connection_manager.send_message_to_client(client=self.state.get_teacher(),
