@@ -12,7 +12,7 @@ import time
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
 
 from main import app
-from schemas.conference_schemas import CreateConferenceRequest, EndConferenceRequest, StartConferenceRequest
+from schemas.conference_schemas import CreateConferenceRequest
 
 load_dotenv()
 
@@ -51,43 +51,38 @@ async def create_conf():
                                                                               student_phones=[FEATURE_PH]).model_dump())
     return response.json()
 
-async def smartphone_connect(conf_id: str):
-    smartphoneconnect_data = {"conference_id": conf_id}
-    response = client.post(f"{BASE_API}/smartphoneconnect", json=smartphoneconnect_data)
+async def teacherapp_connect(conf_id: str):
+    response = client.post(f"{BASE_API}/teacherappconnect/{conf_id}")
     return response.json()
 
 async def start_call(conf_id: str):
-    response = client.post(f"{BASE_API}/start", json=StartConferenceRequest(conference_id=conf_id).model_dump())
+    response = client.post(f"{BASE_API}/start/{conf_id}")
     return response.json()
 
 async def end_call(conf_id: str):
-    response = client.put(f"{BASE_API}/end", json=EndConferenceRequest(conference_id=conf_id).model_dump(exclude_unset=True))
+    response = client.put(f"{BASE_API}/end/{conf_id}")
     return response.json()
 
 async def remove_participant(conference_id: str, phone_number: str):
-    response = client.put(f"{BASE_API}/removeparticipant", params={
-        "conference_id": conference_id,
+    response = client.put(f"{BASE_API}/removeparticipant/{conference_id}", params={
         "phone_number": phone_number
     })
     return response.json()
 
 async def add_participant(conference_id: str, phone_number: str):
-    response = client.put(f"{BASE_API}/addparticipant", params={
-        "conference_id": conference_id,
+    response = client.put(f"{BASE_API}/addparticipant/{conference_id}", params={
         "phone_number": phone_number
     })
     return response.json()
 
 async def mute_participant(conference_id: str, phone_number: str):
-    response = client.put(f"{BASE_API}/muteparticipant", params={
-        "conference_id": conference_id,
+    response = client.put(f"{BASE_API}/muteparticipant/{conference_id}", params={
         "phone_number": phone_number
     })
     return response.json()
 
 async def unmute_participant(conference_id: str, phone_number: str):
-    response = client.put(f"{BASE_API}/unmuteparticipant", params={
-        "conference_id": conference_id,
+    response = client.put(f"{BASE_API}/unmuteparticipant/{conference_id}", params={
         "phone_number": phone_number
     })
     return response.json()
@@ -131,7 +126,7 @@ async def test_api_calls_and_listen_to_messages():
     create_conf_response = await create_conf()
     conf_id = create_conf_response['id']
     print('CREATE CONF RESPONSE', create_conf_response)
-    smartphone_connect_resp = await smartphone_connect(conf_id)
+    smartphone_connect_resp = await teacherapp_connect(conf_id)
     print('SMARTPHONE CONNECT RESPONSE', smartphone_connect_resp)
     subs_name = smartphone_connect_resp['subscription_name']
 

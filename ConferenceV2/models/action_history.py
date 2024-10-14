@@ -26,6 +26,4 @@ class ActionHistory(BaseModel):
 
     class Config:
         use_enum_values = True  # Automatically use enum values instead of objects for serialization
-        json_encoders = {
-            Enum: lambda e: e.value,  # Encode enums as their values (this handles your enums like Role)
-        }
+        

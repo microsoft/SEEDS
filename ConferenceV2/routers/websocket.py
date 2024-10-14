@@ -3,10 +3,9 @@
 import asyncio
 import traceback
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from typing import List
 
-import socketio
 from routers.conference import conference_manager
 
 router = APIRouter()

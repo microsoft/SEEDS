@@ -31,7 +31,7 @@ router = APIRouter()
 # Create an instance of ConferenceCallManager
 conference_manager = ConferenceCallManager(
     communication_api_type=CommunicationAPIType.VONAGE,
-    smartphone_connection_manager_type=SmartphoneConnectionManagerType.AZURE_SERVICE_BUS,
+    smartphone_connection_manager_type=SmartphoneConnectionManagerType.SSE,
     storage_manager=InMemoryStorageManager(),
 )
 
@@ -60,7 +60,7 @@ async def start_conference(conference_id: str):
                 "id": conference_id
             }
 
-@router.post("/teacherappconnect/{conference_id}")
+@router.get("/teacherappconnect/{conference_id}")
 async def connect_smartphone(conference_id: str):
     conference = conference_manager.get_conference(conference_id)
     return await conference.connect_smartphone()
