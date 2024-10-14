@@ -8,9 +8,9 @@ function App() {
     selectedTeacher,
     selectedStudents,
     userList,
+    handleSSEEvent,
     handleTeacherSelect,
-    handleStudentToggle,
-    handleSubmit,
+    handleStudentToggle
   } = useSelections();
 
   const [isSubmitted, setIsSubmitted] = React.useState(false);
@@ -20,7 +20,7 @@ function App() {
   const handleFormSubmit = async () => {
     setLoading(true); // Start loading
     const api_base = process.env.REACT_APP_CONF_SERVER_BASE_URI  + '/conference';
-    console.log(api_base)
+    // console.log(api_base)
     try {
       // First API call
       const response1 = await fetch(api_base + '/create', {
@@ -29,8 +29,8 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          "teacher_phone": selectedTeacher.phone,
-          "student_phones": selectedStudents.map((item) => item.phone),
+          "teacher_phone": selectedTeacher.phone_number,
+          "student_phones": selectedStudents.map((item) => item.phone_number),
         }),
       });
       
@@ -42,7 +42,7 @@ function App() {
         console.log('Conf ID:', conferenceId); 
 
         const sseEp = `${api_base}/teacherappconnect/${conferenceId}`
-        console.log(sseEp)
+        // console.log(sseEp)
         console.log("CALLING SSE")
         // Connect to SSE endpoint using the conference ID from the first API call
         const eventSource = new EventSource(sseEp);
@@ -50,6 +50,8 @@ function App() {
         // Log incoming messages from SSE
         eventSource.onmessage = (event) => {
           console.log("Message from SSE:", event.data);
+          const parsedData = JSON.parse(event.data);
+          handleSSEEvent(parsedData)
         };
 
         eventSource.onerror = (err) => {
@@ -62,8 +64,6 @@ function App() {
         const errorMessage = await response1.text(); // Get the error message (if any)
         throw new Error(`Error ${response1.status}: ${errorMessage}`);
       }
-      // Once both APIs have responded successfully, proceed
-      handleSubmit(); // Perform any final actions in the useSelections hook
       setIsSubmitted(true); // Navigate to DetailsPage
     } catch (error) {
       console.error('Error in API calls:', error);
@@ -85,12 +85,12 @@ function App() {
           <ul className="list">
             {teachers.map((teacher) => (
               <li
-                key={teacher.id}
-                className={`list-item ${selectedTeacher?.id === teacher.id ? 'selected' : ''}`}
+                key={teacher.phone_number}
+                className={`list-item ${selectedTeacher?.phone_number === teacher.phone_number ? 'selected' : ''}`}
                 onClick={() => handleTeacherSelect(teacher)}
               >
                 <div className="list-item-content">
-                  <span>{teacher.name} - {teacher.phone}</span>
+                  <span>{teacher.name} - {teacher.phone_number}</span>
                 </div>
               </li>
             ))}
@@ -101,12 +101,12 @@ function App() {
           <ul className="list">
             {students.map((student) => (
               <li
-                key={student.id}
-                className={`list-item ${selectedStudents.some((s) => s.id === student.id) ? 'selected' : ''}`}
+                key={student.phone_number}
+                className={`list-item ${selectedStudents.some((s) => s.phone_number === student.phone_number) ? 'selected' : ''}`}
                 onClick={() => handleStudentToggle(student)}
               >
                 <div className="list-item-content">
-                  <span>{student.name} - {student.phone}</span>
+                  <span>{student.name} - {student.phone_number}</span>
                 </div>
               </li>
             ))}

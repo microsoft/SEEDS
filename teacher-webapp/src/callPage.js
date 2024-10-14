@@ -1,37 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 export function DetailsPage({ userList, confId }) {
-  const [users, setUsers] = useState(userList);
+  const [users, setUsers] = useState(userList); // Local state for users
   const [loadingIds, setLoadingIds] = useState([]); // Track the loading state by user ID
   const [isCallStarted, setIsCallStarted] = useState(false); // Track call state
   const [isMusicPlaying, setIsMusicPlaying] = useState(false); // Track music state
   const [isLoadingCall, setIsLoadingCall] = useState(false); // Track loading state for call
   const [isLoadingMusic, setIsLoadingMusic] = useState(false); // Track loading state for music
 
-  const teacher = users.find((user) => user.role === 'teacher');
-  const students = users.filter((user) => user.role === 'student');
+  // Update local state whenever userList prop changes
+  useEffect(() => {
+    // console.log("Updating users from userList", userList);
+    setUsers(userList);
+  }, [userList]); 
+
+  const teacher = users.find((user) => user.role === 'Teacher');
+  const students = users.filter((user) => user.role === 'Student');
 
   const handleMuteToggle = (userToUpdate) => {
     // Show loading indicator for this user
-    setLoadingIds((prev) => [...prev, userToUpdate.id]);
+    setLoadingIds((prev) => [...prev, userToUpdate.phone_number]);
 
     // Simulate a 2-second delay for loading
     setTimeout(() => {
       // Update the user's mute state
       const updatedUsers = users.map((user) =>
-        user.id === userToUpdate.id ? { ...user, mute: !user.mute } : user
+        user.phone_number === userToUpdate.phone_number ? { ...user, is_muted: !user.is_muted } : user
       );
       setUsers(updatedUsers);
 
       // Remove the loading state for this user
-      setLoadingIds((prev) => prev.filter((id) => id !== userToUpdate.id));
+      setLoadingIds((prev) => prev.filter((id) => id !== userToUpdate.phone_number));
     }, 2000);
   };
 
   const handleStartCall = async () => {
     setIsLoadingCall(true); // Start loading
-    const api_base = process.env.REACT_APP_CONF_SERVER_BASE_URI  + '/conference';
+    const api_base = process.env.REACT_APP_CONF_SERVER_BASE_URI + '/conference';
     const response = await fetch(api_base + `/start/${confId}`, {
       method: 'POST',
       headers: {
@@ -39,7 +45,7 @@ export function DetailsPage({ userList, confId }) {
       },
     });
 
-    if (response.ok){
+    if (response.ok) {
       setIsCallStarted((prev) => !prev); // Toggle call state
     }
     setIsLoadingCall(false);
@@ -54,8 +60,6 @@ export function DetailsPage({ userList, confId }) {
     }, 2000);
   };
 
-  
-
   const isLoading = (id) => loadingIds.includes(id);
 
   return (
@@ -67,29 +71,29 @@ export function DetailsPage({ userList, confId }) {
           <div className="list-box">
             <h2 className="list-title">Teacher</h2>
             <ul className="list">
-              <li key={teacher.id} className="list-item">
+              <li key={teacher.phone_number} className="list-item">
                 <div className="list-item-content">
                   <span className="content"><strong>{teacher.name}</strong></span>
                 </div>
                 <div className="list-item-content">
-                  <span className="content"><strong>{teacher.phone}</strong></span>
+                  <span className="content"><strong>{teacher.phone_number}</strong></span>
                 </div>
                 <div className="list-item-content">
-                  <span className="content"><strong>{teacher.status}</strong></span>
+                  <span className="content"><strong>{teacher.call_status}</strong></span>
                 </div>
                 <div className="list-item-content">
                   <span className="content">
                     <button
                       onClick={() => handleMuteToggle(teacher)}
-                      disabled={isLoading(teacher.id)} // Disable button while loading
+                      disabled={isLoading(teacher.phone_number)} // Disable button while loading
                       className="mute-button"
                     >
-                      {isLoading(teacher.id) ? 'Loading...' : teacher.mute ? 'Unmute' : 'Mute'}
+                      {isLoading(teacher.phone_number) ? 'Loading...' : teacher.is_muted ? 'Unmute' : 'Mute'}
                     </button>
                   </span>
                 </div>
                 <div className="list-item-content">
-                  {teacher.raisedHand && (
+                  {teacher.is_raised && (
                     <span className="content raised-hand">✋</span>
                   )}
                 </div>
@@ -104,29 +108,29 @@ export function DetailsPage({ userList, confId }) {
             <h2 className="list-title">Students</h2>
             <ul className="list">
               {students.map((student) => (
-                <li key={student.id} className="list-item">
+                <li key={student.phone_number} className="list-item">
                   <div className="list-item-content">
                     <span className="content"><strong>{student.name}</strong></span>
                   </div>
                   <div className="list-item-content">
-                    <span className="content"><strong>{student.phone}</strong></span>
+                    <span className="content"><strong>{student.phone_number}</strong></span>
                   </div>
                   <div className="list-item-content">
-                    <span className="content"><strong>{student.status}</strong></span>
+                    <span className="content"><strong>{student.call_status}</strong></span>
                   </div>
                   <div className="list-item-content">
                     <span className="content">
                       <button
                         onClick={() => handleMuteToggle(student)}
-                        disabled={isLoading(student.id)} // Disable button while loading
+                        disabled={isLoading(student.phone_number)} // Disable button while loading
                         className="mute-button"
                       >
-                        {isLoading(student.id) ? 'Loading...' : student.mute ? 'Unmute' : 'Mute'}
+                        {isLoading(student.phone_number) ? 'Loading...' : student.is_muted ? 'Unmute' : 'Mute'}
                       </button>
                     </span>
                   </div>
                   <div className="list-item-content">
-                    {student.raisedHand && (
+                    {student.is_raised && (
                       <span className="content raised-hand">✋</span>
                     )}
                   </div>
