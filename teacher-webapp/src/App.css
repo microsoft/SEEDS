@@ -1,0 +1,175 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f7f7f7;
+  padding: 20px;
+}
+
+.welcome-title {
+  margin-bottom: 20px;
+  font-size: 2em;
+  text-align: center;
+}
+
+/* Increased width of the parent container */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%; /* Increased the width to 90% of the screen */
+  max-width: 1200px; /* Maximum width set to 1200px */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.list-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.list-title {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer; /* Make it clear that the item is clickable */
+  transition: background-color 0.3s ease;
+  width: 100%; /* Ensure the list-item takes the full width */
+}
+
+.list-item:hover {
+  background-color: #d3d3d3;
+}
+
+.list-item.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.list-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  width: 100%;
+  margin-bottom: 10px; /* Added margin between the items */
+}
+
+/* Increase the horizontal distance between phone number and status */
+.list-item-content .content {
+  margin-right: 30px; /* Adjust the spacing between content areas */
+}
+
+.content {
+  flex-grow: 1;
+  white-space: nowrap; /* Prevent the content from wrapping */
+  overflow: hidden; /* Hide the overflow text */
+  text-overflow: ellipsis; /* Show ellipsis if the text overflows */
+}
+
+.mute-button {
+  padding: 5px 10px;
+  font-size: 0.9em;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.mute-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.mute-button:hover:enabled {
+  background-color: #0056b3;
+}
+
+.raised-hand {
+  color: yellow;
+  font-size: 1.2em;
+}
+
+.list {
+  list-style-type: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 4px;
+}
+
+/* Ensure responsiveness on smaller screens */
+@media (max-width: 600px) {
+  .content {
+    display: block;
+    padding: 5px;
+    white-space: normal; /* Allow text to wrap on small screens */
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Add spacing between the buttons */
+  margin-top: 20px; /* Space between the buttons and the container */
+}
+
+.action-button {
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.action-button:hover:enabled {
+  background-color: #0056b3;
+}
+
+
+.submit-button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #28a745; /* Green color for submit */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px; /* Add some space between the button and the content above */
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.submit-button:hover:enabled {
+  background-color: #218838;
+}
+
