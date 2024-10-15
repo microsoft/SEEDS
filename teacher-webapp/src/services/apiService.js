@@ -31,3 +31,21 @@ export const endConferenceCall = async (confId) => {
       },
     });
   };
+
+export const muteParticipant = async (confId, phone_number) => {
+    return fetch(`${api_base}/muteparticipant/${confId}?phone_number=${phone_number}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };
+
+export const unmuteParticipant = async (confId, phone_number) => {
+    return fetch(`${api_base}/unmuteparticipant/${confId}?phone_number=${phone_number}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useConference } from './context/ConferenceContext';
-import { startConferenceCall, endConferenceCall } from './services/apiService';
+import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant } from './services/apiService';
 import './App.css';
 
 export function DetailsPage() {
@@ -23,15 +23,16 @@ export function DetailsPage() {
   const teacher = users.find((user) => user.role === 'Teacher');
   const students = users.filter((user) => user.role === 'Student');
 
-  const handleMuteToggle = (userToUpdate) => {
+  const handleMuteToggle = async (userToUpdate) => {
     setLoadingIds((prev) => [...prev, userToUpdate.phone_number]);
-    setTimeout(() => {
-      const updatedUsers = users.map((user) =>
-        user.phone_number === userToUpdate.phone_number ? { ...user, is_muted: !user.is_muted } : user
-      );
-      setUsers(updatedUsers);
-      setLoadingIds((prev) => prev.filter((id) => id !== userToUpdate.phone_number));
-    }, 2000);
+
+    if (userToUpdate.is_muted){
+      await unmuteParticipant(confId, userToUpdate.phone_number)
+    }else{
+      await muteParticipant(confId, userToUpdate.phone_number)
+    }
+    
+    setLoadingIds((prev) => prev.filter((id) => id !== userToUpdate.phone_number));
   };
 
   const handleStartCall = async () => {
@@ -94,7 +95,7 @@ export function DetailsPage() {
                   <span className="content">
                     <button
                       onClick={() => handleMuteToggle(teacher)}
-                      disabled={isLoading(teacher.phone_number)}
+                      disabled={isLoading(teacher.phone_number) || teacher.call_status !== "connected"}
                       className="mute-button"
                     >
                       {isLoading(teacher.phone_number) ? 'Loading...' : teacher.is_muted ? 'Unmute' : 'Mute'}
@@ -125,13 +126,20 @@ export function DetailsPage() {
                     <span className="content">
                       <button
                         onClick={() => handleMuteToggle(student)}
-                        disabled={isLoading(student.phone_number)}
+                        disabled={isLoading(student.phone_number) || student.call_status !== "connected"}
                         className="mute-button"
                       >
                         {isLoading(student.phone_number) ? 'Loading...' : student.is_muted ? 'Unmute' : 'Mute'}
                       </button>
                     </span>
                   </div>
+                  {student.is_raised && (
+                    <div className="list-item-content">
+                      <span className="raised-hand-icon" role="img" aria-label="raised hand">✋</span>
+                    </div>
+                  )
+                  }
+                  
                 </li>
               ))}
             </ul>

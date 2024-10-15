@@ -26,7 +26,7 @@ export const teachers = [
 ];
 
 export const students = [
+  new Participant({ name: 'Smart Phone Motorola', phone_number: '918904954836', role: 'Student' }),
   new Participant({ name: 'Ashwani', phone_number: '917999710236', role: 'Student' }),
-  new Participant({ name: 'Feature Phone', phone_number: '918904954955', role: 'Student' }),
-  new Participant({ name: 'Smart Phone Motorola', phone_number: '918904954836', role: 'Student' })
+  new Participant({ name: 'Feature Phone', phone_number: '918904954955', role: 'Student' })
 ];
