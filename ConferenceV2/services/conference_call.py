@@ -72,7 +72,7 @@ class ConferenceCall:
             self.state.teacher_phone_number, 
             [student.phone_number for student in self.state.get_students()]
         )
-        self.state.is_ended = False
+        self.state.is_running = True
         # TODO: Set CONNECTED CALL STATUS WHEN ATLEAST ONE OF THE PARTICIPANTS HAVE PICKED UP
         self.state.action_history.append(ActionHistory(
                                                     timestamp=datetime.now().isoformat(), 
@@ -101,7 +101,7 @@ class ConferenceCall:
       
     async def end_conference(self):
         await self.communication_api.end_conf()
-        self.state.is_ended = True
+        self.state.is_running = False
         self.state.action_history.append(ActionHistory(
                                                     timestamp= datetime.now().isoformat(), 
                                                     action_type=ActionType.CONFERENCE_END, 

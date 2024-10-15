@@ -10,7 +10,7 @@ from models.participant import Participant, Role
 
 
 class ConferenceCallState(BaseModel):
-    is_ended: bool = Field(default=False)
+    is_running: bool = Field(default=False)
     teacher_phone_number: str = None
     participants: Dict[str, Participant] = Field(default_factory=dict)
     audio_content_state: AudioContentState = AudioContentState()

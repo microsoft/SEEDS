@@ -5,7 +5,7 @@ from services.conference_call import ConferenceCall
 
 
 class PlayContentEvent:
-    def __init__(self, url: str, conf_call: ConferenceCall):
+    def __init__(self, conf_call: ConferenceCall, url: str = "/home/kavyansh/SEEDS/ConferenceV2/audio_test.wav"):
         self.url = url
         self.conf_call = conf_call
 
