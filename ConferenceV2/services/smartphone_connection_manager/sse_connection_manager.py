@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict
 from models.participant import Participant
 from fastapi.responses import StreamingResponse
@@ -21,7 +22,7 @@ class SSEConnectionManager(SmartphoneConnectionManager):
             while True:
                 # Fetch messages from the queue and yield them as SSE format
                 message = await self.active_connections[client.phone_number].get()
-                yield f"data: {message}\n\n"
+                yield f"data: {json.dumps(message)}\n\n"
 
         return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -31,7 +32,7 @@ class SSEConnectionManager(SmartphoneConnectionManager):
             del self.active_connections[client.phone_number]
             print(f"Client {client.phone_number} disconnected")
 
-    async def send_message_to_client(self, client: Participant, message: Any):
+    async def send_message_to_client(self, client: Participant, message: dict):
         """Send a message to the client via the client's message queue."""
         if client.phone_number in self.active_connections:
             await self.active_connections[client.phone_number].put(message)  # Queue message for client
