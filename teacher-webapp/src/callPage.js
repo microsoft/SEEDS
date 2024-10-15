@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useConference } from './context/ConferenceContext';
-import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant } from './services/apiService';
+import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant, playAudio, pauseAudio } from './services/apiService';
 import './App.css';
 
 export function DetailsPage() {
   const {
     userList,
-    confId
+    confId,
+    isConfCallRunning,
+    audioContentState,
   } = useConference();
 
   const [users, setUsers] = useState(userList);
   const [loadingIds, setLoadingIds] = useState([]);
-  const [isCallStarted, setIsCallStarted] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isLoadingCall, setIsLoadingCall] = useState(false);
   const [isLoadingMusic, setIsLoadingMusic] = useState(false);
 
@@ -38,10 +38,7 @@ export function DetailsPage() {
   const handleStartCall = async () => {
     setIsLoadingCall(true);
     try {
-      const response = await startConferenceCall(confId);
-      if (response.ok) {
-        setIsCallStarted((prev) => !prev);
-      }
+      await startConferenceCall(confId);
     } catch (error) {
       console.error('Error starting the call:', error);
     } finally {
@@ -52,10 +49,7 @@ export function DetailsPage() {
   const handleEndCall = async () => {
     setIsLoadingCall(true);
     try {
-      const response = await endConferenceCall(confId);
-      if (response.ok) {
-        setIsCallStarted((prev) => !prev);
-      }
+      await endConferenceCall(confId);
     } catch (error) {
       console.error('Error starting the call:', error);
     } finally {
@@ -63,15 +57,18 @@ export function DetailsPage() {
     }
   }
 
-  const handlePlayMusic = () => {
+  const handlePlayMusic = async () => {
     setIsLoadingMusic(true);
-    setTimeout(() => {
-      setIsMusicPlaying((prev) => !prev);
-      setIsLoadingMusic(false);
-    }, 2000);
+    if (audioContentState.status === "Playing"){
+      await pauseAudio(confId)
+    } else {
+      await playAudio(confId)
+    }
+    setIsLoadingMusic(false);
   };
 
   const isLoading = (id) => loadingIds.includes(id);
+  const isPlayingAudio = audioContentState.status === "Playing"
 
   return (
     <div className="app-container">
@@ -150,18 +147,22 @@ export function DetailsPage() {
       <div className="button-container">
         <button
           className="action-button"
-          onClick={isCallStarted ? handleEndCall : handleStartCall}
+          onClick={isConfCallRunning ? handleEndCall : handleStartCall}
           disabled={isLoadingCall}
         >
-          {isLoadingCall ? 'Loading...' : isCallStarted ? 'End Call' : 'Start Call'}
+          {isLoadingCall ? 'Loading...' : isConfCallRunning ? 'End Call' : 'Start Call'}
         </button>
-        <button className="action-button">Add Participant</button>
+        <button className="action-button" 
+          disabled={!isConfCallRunning}
+          >
+          Add Participant
+        </button>
         <button
           className="action-button"
           onClick={handlePlayMusic}
-          disabled={isLoadingMusic}
+          disabled={isLoadingMusic || !isConfCallRunning}
         >
-          {isLoadingMusic ? 'Loading...' : isMusicPlaying ? 'Pause Music' : 'Play Music'}
+          {isLoadingMusic ? 'Loading...' : isPlayingAudio ? 'Pause Music' : 'Play Music'}
         </button>
       </div>
     </div>

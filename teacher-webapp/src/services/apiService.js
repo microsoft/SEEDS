@@ -49,3 +49,21 @@ export const unmuteParticipant = async (confId, phone_number) => {
       },
     });
   };
+
+export const playAudio = async (confId) => {
+    return fetch(`${api_base}/playaudio/${confId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };
+
+  export const pauseAudio = async (confId) => {
+    return fetch(`${api_base}/pauseaudio/${confId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  };

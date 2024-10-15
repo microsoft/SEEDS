@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Participant } from '../state'; // You can import from existing state file
+import { AudioContentState, Participant } from '../state'; // You can import from existing state file
 
 const ConferenceContext = createContext();
 
 export const useConference = () => useContext(ConferenceContext);
 
 export const ConferenceProvider = ({ children }) => {
+  const [isConfCallRunning, setIsConfCallRunning] = useState(false)
+  const [audioContentState, setAudioContentState] = useState(new AudioContentState())
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -34,6 +36,8 @@ export const ConferenceProvider = ({ children }) => {
 
   const handleSSEEvent = (event) => {
     // Updating participants (teacher or students) from the SSE event data
+    setIsConfCallRunning(event.is_running)
+    setAudioContentState(new AudioContentState(event.audio_content_state))
     for (let phone_number in event.participants) {
       const participant = new Participant({ ...event.participants[phone_number] });
 
@@ -70,6 +74,8 @@ export const ConferenceProvider = ({ children }) => {
         selectedStudents,
         userList,
         confId,
+        isConfCallRunning,
+        audioContentState,
         setConfId,
         loading,
         setLoading,
