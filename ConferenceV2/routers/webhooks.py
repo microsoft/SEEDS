@@ -3,6 +3,8 @@
 import json
 from fastapi import APIRouter, Request, BackgroundTasks, HTTPException, Response
 from fastapi.responses import JSONResponse
+from models.participant import CallStatus
+from services.confevents.mute_participant_event import MuteParticipantEvent
 from services.confevents.vonage.vonage_call_status_change_event import VonageCallStatusChangeEvent
 from services.confevents.vonage.vonage_dtmf_input_event import VonageDTMFInputEvent, VonageRTCEventType
 from services.conference_call_manager import ConferenceCallManager
@@ -38,6 +40,11 @@ async def process_event(event_data: Dict, conference_id: str):
             vonage_call_status_change_event = VonageCallStatusChangeEvent(**event_data)
             call_status_change_event = vonage_call_status_change_event.get_conf_call_status_change_event(conf)
             await conf.queue_event(call_status_change_event)
+
+            # If a student just connected, mute the student
+            student_phone_numbers = [student.phone_number for student in conf.state.get_students()]
+            if call_status_change_event.status == CallStatus.CONNECTED and call_status_change_event.phone_number in student_phone_numbers: 
+                await conf.queue_event(MuteParticipantEvent(phone_number=call_status_change_event.phone_number, conf_call=conf))
     except:
         print("NOT a call_status_change_event")
         
