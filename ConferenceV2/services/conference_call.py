@@ -32,12 +32,14 @@ class ConferenceCall:
             )
         self.state = ConferenceCallState()
         self.event_queue = asyncio.Queue()
-        self.event_queue_processing_task = None
+        self.event_queue_processing_task: asyncio.Task = None
     
     async def queue_event(self, event: ConferenceEvent):
         await self.event_queue.put(event)
     
     def start_processing_conf_events_from_queue(self):
+        if self.event_queue_processing_task != None:
+            self.event_queue_processing_task.cancel()
         self.event_queue_processing_task = asyncio.create_task(self.__process_conf_events_queue())
     
     def set_participant_state(self, teacher_phone: str, student_phones: List[str]):
@@ -108,8 +110,8 @@ class ConferenceCall:
                                                  )
                                     )
         await self.update_state()
-        self.event_queue_processing_task.cancel()
-        self.websocket_service.close_websocket()
+        # self.event_queue_processing_task.cancel() # Not ending processing tasks because call disconnect status events will be received from vonage
+        await self.websocket_service.close_websocket()
     
     async def update_state(self):
         # Save state to storage

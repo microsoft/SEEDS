@@ -89,8 +89,12 @@ class VonageAPI(CommunicationAPI):
         Ends a call by its conference ID using the Vonage API.
         """
         for participant in self.participant_info_map.values():
-            print("ENDING CALL FOR PARTICIPANT", participant.phone_number)
-            self.client.voice.update_call(uuid=participant.call_leg_id, action="hangup")
+            call_details = self.client.voice.get_call(uuid=participant.call_leg_id)
+            if call_details['status'] == 'answered':
+                print("ENDING CALL FOR PARTICIPANT", participant.phone_number)
+                self.client.voice.update_call(uuid=participant.call_leg_id, action="hangup")
+            else:
+                print("CALL ALREADY ENDED FOR PARTICIPANT", participant.phone_number)
     
     async def connect_websocket(self):
         teacher_info = self.participant_info_map[self.teacher_phone_number]

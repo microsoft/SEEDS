@@ -41,7 +41,6 @@ class ConferenceCallManager:
             storage_manager=self.storage_manager
         )
         conference_call.set_participant_state(teacher_phone, student_phones)
-        conference_call.start_processing_conf_events_from_queue()
         self.conferences[conf_id] = conference_call
         return conf_id
        
@@ -50,6 +49,7 @@ class ConferenceCallManager:
         if not conf:
             raise ValueError(f"No such conference has been created; ID: {conf_id}")
         
+        conf.start_processing_conf_events_from_queue()
         await conf.start_conference()
         
     async def end_conference(self, conference_id: str):
@@ -57,7 +57,7 @@ class ConferenceCallManager:
         if conf:
             print('ENDING CONF', conference_id)
             await conf.end_conference()
-            del self.conferences[conference_id]
+            # del self.conferences[conference_id]
         return conf
 
     def get_conference(self, conference_id: str) -> ConferenceCall | None:

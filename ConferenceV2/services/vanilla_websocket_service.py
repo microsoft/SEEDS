@@ -17,9 +17,9 @@ class VanillaWebSocketService:
         if self.__check_connection():
             self.__play_event.set()
     
-    def close_websocket(self):
+    async def close_websocket(self):
         if self.__websocket:
-            self.__websocket.close()
+            await self.__websocket.close()
 
     async def send_audio(self, file_path: str):
         """ Send audio in chunks over WebSocket. """

@@ -16,22 +16,33 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket, conference_id: str):
     conf = conference_manager.get_conference(conference_id)
     if conf:
-        print("WEBSOCKET ACCEPTED FOR CONF: ", conference_id)
         await websocket.accept()
         conf.set_websocket(websocket)
-        # asyncio.create_task(conf.websocket_service.ensure_connection())
+        print("WEBSOCKET ACCEPTED FOR CONF: ", conference_id)
         try:
             while True:
-                msg = await websocket.receive()
-                print('RECEIVED WEBSOCKET MSG')
-                # Keep the connection alive or handle incoming messages here if needed
-                await asyncio.sleep(10)  # Simulate some activity to keep connection open
-        except WebSocketDisconnect:
-            print(f"Websocket Client disconnected for {conference_id}")
-            conf.set_websocket(None)  # Clear the WebSocket on disconnection
+                try:
+                    msg = await websocket.receive()  # Use receive_text or receive_json based on your message type
+                    # Check if the message type indicates the connection is closing
+                    if msg['type'] == 'websocket.disconnect':
+                        print(f"WebSocket Client disconnected for {conference_id}")
+                        conf.set_websocket(None)  # Clear the WebSocket on disconnection
+                        break  # Exit the loop to stop processing once disconnected
+
+                    print('RECEIVED WEBSOCKET MSG')
+                    # Handle incoming messages or keep the connection alive
+                    await asyncio.sleep(10)  # Simulate activity to keep connection open
+                except WebSocketDisconnect:
+                    print(f"WebSocket Client disconnected for {conference_id}")
+                    conf.set_websocket(None)  # Clear the WebSocket on disconnection
+                    break  # Exit the loop to stop processing once disconnected
+                except Exception as e:
+                    print(f"An error occurred while receiving message: {e}")
+                    traceback.print_exc()
+                    conf.set_websocket(None)
+                    break  # Exit the loop to stop processing on error
         except Exception as e:
             print(f"An error occurred in websocket router: {e}")
-            # Log the full stack trace
             traceback.print_exc()
             conf.set_websocket(None)  # Ensure cleanup in case of error
     
