@@ -24,46 +24,55 @@ export const startConferenceCall = async (confId) => {
 };
 
 export const endConferenceCall = async (confId) => {
-    return fetch(`${api_base}/end/${confId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+  return fetch(`${api_base}/end/${confId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 
 export const muteParticipant = async (confId, phone_number) => {
-    return fetch(`${api_base}/muteparticipant/${confId}?phone_number=${phone_number}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+  return fetch(`${api_base}/muteparticipant/${confId}?phone_number=${phone_number}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 
 export const unmuteParticipant = async (confId, phone_number) => {
-    return fetch(`${api_base}/unmuteparticipant/${confId}?phone_number=${phone_number}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+  return fetch(`${api_base}/unmuteparticipant/${confId}?phone_number=${phone_number}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 
 export const playAudio = async (confId) => {
-    return fetch(`${api_base}/playaudio/${confId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+  return fetch(`${api_base}/playaudio/${confId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 
-  export const pauseAudio = async (confId) => {
-    return fetch(`${api_base}/pauseaudio/${confId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  };
+export const pauseAudio = async (confId) => {
+  return fetch(`${api_base}/pauseaudio/${confId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+export const addParticipant = async (confId, phone_number) => {
+  return fetch(`${api_base}/addparticipant/${confId}?phone_number=${phone_number}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}

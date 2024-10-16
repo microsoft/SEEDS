@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useConference } from './context/ConferenceContext';
-import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant, playAudio, pauseAudio } from './services/apiService';
+import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant, playAudio, pauseAudio, addParticipant } from './services/apiService';
+import { AddParticipantModal } from './components/AddParticipantModal';
+import { students as allStudents } from './state';
 import './App.css';
 
 export function DetailsPage() {
@@ -13,8 +15,10 @@ export function DetailsPage() {
 
   const [users, setUsers] = useState(userList);
   const [loadingIds, setLoadingIds] = useState([]);
+  const [reconnectingIds, setReconnectingIds] = useState([]);
   const [isLoadingCall, setIsLoadingCall] = useState(false);
   const [isLoadingMusic, setIsLoadingMusic] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setUsers(userList);
@@ -26,12 +30,12 @@ export function DetailsPage() {
   const handleMuteToggle = async (userToUpdate) => {
     setLoadingIds((prev) => [...prev, userToUpdate.phone_number]);
 
-    if (userToUpdate.is_muted){
+    if (userToUpdate.is_muted) {
       await unmuteParticipant(confId, userToUpdate.phone_number)
-    }else{
+    } else {
       await muteParticipant(confId, userToUpdate.phone_number)
     }
-    
+
     setLoadingIds((prev) => prev.filter((id) => id !== userToUpdate.phone_number));
   };
 
@@ -59,7 +63,7 @@ export function DetailsPage() {
 
   const handlePlayMusic = async () => {
     setIsLoadingMusic(true);
-    if (audioContentState.status === "Playing"){
+    if (audioContentState.status === "Playing") {
       await pauseAudio(confId)
     } else {
       await playAudio(confId)
@@ -67,8 +71,33 @@ export function DetailsPage() {
     setIsLoadingMusic(false);
   };
 
-  const isLoading = (id) => loadingIds.includes(id);
+  const handleReconnect = async (phone_number) => {
+    setReconnectingIds((prev) => [...prev, phone_number]);
+
+    await addParticipant(confId, phone_number)
+
+    setReconnectingIds((prev) => prev.filter((id) => id !== phone_number));
+  }
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleAddParticipants = async (selectedPhoneNumbers) => {
+    for (const phone_number of selectedPhoneNumbers) {
+      await addParticipant(confId, phone_number);
+    }
+  };
+
+  // Filter out students who are already in the userList
+  const availableStudents = allStudents.filter(
+    (student) => !userList.some((user) => user.phone_number === student.phone_number)
+  );
+
+  const isLoading = (phone_number) => loadingIds.includes(phone_number);
   const isPlayingAudio = audioContentState.status === "Playing"
+
+  const canReconnect = (user) => user.call_status === "disconnected" && isConfCallRunning
+  const isReconnecting = (phone_number) => reconnectingIds.includes(phone_number)
 
   return (
     <div className="app-container">
@@ -88,6 +117,18 @@ export function DetailsPage() {
                 <div className="list-item-content">
                   <span className="content"><strong>{teacher.call_status}</strong></span>
                 </div>
+                {canReconnect(teacher) && (
+                  <div className="list-item-content">
+                    <span className="content">
+                      <button
+                        onClick={() => handleReconnect(teacher.phone_number)}
+                        className="mute-button"
+                      >
+                        {isReconnecting(teacher.phone_number) ? 'Loading...' : 'Reconnect'}
+                      </button>
+                    </span>
+                  </div>
+                )}
                 <div className="list-item-content">
                   <span className="content">
                     <button
@@ -119,6 +160,18 @@ export function DetailsPage() {
                   <div className="list-item-content">
                     <span className="content"><strong>{student.call_status}</strong></span>
                   </div>
+                  {canReconnect(student) && (
+                    <div className="list-item-content">
+                      <span className="content">
+                        <button
+                          onClick={() => handleReconnect(student.phone_number)}
+                          className="mute-button"
+                        >
+                          {isReconnecting(student.phone_number) ? 'Loading...' : 'Reconnect'}
+                        </button>
+                      </span>
+                    </div>
+                  )}
                   <div className="list-item-content">
                     <span className="content">
                       <button
@@ -136,7 +189,7 @@ export function DetailsPage() {
                     </div>
                   )
                   }
-                  
+
                 </li>
               ))}
             </ul>
@@ -152,9 +205,10 @@ export function DetailsPage() {
         >
           {isLoadingCall ? 'Loading...' : isConfCallRunning ? 'End Call' : 'Start Call'}
         </button>
-        <button className="action-button" 
+        <button className="action-button"
+          onClick={handleOpenModal}
           disabled={!isConfCallRunning}
-          >
+        >
           Add Participant
         </button>
         <button
@@ -165,6 +219,12 @@ export function DetailsPage() {
           {isLoadingMusic ? 'Loading...' : isPlayingAudio ? 'Pause Music' : 'Play Music'}
         </button>
       </div>
+      <AddParticipantModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        availableStudents={availableStudents}
+        onSubmit={handleAddParticipants}
+      />
     </div>
   );
 }

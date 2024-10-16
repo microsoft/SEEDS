@@ -31,7 +31,7 @@ function App() {
       );
       const conferenceId = data.id;
       setConfId(conferenceId);
-      console.log('Conf ID:', conferenceId); 
+      console.log('Conf ID:', conferenceId);
 
       const sseEp = `${process.env.REACT_APP_CONF_SERVER_BASE_URI}/conference/teacherappconnect/${conferenceId}`;
       const eventSource = new EventSource(sseEp);
