@@ -21,7 +21,7 @@ class AddParticipantEvent(ConferenceEvent):
                 name="Student",
                 phone_number=self.phone_number,
                 role=Role.STUDENT,
-                call_status=CallStatus.CONNECTING,
+                call_status=CallStatus.DISCONNECTED,
             )
             current_participants_dict[self.phone_number] = participant
 
