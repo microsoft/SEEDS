@@ -51,7 +51,8 @@ export const unmuteParticipant = async (confId, phone_number) => {
 };
 
 export const playAudio = async (confId) => {
-  return fetch(`${api_base}/playaudio/${confId}`, {
+  const url =  `https://${process.env.REACT_APP_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/output-container/25/1.0.wav`
+  return fetch(`${api_base}/playaudio/${confId}?url=${url}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
