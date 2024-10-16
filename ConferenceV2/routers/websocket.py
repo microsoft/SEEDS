@@ -29,7 +29,7 @@ async def websocket_endpoint(websocket: WebSocket, conference_id: str):
                         conf.set_websocket(None)  # Clear the WebSocket on disconnection
                         break  # Exit the loop to stop processing once disconnected
 
-                    print('RECEIVED WEBSOCKET MSG')
+                    print('RECEIVED WEBSOCKET MSG for conf ID: ', conference_id)
                     # Handle incoming messages or keep the connection alive
                     await asyncio.sleep(10)  # Simulate activity to keep connection open
                 except WebSocketDisconnect:

@@ -9,6 +9,7 @@ python-dotenv
 vonage
 azure-servicebus
 azure-identity
+azure-storage-blob
 pytest
 pytest-asyncio 
 httpx
