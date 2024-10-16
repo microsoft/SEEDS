@@ -8,7 +8,7 @@ from models.audio_content_state import ContentStatus
 from services.conference_call import ConferenceCall
 
 class PlayContentEvent:
-    def __init__(self, conf_call: ConferenceCall, url: str = f"https://{os.environ.get("STORAGE_ACCOUNT_NAME", "")}.blob.core.windows.net/output-container/25/1.0.wav"):
+    def __init__(self, conf_call: ConferenceCall, url: str):
         self.url = url
         self.conf_call = conf_call
 

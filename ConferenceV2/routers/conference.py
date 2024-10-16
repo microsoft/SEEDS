@@ -111,11 +111,11 @@ async def unmute_participant(conference_id: str, phone_number: str):
     return {"message": "Event Queued for execution"}
 
 @router.put("/playaudio/{conference_id}")
-async def play_audio(conference_id: str):
+async def play_audio(conference_id: str, url: str):
     conference = conference_manager.get_conference(conference_id)
     if not conference:
         raise HTTPException(status_code=404, detail="Conference not found")
-    await conference.queue_event(PlayContentEvent(conf_call=conference))
+    await conference.queue_event(PlayContentEvent(conf_call=conference, url=url))
     return {"message": "Event Queued for execution"}
 
 @router.put("/pauseaudio/{conference_id}")
