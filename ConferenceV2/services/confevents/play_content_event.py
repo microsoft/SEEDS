@@ -1,8 +1,4 @@
 from datetime import datetime
-from azure.identity.aio import DefaultAzureCredential
-from azure.storage.blob.aio import BlobServiceClient
-import os
-from urllib.parse import urlparse
 from models.action_history import ActionHistory, ActionType
 from models.audio_content_state import ContentStatus
 from services.conference_call import ConferenceCall
