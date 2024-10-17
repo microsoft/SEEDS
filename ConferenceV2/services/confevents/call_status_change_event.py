@@ -14,6 +14,4 @@ class CallStatusChangeEvent(ConferenceEvent):
             print("EXECUTING CALL STATUS CHANGE EVENT FOR NUMBER", self.phone_number, "STATUS:", self.status.value)
             participant: Participant = self.conf_call.state.participants[self.phone_number]
             participant.call_status = self.status
-            if self.status in [CallStatus.CONNECTING, CallStatus.CONNECTED]:
-                self.conf_call.state.is_running = True # SET TO TRUE TO INDICATE THE CONF CALL HAS STARTED
             await self.conf_call.update_state()
