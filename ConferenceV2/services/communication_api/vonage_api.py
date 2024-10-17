@@ -6,7 +6,6 @@ import uuid
 from models.webhook_event import WebHookEvent
 from services.communication_api import CommunicationAPI
 from typing import Any, Dict, List, Optional
-import aiohttp
 import json
 from dotenv import load_dotenv
 import vonage
