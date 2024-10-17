@@ -1,7 +1,6 @@
 # main.py
 
 from fastapi import FastAPI
-import socketio
 from routers import conference, webhooks, websocket
 from fastapi.middleware.cors import CORSMiddleware
 
