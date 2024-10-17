@@ -5,7 +5,8 @@ pydantic
 pydantic-settings
 azure-cosmos
 azure-servicebus
-azure-identity
+azure-identity==1.7.0
+azure-core==1.26.0
 azure-storage-blob
 vonage
 pytest
