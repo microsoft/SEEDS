@@ -96,47 +96,46 @@ class VonageAPI(CommunicationAPI):
                 print("CALL ALREADY ENDED FOR PARTICIPANT", participant.phone_number)
     
     async def connect_websocket(self):
-        teacher_info = self.participant_info_map[self.teacher_phone_number]
-        teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
-
-        # WAIT TILL TEACHER PHONE IS RINGING
-        while teacher_call['status'] == "started" or teacher_call['status'] == 'ringing':
-            teacher_call = self.client.voice.get_call(uuid=teacher_info.call_leg_id)
-            await asyncio.sleep(1)
-
-        # IF TEACHER PICKED UP THE CALL: CONNECT THE WEBSOCKET AND PUT BOTH OF THEM BACK INTO THE CONVERSATION. 
-        # THIS IS BECAUSE ATLEAST ONE answered CALL LEG IS REQUIRED TO EXECUTE THE transfer ACTION. 
-        # CAN USE ANY STUDENT'S answered CALL LEG ALSO.
-        if teacher_call['status'] == 'answered':
-            print("TEACHER HAS ANSWERED THE CALL, CONNECTING WEBSOCKET NOW... URL:", self.ws_server_url)
-            self.client.voice.update_call(uuid=teacher_info.call_leg_id, 
-                                            params={
-                                                "action": "transfer",
-                                                "destination": {
-                                                    "type": "ncco",
-                                                    "ncco": [
-                                                        # {
-                                                        #     "action": "talk",
-                                                        #     "text": "Connecting websocket"
-                                                        # },
-                                                        {
-                                                            "action": "connect",
-                                                            "from": "SEEDS-ConfV2",
-                                                            "endpoint": [
+        connected_ws = False
+        while not connected_ws:
+            # IF ANY PARTICIPANT PICKED UP THE CALL: CONNECT THE WEBSOCKET AND PUT BOTH OF THEM BACK INTO THE CONVERSATION. 
+            # THIS IS BECAUSE ATLEAST ONE answered CALL LEG IS REQUIRED TO EXECUTE THE transfer ACTION. 
+            for participant_ph_number in self.participant_info_map:
+                participant = self.participant_info_map[participant_ph_number]
+                call = self.client.voice.get_call(uuid=participant.call_leg_id)
+                
+                if call['status'] == 'answered':
+                    print(f"{participant_ph_number} HAS ANSWERED THE CALL, CONNECTING WEBSOCKET NOW... URL:", self.ws_server_url)
+                    self.client.voice.update_call(uuid=participant.call_leg_id, 
+                                                    params={
+                                                        "action": "transfer",
+                                                        "destination": {
+                                                            "type": "ncco",
+                                                            "ncco": [
+                                                                # {
+                                                                #     "action": "talk",
+                                                                #     "text": "Connecting websocket"
+                                                                # },
                                                                 {
-                                                                    "type": "websocket",
-                                                                    "uri": self.ws_server_url,
-                                                                    "content-type": "audio/l16;rate=8000",
+                                                                    "action": "connect",
+                                                                    "from": "SEEDS-ConfV2",
+                                                                    "endpoint": [
+                                                                        {
+                                                                            "type": "websocket",
+                                                                            "uri": self.ws_server_url,
+                                                                            "content-type": "audio/l16;rate=8000",
+                                                                        }
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    "action": "conversation", 
+                                                                    "name": self.conf_id
                                                                 }
-                                                            ],
-                                                        },
-                                                        {
-                                                            "action": "conversation", 
-                                                            "name": self.conf_id
+                                                            ]
                                                         }
-                                                    ]
-                                                }
-                                            })
+                                                    })
+                    connected_ws = True
+                    break     
 
     # client.create_call()
     async def add_participant(self, phone_number: str):
