@@ -1,10 +1,33 @@
 # main.py
 
+from pathlib import Path
 from fastapi import FastAPI
 from routers import conference, webhooks, websocket
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="SEEDS Conference Call System")
+# Read the version from version.txt
+version_file = Path("version.txt")
+if version_file.exists():
+    app_version = version_file.read_text().strip()
+else:
+    app_version = "Unknown"
+
+app = FastAPI(title=f"SEEDS Conference Call System")
+
+# Store the original OpenAPI function
+original_openapi = app.openapi
+
+# Customize the OpenAPI docs to display the version
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = original_openapi()  # Call the original OpenAPI function
+    openapi_schema["info"]["version"] = app_version  # Set version in the docs
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+# Override the default OpenAPI method with the custom one
+app.openapi = custom_openapi
 
 app.add_middleware(
     CORSMiddleware,

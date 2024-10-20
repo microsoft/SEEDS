@@ -24,7 +24,23 @@ class VanillaWebSocketService:
         if self.__websocket:
             await self.__websocket.close()
 
-    async def send_audio(self, blob_url: str):
+    async def play(self, blob_url: str = ""):
+        """ Start sending audio through WebSocket to the connected client."""
+        self.__play_event.set()  # Resume audio sending
+        if not self.__is_sending and blob_url:
+            self.__is_sending = True
+            asyncio.create_task(self.__send_audio(blob_url))  # Start sending audio
+
+    async def pause(self):
+        """ Pause the audio sending. """
+        self.__play_event.clear()  # Pause audio sending
+
+    async def stop(self):
+        """ Stop the audio sending. """
+        self.__is_sending = False  # Stop the audio sending
+        self.__play_event.set()  # Resume event so that it can cleanly exit
+    
+    async def __send_audio(self, blob_url: str):
         """ Send audio in chunks over WebSocket, fetching from Azure Blob Storage. """
         try:
             if not self.__websocket:
@@ -67,22 +83,6 @@ class VanillaWebSocketService:
         finally:
             if self.__blob_client:
                 await self.__blob_client.close()
-
-    async def play(self, blob_url: str = ""):
-        """ Start sending audio through WebSocket to the connected client."""
-        self.__play_event.set()  # Resume audio sending
-        if not self.__is_sending and blob_url:
-            self.__is_sending = True
-            asyncio.create_task(self.send_audio(blob_url))  # Start sending audio
-
-    async def pause(self):
-        """ Pause the audio sending. """
-        self.__play_event.clear()  # Pause audio sending
-
-    async def stop(self):
-        """ Stop the audio sending. """
-        self.__is_sending = False  # Stop the audio sending
-        self.__play_event.set()  # Resume event so that it can cleanly exit
     
     def __check_connection(self):
         return self.__websocket is not None and self.__websocket.application_state == WebSocketState.CONNECTED

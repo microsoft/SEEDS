@@ -5,6 +5,7 @@ WEBAPP_NAME="confv2"
 RESOURCE_GROUP="seeds"
 RUNTIME="PYTHON|3.10"
 ZIP_FILE_NAME="$WEBAPP_NAME.zip"
+VERSION_FILE="version.txt"
 
 # Ensure Azure CLI is logged in
 echo "Checking Azure CLI login status..."
@@ -15,6 +16,19 @@ if [ $? -ne 0 ]; then
 else
     echo "Already logged in."
 fi
+
+# Update the version
+if [ -f "$VERSION_FILE" ]; then
+    # Increment the version number
+    current_version=$(cat $VERSION_FILE)
+    new_version=$(echo $current_version | awk -F. '{$NF++; print}')
+    echo $new_version > $VERSION_FILE
+else
+    # Create the version file if it doesn't exist, starting with 0.0.1
+    new_version="0.0.1"
+    echo $new_version > $VERSION_FILE
+fi
+echo "Updated version: $new_version"
 
 # Ignore .env but include private.key
 echo "Preparing files for deployment..."

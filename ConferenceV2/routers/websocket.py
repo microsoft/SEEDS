@@ -31,7 +31,7 @@ async def websocket_endpoint(websocket: WebSocket, conference_id: str):
 
                     print('RECEIVED WEBSOCKET MSG for conf ID: ', conference_id)
                     # Handle incoming messages or keep the connection alive
-                    await asyncio.sleep(10)  # Simulate activity to keep connection open
+                    # await asyncio.sleep(10)  # Simulate activity to keep connection open
                 except WebSocketDisconnect:
                     print(f"WebSocket Client disconnected for {conference_id}")
                     conf.set_websocket(None)  # Clear the WebSocket on disconnection
