@@ -95,6 +95,7 @@ export function DetailsPage() {
 
   const isLoading = (phone_number) => loadingIds.includes(phone_number);
   const isPlayingAudio = audioContentState.status === "Playing"
+  const isStartingAudio = audioContentState.status === "Starting"
 
   const canReconnect = (user) => user.call_status === "disconnected" && isConfCallRunning
   const isReconnecting = (phone_number) => reconnectingIds.includes(phone_number)
@@ -214,9 +215,9 @@ export function DetailsPage() {
         <button
           className="action-button"
           onClick={handlePlayMusic}
-          disabled={isLoadingMusic || !isConfCallRunning}
+          disabled={isLoadingMusic || !isConfCallRunning || isStartingAudio}
         >
-          {isLoadingMusic ? 'Loading...' : isPlayingAudio ? 'Pause Music' : 'Play Music'}
+          {isLoadingMusic ? 'Loading...' : isStartingAudio? "Starting..." :  isPlayingAudio ? 'Pause Music' : 'Play Music'}
         </button>
       </div>
       <AddParticipantModal

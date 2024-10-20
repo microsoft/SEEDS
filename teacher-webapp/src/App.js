@@ -7,6 +7,17 @@ import { createConference } from './services/apiService';
 import { teachers, students } from './state'; // Import teachers and students
 import './App.css';
 
+const getCurrentTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
 
 function App() {
   const {
@@ -37,7 +48,7 @@ function App() {
       const eventSource = new EventSource(sseEp);
 
       eventSource.onmessage = (event) => {
-        console.log("Message from SSE:", event.data);
+        console.log(`${getCurrentTime()} Message from SSE:`, event.data);
         const parsedData = JSON.parse(event.data);
         handleSSEEvent(parsedData);
       };
