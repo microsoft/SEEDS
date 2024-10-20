@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useConference } from './context/ConferenceContext';
-import { startConferenceCall, endConferenceCall, muteParticipant, unmuteParticipant, playAudio, pauseAudio, addParticipant } from './services/apiService';
+import { startConferenceCall, endConferenceCall, sinkConferenceCall, muteParticipant, unmuteParticipant, playAudio, pauseAudio, addParticipant } from './services/apiService';
 import { AddParticipantModal } from './components/AddParticipantModal';
 import { students as allStudents } from './state';
-import './App.css';
+import App from './App';
 
 export function DetailsPage() {
   const {
@@ -17,6 +17,8 @@ export function DetailsPage() {
   const [loadingIds, setLoadingIds] = useState([]);
   const [reconnectingIds, setReconnectingIds] = useState([]);
   const [isLoadingCall, setIsLoadingCall] = useState(false);
+  const [isSinkingConf, setIsSinkingConf] = useState(false)
+  const [hasSunkConf, setHasSunkConf] = useState(false)
   const [isLoadingMusic, setIsLoadingMusic] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -61,6 +63,18 @@ export function DetailsPage() {
     }
   }
 
+  const handleSinkConf = async () => {
+    setIsSinkingConf(true);
+    try {
+      await sinkConferenceCall(confId);
+    } catch (error) {
+      console.error('Error starting the call:', error);
+    } finally {
+      setIsSinkingConf(false);
+      setHasSunkConf(true)
+    }
+  }
+
   const handlePlayMusic = async () => {
     setIsLoadingMusic(true);
     if (audioContentState.status === "Playing") {
@@ -99,6 +113,10 @@ export function DetailsPage() {
 
   const canReconnect = (user) => user.call_status === "disconnected" && isConfCallRunning
   const isReconnecting = (phone_number) => reconnectingIds.includes(phone_number)
+
+  if(hasSunkConf){
+    return <App />
+  }
 
   return (
     <div className="app-container">
@@ -206,6 +224,15 @@ export function DetailsPage() {
         >
           {isLoadingCall ? 'Loading...' : isConfCallRunning ? 'End Call' : 'Start Call'}
         </button>
+
+        <button
+          className="action-button"
+          onClick={handleSinkConf}
+          disabled={isConfCallRunning || isSinkingConf}
+        >
+          {isSinkingConf ? 'Sinking...' : 'Sink Conference'}
+        </button>
+
         <button className="action-button"
           onClick={handleOpenModal}
           disabled={!isConfCallRunning}

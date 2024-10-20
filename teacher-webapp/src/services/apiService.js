@@ -32,6 +32,15 @@ export const endConferenceCall = async (confId) => {
   });
 };
 
+export const sinkConferenceCall = async (confId) => {
+  return fetch(`${api_base}/sink/${confId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
 export const muteParticipant = async (confId, phone_number) => {
   return fetch(`${api_base}/muteparticipant/${confId}?phone_number=${phone_number}`, {
     method: 'PUT',
