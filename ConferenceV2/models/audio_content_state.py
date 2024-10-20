@@ -7,6 +7,7 @@ from datetime import datetime
 
 
 class ContentStatus(str, Enum):
+    STARTING = "Starting"
     PLAYING = "Playing"
     PAUSED = "Paused"
     STOPPED = "Stopped"

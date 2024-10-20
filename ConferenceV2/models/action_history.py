@@ -8,6 +8,7 @@ from typing import Dict
 class ActionType(str, Enum):
     CONFERENCE_START = "Conference-Start"
     CONFERENCE_END = "Conference-End"
+    CONFERENCE_SINK = "Conference-Sink"
     CONFERENCE_CALLSTATUS_CHANGE = "Conference-CallStatusChange"
     STUDENT_RAISE_HAND_STATE_CHANGE = "Student-RaiseHandStateChange"
     TEACHER_ADD_STUDENT = "Teacher-AddStudent"

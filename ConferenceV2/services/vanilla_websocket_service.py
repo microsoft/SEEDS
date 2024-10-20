@@ -6,15 +6,20 @@ from azure.storage.blob.aio import BlobClient
 from azure.identity.aio import DefaultAzureCredential
 from urllib.parse import urlparse
 
+from models.audio_content_state import AudioContentState, ContentStatus
+from models.conference_call_state import ConferenceCallState
+
 class VanillaWebSocketService:
-    def __init__(self, on_disconnect_callback: callable):
+    def __init__(self, on_disconnect_callback: callable, audio_content_state: AudioContentState, on_state_update: callable = None):
         self.on_disconnect_callback = on_disconnect_callback
+        self.audio_content_state = audio_content_state
+        self.on_state_update = on_state_update
         self.__play_event = asyncio.Event()
         self.__play_event.clear()  # Initially set to "paused mode"
         self.__is_sending = False  # Indicates whether audio is currently being sent
         self.__websocket = None
         self.__blob_client = None
-    
+        
     def set_websocket(self, websocket: WebSocket):
         self.__websocket = websocket
         if self.__check_connection():
@@ -22,6 +27,7 @@ class VanillaWebSocketService:
     
     async def close_websocket(self):
         if self.__websocket:
+            await self.stop()
             await self.__websocket.close()
 
     async def play(self, blob_url: str = ""):
@@ -34,11 +40,19 @@ class VanillaWebSocketService:
     async def pause(self):
         """ Pause the audio sending. """
         self.__play_event.clear()  # Pause audio sending
+        await self.__update_content_streaming_state(ContentStatus.PAUSED)
 
     async def stop(self):
         """ Stop the audio sending. """
         self.__is_sending = False  # Stop the audio sending
         self.__play_event.set()  # Resume event so that it can cleanly exit
+        await self.__update_content_streaming_state(ContentStatus.STOPPED)
+    
+    async def __update_content_streaming_state(self, status: ContentStatus):
+        if self.audio_content_state.status != status:
+            self.audio_content_state.status = status
+            if self.on_state_update:
+                await self.on_state_update()
     
     async def __send_audio(self, blob_url: str):
         """ Send audio in chunks over WebSocket, fetching from Azure Blob Storage. """
@@ -129,3 +143,4 @@ class VanillaWebSocketService:
             if not self.__check_connection():
                 raise WebSocketDisconnect("WebSocket has been closed")
             await self.__websocket.send_bytes(chunk)
+            await self.__update_content_streaming_state(ContentStatus.PLAYING)

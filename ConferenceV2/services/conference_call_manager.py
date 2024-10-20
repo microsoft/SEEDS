@@ -43,11 +43,7 @@ class ConferenceCallManager:
         conference_call.set_participant_state(teacher_phone, student_phones)
         self.conferences[conf_id] = conference_call
         return conf_id
-
-    # TODO: DELETE CONF, STOP PROCESSING QUEUE EVENTS, STOP SENDING MESSAGES VIA SMART PHONE CONNECTION MANAGER
-    async def delete_conference(self, conf_id: str):
-        pass
-       
+   
     async def start_conference_call(self, conf_id: str) -> ConferenceCall:
         conf: ConferenceCall = self.get_conference(conf_id)
         if not conf:
@@ -56,16 +52,11 @@ class ConferenceCallManager:
         conf.start_processing_conf_events_from_queue()
         await conf.start_conference()
         
-    async def end_conference(self, conference_id: str):
-        conf: ConferenceCall = self.get_conference(conference_id)
-        if conf:
-            print('ENDING CONF', conference_id)
-            await conf.end_conference()
-            # del self.conferences[conference_id]
-        return conf
-
     def get_conference(self, conference_id: str) -> ConferenceCall | None:
         return self.conferences.get(conference_id, None)
+
+    def delete_conference(self, conf_id: str):
+        del self.conferences[conf_id]
 
     def get_conference_from_phone_number(self, phone_number: str) -> ConferenceCall | None:
         for conf in self.conferences.values():

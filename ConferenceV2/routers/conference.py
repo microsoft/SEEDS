@@ -7,10 +7,12 @@ from services.conference_call import ConferenceCall
 from services.conference_call_manager import ConferenceCallManager
 from services.communication_api import CommunicationAPIType
 from services.confevents.add_participant_event import AddParticipantEvent
+from services.confevents.end_conf_event import EndConferenceEvent
 from services.confevents.mute_participant_event import MuteParticipantEvent
 from services.confevents.pause_content_event import PauseContentEvent
 from services.confevents.play_content_event import PlayContentEvent
 from services.confevents.remove_participant_event import RemoveParticipantEvent
+from services.confevents.sink_conf_event import SinkConferenceEvent
 from services.confevents.unmute_participant_event import UnmuteParticipantEvent
 from services.storage_manager import InMemoryStorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType
@@ -72,11 +74,20 @@ async def disconnect_smartphone(conference_id: str):
 
 @router.put("/end/{conference_id}")
 async def end_conference(conference_id: str):
-    conference_call = await conference_manager.end_conference(conference_id)
-    return {
-                "status": "END", 
-                "conf": conference_call.conf_id
-            }
+    conference: ConferenceCall = conference_manager.get_conference(conference_id)
+    if not conference:
+        raise HTTPException(status_code=404, detail="Conference not found")
+    await conference.queue_event(EndConferenceEvent(conf_call=conference))
+    return {"message": "Event Queued for execution"}
+
+@router.put("/sink/{conference_id}")
+async def sink_conference(conference_id: str):
+    conference: ConferenceCall = conference_manager.get_conference(conference_id)
+    if not conference:
+        raise HTTPException(status_code=404, detail="Conference not found")
+    await conference.queue_event(SinkConferenceEvent(conf_call=conference, 
+                                                     on_sink_callback=lambda: conference_manager.delete_conference(conference_id)))
+    return {"message": "Event Queued for execution"}
 
 @router.put("/addparticipant/{conference_id}")
 async def add_participant(conference_id: str, phone_number: str):

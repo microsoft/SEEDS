@@ -27,19 +27,25 @@ class ConferenceCall:
         self.communication_api = communication_api
         self.storage_manager = storage_manager
         self.connection_manager = connection_manager
+        self.state = ConferenceCallState()
         self.websocket_service = VanillaWebSocketService(
                 on_disconnect_callback=self.__on_websocket_disconnect_callback,
+                audio_content_state=self.state.audio_content_state,
+                on_state_update=self.update_state
             )
-        self.state = ConferenceCallState()
+        
         self.event_queue = asyncio.Queue()
         self.event_queue_processing_task: asyncio.Task = None
     
     async def queue_event(self, event: ConferenceEvent):
         await self.event_queue.put(event)
     
-    def start_processing_conf_events_from_queue(self):
+    def end_processing_conf_events_from_queue(self):
         if self.event_queue_processing_task != None:
             self.event_queue_processing_task.cancel()
+    
+    def start_processing_conf_events_from_queue(self):
+        self.end_processing_conf_events_from_queue()
         self.event_queue_processing_task = asyncio.create_task(self.__process_conf_events_queue())
     
     def set_participant_state(self, teacher_phone: str, student_phones: List[str]):
@@ -98,22 +104,7 @@ class ConferenceCall:
         if teacher:
             return await self.connection_manager.disconnect(client=teacher)
         raise ValueError("No teacher participant in conf call " + self.conf_id)
-      
-    async def end_conference(self):
-        await self.communication_api.end_conf()
-        self.state.is_running = False
-        self.state.action_history.append(ActionHistory(
-                                                    timestamp= datetime.now().isoformat(), 
-                                                    action_type=ActionType.CONFERENCE_END, 
-                                                    metadata={}, 
-                                                    # TODO: OWNER OF THIS CAN BE SYSTEM or TEACHER
-                                                    owner=self.state.teacher_phone_number
-                                                 )
-                                    )
-        await self.update_state()
-        # self.event_queue_processing_task.cancel() # Not ending processing tasks because call disconnect status events will be received from vonage
-        await self.websocket_service.close_websocket()
-    
+        
     async def update_state(self):
         # Save state to storage
         await self.storage_manager.save_state(self.conf_id, self.state.model_dump(by_alias=True))

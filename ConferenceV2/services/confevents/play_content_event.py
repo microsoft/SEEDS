@@ -11,7 +11,7 @@ class PlayContentEvent:
     async def execute_event(self):
         # Update the audio content state with the current URL and status
         self.conf_call.state.audio_content_state.current_url = self.url
-        self.conf_call.state.audio_content_state.status = ContentStatus.PLAYING
+        self.conf_call.state.audio_content_state.status = ContentStatus.STARTING
 
         # Play the audio via websocket service
         await self.conf_call.websocket_service.play(self.url)
