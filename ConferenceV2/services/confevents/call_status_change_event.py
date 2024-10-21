@@ -12,7 +12,8 @@ class CallStatusChangeEvent(ConferenceEvent):
 
     async def execute_event(self):
         if self.phone_number in self.conf_call.state.participants:
-            logger_instance.info("EXECUTING CALL STATUS CHANGE EVENT FOR NUMBER", self.phone_number, "STATUS:", self.status.value)
             participant: Participant = self.conf_call.state.participants[self.phone_number]
-            participant.call_status = self.status
-            await self.conf_call.update_state()
+            if participant.call_status != self.status:
+                logger_instance.info("EXECUTING CALL STATUS CHANGE EVENT FOR NUMBER", self.phone_number, "STATUS:", self.status.value)
+                participant.call_status = self.status
+                await self.conf_call.update_state()
