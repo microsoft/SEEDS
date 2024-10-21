@@ -3,6 +3,7 @@ from models.action_history import ActionHistory, ActionType
 from services.confevents.base_event import ConferenceEvent
 from models.participant import Role, Participant
 from services.conference_call import ConferenceCall
+from conf_logger import logger_instance
 
 
 class DTMFInputEvent(ConferenceEvent):
@@ -17,7 +18,7 @@ class DTMFInputEvent(ConferenceEvent):
 
             # Flip raise hand state: if participant is a student, input is "0", and hand is not already raised
             if participant.role == Role.STUDENT and self.digit == "0" and not participant.is_raised:
-                print("HANDLING DTMF INPUT EVENT", self)
+                logger_instance.info("HANDLING DTMF INPUT EVENT", self)
                 participant.is_raised = True
                 participant.raised_at = int(datetime.now().timestamp())
                 

@@ -9,6 +9,8 @@ from services.confevents.vonage.vonage_call_status_change_event import VonageCal
 from services.confevents.vonage.vonage_dtmf_input_event import VonageDTMFInputEvent, VonageRTCEventType
 from services.conference_call_manager import ConferenceCallManager
 from typing import Dict
+from conf_logger import logger_instance
+
 
 router = APIRouter()
 
@@ -21,14 +23,14 @@ router = APIRouter()
 
 @router.post("/event/{conference_id}")
 async def event_webhook(request: Request, conference_id: str, background_tasks: BackgroundTasks):
-    # print("RECEIVED EVENT for ", conference_id)
+    # logger_instance.info("RECEIVED EVENT for ", conference_id)
     event_data = await request.json()
     background_tasks.add_task(process_event, event_data, conference_id)
     return {"status": "ok"}
 
 @router.post("/conversationevents")
 async def conversation_events_webhook(request: Request, background_tasks: BackgroundTasks):
-    # print("CONV EVENT RECEIVED")
+    # logger_instance.info("CONV EVENT RECEIVED")
     event_data = await request.json()
     background_tasks.add_task(process_conversation_event, event_data)
     return {"status": "ok"}
@@ -46,7 +48,7 @@ async def process_event(event_data: Dict, conference_id: str):
             if call_status_change_event.status == CallStatus.CONNECTED and call_status_change_event.phone_number in student_phone_numbers: 
                 await conf.queue_event(MuteParticipantEvent(phone_number=call_status_change_event.phone_number, conf_call=conf))
     except:
-        print("NOT a call_status_change_event")
+        logger_instance.info("NOT a call_status_change_event")
         
 async def process_conversation_event(event_data: Dict):
     try:
@@ -55,8 +57,8 @@ async def process_conversation_event(event_data: Dict):
             conf = conference_manager.get_conference_from_phone_number(vonage_dtmf_input_event.get_user_phone_number())
             if conf:
                 dtmf_input_event = vonage_dtmf_input_event.get_conf_dtmf_input_event(conf)
-                print(json.dumps(event_data, indent=2))
+                logger_instance.info(json.dumps(event_data, indent=2))
                 await conf.queue_event(dtmf_input_event)
     
     except:
-        print("NOT a dtmf_input_event")
+        logger_instance.info("NOT a dtmf_input_event")

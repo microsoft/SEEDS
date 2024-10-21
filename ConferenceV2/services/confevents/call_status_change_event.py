@@ -1,6 +1,7 @@
 from models.participant import CallStatus, Participant
 from services.conference_call import ConferenceCall
 from services.confevents.base_event import ConferenceEvent
+from conf_logger import logger_instance
 
 
 class CallStatusChangeEvent(ConferenceEvent):
@@ -11,7 +12,7 @@ class CallStatusChangeEvent(ConferenceEvent):
 
     async def execute_event(self):
         if self.phone_number in self.conf_call.state.participants:
-            print("EXECUTING CALL STATUS CHANGE EVENT FOR NUMBER", self.phone_number, "STATUS:", self.status.value)
+            logger_instance.info("EXECUTING CALL STATUS CHANGE EVENT FOR NUMBER", self.phone_number, "STATUS:", self.status.value)
             participant: Participant = self.conf_call.state.participants[self.phone_number]
             participant.call_status = self.status
             await self.conf_call.update_state()

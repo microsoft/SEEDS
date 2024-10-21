@@ -5,7 +5,7 @@ from fastapi.websockets import WebSocketState
 from azure.storage.blob.aio import BlobClient
 from azure.identity.aio import DefaultAzureCredential
 from urllib.parse import urlparse
-
+from conf_logger import logger_instance
 from models.audio_content_state import AudioContentState, ContentStatus
 from models.conference_call_state import ConferenceCallState
 
@@ -58,7 +58,7 @@ class VanillaWebSocketService:
         """ Send audio in chunks over WebSocket, fetching from Azure Blob Storage. """
         try:
             if not self.__websocket:
-                print("WebSocket connection is not established")
+                logger_instance.info("WebSocket connection is not established")
                 await self.on_disconnect_callback()
 
             # Initialize the BlobClient for the given blob URL
@@ -72,27 +72,27 @@ class VanillaWebSocketService:
                 try:
                     await self.__send_chunk(chunk)
                 except WebSocketDisconnect:
-                    print("WebSocket is closed, triggering disconnect callback.")
+                    logger_instance.info("WebSocket is closed, triggering disconnect callback.")
                     self.__websocket = None  # Remove the WebSocket object being used
                     await self.pause()  # Pause sending data
                     if self.on_disconnect_callback:  # Call the disconnect callback if provided
-                        print("CALLING RECONNECT CODE...")
+                        logger_instance.info("CALLING RECONNECT CODE...")
                         await self.on_disconnect_callback()
                         # After callback, attempt to resend the failed chunk
                         await self.__send_chunk(chunk)
 
                 except Exception as e:
-                    print(f"Error sending audio chunk: {e}")
+                    logger_instance.info(f"Error sending audio chunk: {e}")
                     traceback.print_exc()
                     await self.stop()
 
                 await asyncio.sleep(0.02)  # Wait for 20 milliseconds between chunks
 
-            print("Audio sending completed or stopped")
+            logger_instance.info("Audio sending completed or stopped")
             self.__is_sending = False
 
         except Exception as e:
-            print(f"An error occurred in websocket service: {e}")
+            logger_instance.info(f"An error occurred in websocket service: {e}")
             traceback.print_exc()
         finally:
             if self.__blob_client:

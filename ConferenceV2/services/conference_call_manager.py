@@ -9,6 +9,7 @@ from services.communication_api import CommunicationAPIFactory, CommunicationAPI
 from services.storage_manager import StorageManager
 from services.smartphone_connection_manager import SmartphoneConnectionManagerType, SmartphoneConnectionManagerFactory
 from services.conference_call import ConferenceCall
+from conf_logger import logger_instance
 
 load_dotenv()
 
@@ -27,7 +28,7 @@ class ConferenceCallManager:
         self.smartphone_connection_manager_factory = SmartphoneConnectionManagerFactory()
         self.conferences: Dict[str, ConferenceCall] = {}
         self.ws_base_url = os.environ.get("WS_SERVER_EP", "")
-        print('WEBSOCKET BASE URL: ', self.ws_base_url)
+        logger_instance.info(f'WEBSOCKET BASE URL: {self.ws_base_url}')
 
     def create_conference(self, teacher_phone: str, student_phones: List[str]) -> ConferenceCall:
         conf_id = str(uuid.uuid4())

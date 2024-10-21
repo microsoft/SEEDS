@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import vonage
 from typing import Dict
 from pydantic import BaseModel
+from conf_logger import logger_instance
 
 class VonageParticipantInfo(BaseModel):
     phone_number: str
@@ -55,14 +56,14 @@ class VonageAPI(CommunicationAPI):
             ]
         }
         vonage_resp = self.client.voice.create_call(call_data)
-        print("VONAGE TEACHER RESPONSE", json.dumps(vonage_resp, indent=2))
+        logger_instance.info("VONAGE TEACHER RESPONSE", json.dumps(vonage_resp, indent=2))
         self.teacher_phone_number = teacher_phone
         self.participant_info_map[teacher_phone] = VonageParticipantInfo(
                                                         phone_number=teacher_phone,
                                                         call_leg_id=vonage_resp['uuid'],
                                                         conv_id=vonage_resp['conversation_uuid'])
         
-        print("CONNECTING CALL TO WEBSOCKET IN BACKGROUND")
+        logger_instance.info("CONNECTING CALL TO WEBSOCKET IN BACKGROUND")
         asyncio.create_task(self.connect_websocket())
 
         for student_phone in student_phones:
@@ -76,7 +77,7 @@ class VonageAPI(CommunicationAPI):
                 "ncco": [{"action": "conversation", "name": self.conf_id}]
             }
             vonage_resp = self.client.voice.create_call(call_data)
-            print("VONAGE STUDENT RESPONSE", json.dumps(vonage_resp, indent=2))
+            logger_instance.info("VONAGE STUDENT RESPONSE", json.dumps(vonage_resp, indent=2))
             self.participant_info_map[student_phone] = VonageParticipantInfo(
                                                             phone_number=student_phone,
                                                             call_leg_id=vonage_resp['uuid'],
@@ -90,10 +91,10 @@ class VonageAPI(CommunicationAPI):
         for participant in self.participant_info_map.values():
             call_details = self.client.voice.get_call(uuid=participant.call_leg_id)
             if call_details['status'] == 'answered':
-                print("ENDING CALL FOR PARTICIPANT", participant.phone_number)
+                logger_instance.info("ENDING CALL FOR PARTICIPANT", participant.phone_number)
                 self.client.voice.update_call(uuid=participant.call_leg_id, action="hangup")
             else:
-                print("CALL ALREADY ENDED FOR PARTICIPANT", participant.phone_number)
+                logger_instance.info("CALL ALREADY ENDED FOR PARTICIPANT", participant.phone_number)
     
     async def connect_websocket(self):
         connected_ws = False
@@ -105,7 +106,7 @@ class VonageAPI(CommunicationAPI):
                 call = self.client.voice.get_call(uuid=participant.call_leg_id)
                 
                 if call['status'] == 'answered':
-                    print(f"{participant_ph_number} HAS ANSWERED THE CALL, CONNECTING WEBSOCKET NOW... URL:", self.ws_server_url)
+                    logger_instance.info(f"{participant_ph_number} HAS ANSWERED THE CALL, CONNECTING WEBSOCKET NOW... URL:", self.ws_server_url)
                     self.client.voice.update_call(uuid=participant.call_leg_id, 
                                                     params={
                                                         "action": "transfer",
@@ -152,7 +153,7 @@ class VonageAPI(CommunicationAPI):
             "ncco": [{"action": "conversation", "name": self.conf_id}]
         }
         vonage_resp = self.client.voice.create_call(call_data)
-        print("VONAGE ADD PARTICIPANT RESPONSE", json.dumps(vonage_resp, indent=2))
+        logger_instance.info("VONAGE ADD PARTICIPANT RESPONSE", json.dumps(vonage_resp, indent=2))
         self.participant_info_map[phone_number] = VonageParticipantInfo(
                                                         phone_number=phone_number,
                                                         call_leg_id=vonage_resp['uuid'],

@@ -3,7 +3,7 @@ from typing import Any, Dict
 from models.participant import Participant
 from fastapi.responses import StreamingResponse
 import asyncio
-
+from conf_logger import logger_instance
 from services.smartphone_connection_manager.base_smartphone_connection_manager import SmartphoneConnectionManager
 
 
@@ -18,14 +18,14 @@ class SSEConnectionManager(SmartphoneConnectionManager):
                 "queue": asyncio.Queue(),
                 "disconnected": False
             }
-            print(f"SSE Client {client.phone_number} connected")
+            logger_instance.info(f"SSE Client {client.phone_number} connected")
 
         async def event_stream():
             """Generator to send messages to the client."""
             while True:
                 # Break the loop if the client is marked as disconnected
                 if self.active_connections[client.phone_number]["disconnected"]:
-                    print(f"Stopping event stream for {client.phone_number}")
+                    logger_instance.info(f"Stopping event stream for {client.phone_number}")
                     break
 
                 try:
@@ -33,7 +33,7 @@ class SSEConnectionManager(SmartphoneConnectionManager):
                     message = await self.active_connections[client.phone_number]["queue"].get()
                     yield f"data: {json.dumps(message)}\n\n"
                 except asyncio.CancelledError:
-                    print(f"Event stream task canceled for {client.phone_number}")
+                    logger_instance.info(f"Event stream task canceled for {client.phone_number}")
                     break
 
         return StreamingResponse(event_stream(), media_type="text/event-stream")
@@ -45,7 +45,7 @@ class SSEConnectionManager(SmartphoneConnectionManager):
             self.active_connections[client.phone_number]["disconnected"] = True
             # Remove the client from the active_connections after a delay
             del self.active_connections[client.phone_number]
-            print(f"SSE Client {client.phone_number} disconnected")
+            logger_instance.info(f"SSE Client {client.phone_number} disconnected")
 
     async def send_message_to_client(self, client: Participant, message: dict):
         """Send a message to the client via the client's message queue."""
