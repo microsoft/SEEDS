@@ -31,6 +31,7 @@ class SSEConnectionManager(SmartphoneConnectionManager):
                 try:
                     # Fetch messages from the queue and yield them as SSE format
                     message = await self.active_connections[client.phone_number]["queue"].get()
+                    logger_instance.info('Sending SSE event', message)
                     yield f"data: {json.dumps(message)}\n\n"
                 except asyncio.CancelledError:
                     logger_instance.info(f"Event stream task canceled for {client.phone_number}")

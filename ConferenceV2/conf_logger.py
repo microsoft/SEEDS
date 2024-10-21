@@ -5,6 +5,7 @@ import sys
 from dotenv import load_dotenv
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 from datetime import datetime
+import pytz  # For timezone handling
 
 load_dotenv()
 
@@ -47,10 +48,11 @@ class ConferenceLogger:
         self.logger.addHandler(stderr_handler)
 
     def _format_message(self, *args):
-            # Prepend timestamp and version number to each log
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            message = ' '.join(map(str, args))  # Concatenate all arguments into a single string
-            return f"[{timestamp}] [Version: {self.version}] {message}"
+        # Prepend timestamp in IST and version number to each log
+        ist_timezone = pytz.timezone('Asia/Kolkata')
+        timestamp = datetime.now(ist_timezone).strftime('%Y-%m-%d %H:%M:%S')
+        message = ' '.join(map(str, args))  # Concatenate all arguments into a single string
+        return f"[{timestamp}] [Version: {self.version}] {message}"
 
     # Log level methods
     def debug(self, *args):
@@ -69,10 +71,12 @@ class ConferenceLogger:
         self.logger.critical(self._format_message(*args))
 
 
+# Read the version from the version file or use "Unknown" if not found
 version_file = Path("version.txt")
 if version_file.exists():
     app_version = version_file.read_text().strip()
 else:
     app_version = "Unknown"
     
+# Create the logger instance with the version from the file
 logger_instance = ConferenceLogger(version=app_version)
